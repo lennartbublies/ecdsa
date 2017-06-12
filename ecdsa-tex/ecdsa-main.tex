@@ -1,21 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%% asme2ej.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Template for producing ASME-format journal articles using LaTeX    %
-% Written by   Harry H. Cheng, Professor and Director                %
-%              Integration Engineering Laboratory                    %
-%              Department of Mechanical and Aeronautical Engineering %
-%              University of California                              %
-%              Davis, CA 95616                                       %
-%              Tel: (530) 752-5020 (office)                          %
-%                   (530) 752-1028 (lab)                             %
-%              Fax: (530) 752-4158                                   %
-%              Email: hhcheng@ucdavis.edu                            %
-%              WWW:   http://iel.ucdavis.edu/people/cheng.html       %
-%              May 7, 1994                                           %
-% Modified: February 16, 2001 by Harry H. Cheng                      %
-% Modified: January  01, 2003 by Geoffrey R. Shiflett                %
-% Use at your own risk, send complaints to /dev/null                 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %%% use twocolumn and 10pt options with the asme2ej format
 \documentclass[twocolumn,10pt]{asme2ej}
 
@@ -32,15 +14,14 @@
 %  
 %% The default is oneside, onecolumn, 10pt, final
 
-
-\title{Implementing Eliptic Curve Digital Signature Algorithm on FPGA}
+\title{Eliptic Curve Digital Signature Algorithm Performance On An FPGA}
 
 %%% second author
 %%% remove the following entry for single author papers
 %%% add more entries for additional authors
 \author{Lennart Bublies %\\
     \affiliation{
-    Department of Computer Engineering\\
+    Department of Computer Engineering\\% = technische Informatik
     University of Applied Sciences Wedel\\
 	%Feldstrasse 143, 
 	22869 Wedel, Germany\\
@@ -78,12 +59,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-{\it This is the abstract.
-This article illustrates preparation of ASME paper using 
-\LaTeX2\raisebox{-.3ex}{$\epsilon$}.
-An abstract for an ASME paper should be less than 150 words and is normally in italics.
-%%% 
-Please use this template to test how your figures will look on the printed journal page of the Journal of Mechanical Design.  The Journal will no longer publish papers that contain errors in figure resolution.  These usually consist of unreadable or fuzzy text, and pixilation or rasterization of lines.  This template identifies the specifications used by JMD some of which may not be easily duplicated; for example, ASME actually uses Helvetica Condensed Bold, but this is not generally available so for the purpose of this exercise Helvetica is adequate.  However, reproduction of the journal page is not the goal, instead this exercise is to verify the quality of your figures. Notice that this abstract is to be set in 9pt Times Italic, single spaced and right justified.  
+{\it 
+%%% goal: 100-150 words
+This paper explains the implementation of the eliptic curve digital signature algortihm on an Altera DE2 FPGA. At first the mathematical background is described, followed by the explanation of our implementation details. We compare the performance with an optimized C implementation and achieve an improvement of XX \%. 
 }
 \end{abstract}
 
