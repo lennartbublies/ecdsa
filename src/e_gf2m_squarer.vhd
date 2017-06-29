@@ -6,6 +6,8 @@
 --  squaring a polinomial IS simplier than multiply.
 --
 --  Ports:
+--   a_i : Input to square
+--   c_o : Square of input
 -- 
 --  Source:
 --   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/classic_squarer.vhd
@@ -31,7 +33,7 @@ PACKAGE p_gf2m_classic_squarer_parameters IS
 END p_gf2m_classic_squarer_parameters;
 
 ------------------------------------------------------------
--- GF(2^M) classic squaring
+-- GF(2^M) classic squaring entity
 ------------------------------------------------------------
 LIBRARY ieee; 
 USE ieee.std_logic_1164.all;
@@ -43,27 +45,27 @@ USE work.p_gf2m_classic_multiplier_parameters.all;
 ENTITY e_classic_gf2m_squarer IS
     PORT (
         -- Input SIGNAL
-        a: IN std_logic_vector(M-1 DOWNTO 0);
+        a_i: IN std_logic_vector(M-1 DOWNTO 0);
         
         -- Output SIGNAL
-        c: OUT std_logic_vector(M-1 DOWNTO 0)
+        c_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
 END e_classic_gf2m_squarer;
 
 ARCHITECTURE rtl OF e_classic_gf2m_squarer IS
-    SIGNAL d: std_logic_vector(2*M-2 DOWNTO 0);
+    SIGNAL b: std_logic_vector(2*M-2 DOWNTO 0);
 BEGIN
-    D(0) <= a(0);
+    b(0) <= a_i(0);
 
-    -- TODO THIS SHOULD BE WRONG?
+    -- TODO - WHY IS IT CORRECT?
     square: FOR i IN 1 TO M-1 GENERATE
-        d(2*i-1) <= '0';
-        d(2*i) <= a(i);
+        b(2*i-1) <= '0';
+        b(2*i) <= a_i(i);
     END GENERATE;
 
     -- Instantiate polynomial reducer
     reducer: work.e_gf2m_reducer PORT MAP(
-            d => d, 
-            c => c
+            b => b, 
+            c_o => c_o
         );
 END rtl;

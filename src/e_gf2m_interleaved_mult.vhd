@@ -36,13 +36,21 @@ USE work.p_gf2m_interleaved_mult_package.all;
 
 ENTITY e_gf2m_interleaved_data_path IS
     PORT (
+        -- Clock and reset signals
+        clk_i: IN std_logic; 
+        rst_i: IN std_logic;
+        
         -- Input signals
-        A: IN std_logic_vector(M-1 DOWNTO 0);
-        B: IN std_logic_vector(M-1 DOWNTO 0);
-        clk, inic, shift_r, rst, ce_c: IN std_logic;
+        a_i: IN std_logic_vector(M-1 DOWNTO 0);
+        b_i: IN std_logic_vector(M-1 DOWNTO 0);
+        
+        -- Load input, shift right and ???
+        inic_i: IN std_logic; 
+        shiftr_i: IN std_logic;  
+        cec_i: IN std_logic;
 
         -- Output signals
-        Z: OUT std_logic_vector(M-1 DOWNTO 0)
+        z_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
 END e_gf2m_interleaved_data_path;
 
@@ -52,54 +60,61 @@ ARCHITECTURE rtl OF e_gf2m_interleaved_data_path IS
     SIGNAL new_a, new_c: std_logic_vector(M-1 DOWNTO 0);
 BEGIN
     -- Register and multiplexer
-    register_a: PROCESS(clk)
+    register_a: PROCESS(clk_i)
     BEGIN
-        IF rst = '1' THEN 
+        IF rst_i = '1' THEN 
             aa <= (OTHERS => '0');
-        ELSIF clk'event and clk = '1' THEN
-            IF inic = '1' THEN
-                aa <= a;
+        ELSIF clk_i'event and clk_i = '1' THEN
+            IF inic_i = '1' THEN
+                -- Load register a
+                aa <= a_i;
             ELSE
+                -- Override register a with ???
                 aa <= new_a;
             END IF;
         END IF;
     END PROCESS register_A;
 
-    shift_register_b: PROCESS(clk)
+    shift_register_b: PROCESS(clk_i)
     BEGIN
-        IF rst = '1' THEN 
+        IF rst_i = '1' THEN 
             bb <= (OTHERS => '0');
-        ELSIF clk'event and clk = '1' THEN
-            IF inic = '1' THEN 
-                bb <= b;
+        ELSIF clk_i'event and clk_i = '1' THEN
+            IF inic_i = '1' THEN 
+                -- Load register b
+                bb <= b_i;
             END IF;
-            IF shift_r = '1' THEN 
+            IF shiftr_i = '1' THEN 
+                -- Shift input of register b
                 bb <= '0' & bb(M-1 DOWNTO 1);
             END IF;
         END IF;
     END PROCESS sh_register_B;
 
-    register_c: PROCESS(inic, clk)
+    register_c: PROCESS(inic_i, clk_i)
     BEGIN
-        IF inic = '1' or rst = '1' THEN 
+        IF inic_i = '1' or rst_i = '1' THEN 
             cc <= (OTHERS => '0');
-        ELSIF clk'event and clk = '1' THEN
-            IF ce_c = '1' THEN 
+        ELSIF clk_i'event and clk_i = '1' THEN
+            IF cec_i = '1' THEN 
+                -- Set output register
                 cc <= new_c; 
             END IF;
         END IF;
     END PROCESS register_C;
-
-    z <= cc;
-
-    new_a(0) <= aa(m-1) and F(0);
+    
+    -- Calculate next value for register a and c
+    new_a(0) <= aa(M-1) and F(0);
     new_a_calc: FOR i IN 1 TO M-1 GENERATE
-        new_a(i) <= aa(i-1) xor (aa(m-1) and F(i));
+        new_a(i) <= aa(i-1) xor (aa(M-1) and F(i));
     END GENERATE;
 
     new_c_calc: FOR i IN 0 TO M-1 GENERATE
         new_c(i) <= cc(i) xor (aa(i) and bb(0));
     END GENERATE;
+
+    -- Set output 
+    z_o <= cc;    
 END rtl;
 
 -----------------------------------
@@ -113,65 +128,87 @@ USE work.p_gf2m_interleaved_mult_package.all;
 
 ENTITY e_gf2m_interleaved_multiplier IS
     PORT (
+        -- Clock, reset, enable
+        clk_i: IN std_logic; 
+        rst_i: IN std_logic; 
+        enable_i: IN std_logic; 
+        
         -- Input signals
-        A, B: IN std_logic_vector (M-1 DOWNTO 0);
-        clk, rst, start: IN std_logic; 
+        a_i: IN std_logic_vector (M-1 DOWNTO 0); 
+        b_i: IN std_logic_vector (M-1 DOWNTO 0);
         
         -- Output signals
-        Z: OUT std_logic_vector (M-1 DOWNTO 0);
-        ready: OUT std_logic
+        z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+        ready_o: OUT std_logic
     );
-END interleaved_mult;
+END e_gf2m_interleaved_multiplier;
 
-ARCHITECTURE rtl OF interleaved_mult IS
-    SIGNAL inic, shift_r, ce_c: std_logic;
+ARCHITECTURE rtl OF e_gf2m_interleaved_multiplier IS
+    SIGNAL inic, shiftr, cec: std_logic;
     SIGNAL count: natural RANGE 0 TO M;
+    
+    -- Define all available states
     type states IS RANGE 0 TO 3;
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate interleaved data path
+    -- Used to computes the polynomial multiplication mod F in one step
     data_path: work.e_gf2m_interleaved_data_path PORT MAP (
-            A => A, 
-            B => B,
-            clk => clk, 
-            inic => inic, 
-            shift_r => shift_r, 
-            rst => rst, 
-            ce_c => ce_c,
-            Z => Z
+            clk_i => clk_i,  
+            rst_i => rst_i, 
+            a_i => a_i, 
+            b_i => b_i,
+            inic_i => inic, 
+            shiftr_i => shiftr,
+            cec_i => cec,
+            z_o => z_o
         );
 
     -- Clock signals
-    counter: PROCESS(rst, clk)
+    counter: PROCESS(rst_i, clk_i)
     BEGIN
-        IF rst = '1' THEN 
+        IF rst_i = '1' THEN 
             count <= 0;
-        ELSIF clk' event and clk = '1' THEN
+        ELSIF clk_i' event and clk_i = '1' THEN
+            -- Shift until all input bits are proceeds
             IF inic = '1' THEN 
                 count <= 0;
-            ELSIF shift_r = '1' THEN
+            ELSIF shiftr = '1' THEN
                 count <= count+1; 
             END IF;
         END IF;
     END PROCESS counter;
 
     -- State machine
-    control_unit: PROCESS(clk, rst, current_state)
+    control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN
+        -- Handle current state
         CASE current_state IS
-            WHEN 0 TO 1 => inic <= '0'; shift_r <= '0'; ready <= '1'; ce_c <= '0';
-            WHEN 2 => inic <= '1'; shift_r <= '0'; ready <= '0'; ce_c <= '0';
-            WHEN 3 => inic <= '0'; shift_r <= '1'; ready <= '0'; ce_c <= '1';
+            WHEN 0 TO 1 => inic <= '0'; shiftr <= '0'; ready_o <= '1'; cec <= '0';
+            WHEN 2 => inic <= '1'; shiftr <= '0'; ready_o <= '0'; cec <= '0';
+            WHEN 3 => inic <= '0'; shiftr <= '1'; ready_o <= '0'; cec <= '1';
         END CASE;
 
-        IF rst = '1' THEN 
+        IF rst_i = '1' THEN 
+            -- Reset state if reset is high
             current_state <= 0;
-        ELSIF clk'event and clk = '1' THEN
+        ELSIF clk_i'event and clk_i = '1' THEN
+            -- Set next state
             CASE current_state IS
-                WHEN 0 => IF start = '0' THEN current_state <= 1; END IF;
-                WHEN 1 => IF start = '1' THEN current_state <= 2; END IF;
-                WHEN 2 => current_state <= 3;
-                WHEN 3 => IF count = M-1 THEN current_state <= 0; END IF;
+                WHEN 0 => 
+                    IF enable_i = '0' THEN 
+                        current_state <= 1; 
+                    END IF;
+                WHEN 1 => 
+                    IF enable_i = '1' THEN 
+                        current_state <= 2; 
+                    END IF;
+                WHEN 2 => 
+                    current_state <= 3;
+                WHEN 3 => 
+                    IF count = M-1 THEN 
+                        current_state <= 0; 
+                    END IF;
             END CASE;
         END IF;
     END PROCESS control_unit;
