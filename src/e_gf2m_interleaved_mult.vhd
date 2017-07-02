@@ -73,7 +73,7 @@ BEGIN
                 aa <= new_a;
             END IF;
         END IF;
-    END PROCESS register_A;
+    END PROCESS register_a;
 
     shift_register_b: PROCESS(clk_i)
     BEGIN
@@ -89,7 +89,7 @@ BEGIN
                 bb <= '0' & bb(M-1 DOWNTO 1);
             END IF;
         END IF;
-    END PROCESS sh_register_B;
+    END PROCESS shift_register_b;
 
     register_c: PROCESS(inic_i, clk_i)
     BEGIN
@@ -101,7 +101,7 @@ BEGIN
                 cc <= new_c; 
             END IF;
         END IF;
-    END PROCESS register_C;
+    END PROCESS register_c;
     
     -- Calculate next value for register a and c
     new_a(0) <= aa(M-1) and F(0);
@@ -143,7 +143,21 @@ ENTITY e_gf2m_interleaved_multiplier IS
     );
 END e_gf2m_interleaved_multiplier;
 
-ARCHITECTURE rtl OF e_gf2m_interleaved_multiplier IS
+ARCHITECTURE rtl OF e_gf2m_interleaved_multiplier IS    
+    -- Import entity e_gf2m_interleaved_data_path
+    COMPONENT e_gf2m_interleaved_data_path IS
+        PORT(
+            clk_i: IN std_logic; 
+            rst_i: IN std_logic;
+            a_i: IN std_logic_vector(M-1 DOWNTO 0);
+            b_i: IN std_logic_vector(M-1 DOWNTO 0);
+            inic_i: IN std_logic; 
+            shiftr_i: IN std_logic;  
+            cec_i: IN std_logic;
+            z_o: OUT std_logic_vector(M-1 DOWNTO 0)
+        );
+    END COMPONENT;
+
     SIGNAL inic, shiftr, cec: std_logic;
     SIGNAL count: natural RANGE 0 TO M;
     
@@ -153,7 +167,7 @@ ARCHITECTURE rtl OF e_gf2m_interleaved_multiplier IS
 BEGIN
     -- Instantiate interleaved data path
     -- Used to computes the polynomial multiplication mod F in one step
-    data_path: work.e_gf2m_interleaved_data_path PORT MAP (
+    data_path: e_gf2m_interleaved_data_path PORT MAP (
             clk_i => clk_i,  
             rst_i => rst_i, 
             a_i => a_i, 

@@ -55,6 +55,40 @@ ENTITY e_k163_addition IS
 END e_k163_addition;
 
 ARCHITECTURE rtl of e_k163_addition IS
+    -- Import entity e_gf2m_binary_algorithm_polynomials
+    COMPONENT e_gf2m_binary_algorithm_polynomials IS
+        PORT(
+            clk_i: IN std_logic;  
+            rst_i: IN std_logic;  
+            enable_i: IN std_logic; 
+            g_i: IN std_logic_vector(M-1 DOWNTO 0);  
+            h_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            z_o: OUT std_logic_vector(M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    end COMPONENT;
+    
+    -- Import entity e_classic_gf2m_squarer
+    COMPONENT e_classic_gf2m_squarer IS
+        PORT(
+            a_i: IN std_logic_vector(M-1 DOWNTO 0);
+            c_o: OUT std_logic_vector(M-1 DOWNTO 0)
+        );
+    end COMPONENT;
+    
+    -- Import entity e_gf2m_interleaved_multiplier
+    COMPONENT e_gf2m_interleaved_multiplier IS
+        PORT(
+            clk_i: IN std_logic; 
+            rst_i: IN std_logic; 
+            enable_i: IN std_logic; 
+            a_i: IN std_logic_vector (M-1 DOWNTO 0); 
+            b_i: IN std_logic_vector (M-1 DOWNTO 0);
+            z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    end COMPONENT;
+    
     -- Temporary signals for divider and multiplier
     SIGNAL div_in1, div_in2, lambda, lambda_square, mult_in2, mult_out: std_logic_vector(M-1 DOWNTO 0);
     
@@ -66,7 +100,7 @@ ARCHITECTURE rtl of e_k163_addition IS
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate divider entity
-    divider: work.e_gf2m_binary_algorithm_polynomials PORT MAP( 
+    divider: e_gf2m_binary_algorithm_polynomials PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_div,
@@ -77,13 +111,13 @@ BEGIN
     );
 
     -- Instantiate squarer entity
-    lambda_square_computation: work.e_classic_gf2m_squarer PORT MAP( 
+    lambda_square_computation: e_classic_gf2m_squarer PORT MAP( 
         a_i => lambda, 
         c_o => lambda_square
     );
   
     -- Instantiate multiplier entity
-    multiplier: work.e_gf2m_interleaved_multiplier PORT MAP( 
+    multiplier: e_gf2m_interleaved_multiplier PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_mult, 

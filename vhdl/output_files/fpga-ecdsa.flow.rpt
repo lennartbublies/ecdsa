@@ -1,5 +1,5 @@
 Flow report for fpga-ecdsa
-Thu Jun 15 21:39:20 2017
+Sun Jul 02 22:06:20 2017
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -41,10 +41,10 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Flow Failed - Thu Jun 15 21:39:20 2017      ;
+; Flow Status                        ; Flow Failed - Sun Jul 02 22:06:20 2017      ;
 ; Quartus Prime Version              ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; fpga-ecdsa                                  ;
-; Top-level Entity Name              ; fpga-ecdsa                                  ;
+; Top-level Entity Name              ; tld_ecdsa                                   ;
 ; Family                             ; Cyclone IV E                                ;
 ; Total logic elements               ; N/A until Partition Merge                   ;
 ;     Total combinational functions  ; N/A until Partition Merge                   ;
@@ -63,7 +63,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 06/15/2017 21:39:05 ;
+; Start date & time ; 07/02/2017 22:06:04 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; fpga-ecdsa          ;
 +-------------------+---------------------+
@@ -74,11 +74,12 @@ agreement for further details.
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 88491850109464.149755554508964         ; --            ; --          ; --         ;
-; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
+; COMPILER_SIGNATURE_ID               ; 88491850109464.149902596306848         ; --            ; --          ; --         ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
 ; PROJECT_OUTPUT_DIRECTORY            ; output_files                           ; --            ; --          ; --         ;
+; TOP_LEVEL_ENTITY                    ; tld_ecdsa                              ; fpga-ecdsa    ; --          ; --         ;
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
 
 
@@ -87,8 +88,8 @@ agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:16     ; 1.0                     ; 667 MB              ; 00:00:37                           ;
-; Total                ; 00:00:16     ; --                      ; --                  ; 00:00:37                           ;
+; Analysis & Synthesis ; 00:00:17     ; 1.0                     ; 666 MB              ; 00:00:41                           ;
+; Total                ; 00:00:17     ; --                      ; --                  ; 00:00:41                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

@@ -1,7 +1,7 @@
-Analysis & Synthesis Status : Failed - Thu Jun 15 21:39:20 2017
+Analysis & Synthesis Status : Failed - Sun Jul 02 22:06:20 2017
 Quartus Prime Version : 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 Revision Name : fpga-ecdsa
-Top-level Entity Name : fpga-ecdsa
+Top-level Entity Name : tld_ecdsa
 Family : Cyclone IV E
 Total logic elements : N/A until Partition Merge
     Total combinational functions : N/A until Partition Merge

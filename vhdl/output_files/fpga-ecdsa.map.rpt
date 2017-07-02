@@ -1,5 +1,5 @@
 Analysis & Synthesis report for fpga-ecdsa
-Thu Jun 15 21:39:20 2017
+Sun Jul 02 22:06:20 2017
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -37,10 +37,10 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Thu Jun 15 21:39:20 2017           ;
+; Analysis & Synthesis Status        ; Failed - Sun Jul 02 22:06:20 2017           ;
 ; Quartus Prime Version              ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; fpga-ecdsa                                  ;
-; Top-level Entity Name              ; fpga-ecdsa                                  ;
+; Top-level Entity Name              ; tld_ecdsa                                   ;
 ; Family                             ; Cyclone IV E                                ;
 ; Total logic elements               ; N/A until Partition Merge                   ;
 ;     Total combinational functions  ; N/A until Partition Merge                   ;
@@ -59,7 +59,7 @@ agreement for further details.
 +----------------------------------------------------------------------------+--------------------+--------------------+
 ; Option                                                                     ; Setting            ; Default Value      ;
 +----------------------------------------------------------------------------+--------------------+--------------------+
-; Top-level entity name                                                      ; fpga-ecdsa         ; fpga-ecdsa         ;
+; Top-level entity name                                                      ; tld_ecdsa          ; fpga-ecdsa         ;
 ; Family name                                                                ; Cyclone IV E       ; Cyclone V          ;
 ; Use smart compilation                                                      ; Off                ; Off                ;
 ; Enable parallel Assembler and TimeQuest Timing Analyzer during compilation ; On                 ; On                 ;
@@ -161,16 +161,45 @@ agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
-    Info: Processing started: Thu Jun 15 21:39:04 2017
+    Info: Processing started: Sun Jul 02 22:06:03 2017
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off fpga-ecdsa -c fpga-ecdsa
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
-Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/tb_sha256_testrom.vhd
-    Info (12022): Found design unit 1: testrom-behaviour File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tb_sha256_testrom.vhd Line: 17
-    Info (12023): Found entity 1: testrom File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tb_sha256_testrom.vhd Line: 8
-Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/tb_sha256.vhd
-    Info (12022): Found design unit 1: tb_sha256-testbench File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tb_sha256.vhd Line: 10
-    Info (12023): Found entity 1: tb_sha256 File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tb_sha256.vhd Line: 7
+Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/tld_ecdsa.vhd
+    Info (12022): Found design unit 1: tld_ecdsa-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 19
+    Info (12023): Found entity 1: tld_ecdsa File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 16
+Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/tests/tb_k163_point_multiplication.vhd
+    Info (12022): Found design unit 1: tb_k163_point_multupliation_and_addition-behavior File: C:/Users/mail/NAS/projects/fpga-ecdsa/tests/tb_k163_point_multiplication.vhd Line: 27
+    Info (12023): Found entity 1: tb_k163_point_multupliation_and_addition File: C:/Users/mail/NAS/projects/fpga-ecdsa/tests/tb_k163_point_multiplication.vhd Line: 24
+Info (12021): Found 3 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_k163_point_addition.vhd
+    Info (12022): Found design unit 1: package_K_163 File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 22
+    Info (12022): Found design unit 2: e_k163_addition-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 57
+    Info (12023): Found entity 1: e_k163_addition File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 37
+Info (12021): Found 6 design units, including 2 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd
+    Info (12022): Found design unit 1: p_gf2m_classic_squarer_parameters File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 28
+    Info (12022): Found design unit 2: p_gf2m_classic_squarer_parameters-body File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 41
+    Info (12022): Found design unit 3: e_gf2m_reducer-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 115
+    Info (12022): Found design unit 4: e_classic_gf2m_squarer-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 159
+    Info (12023): Found entity 1: e_gf2m_reducer File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 105
+    Info (12023): Found entity 2: e_classic_gf2m_squarer File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 149
+Info (12021): Found 5 design units, including 2 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd
+    Info (12022): Found design unit 1: p_gf2m_interleaved_mult_package File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 22
+    Info (12022): Found design unit 2: e_gf2m_interleaved_data_path-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 57
+    Info (12022): Found design unit 3: e_gf2m_interleaved_multiplier-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 146
+    Info (12023): Found entity 1: e_gf2m_interleaved_data_path File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 37
+    Info (12023): Found entity 2: e_gf2m_interleaved_multiplier File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 129
+Info (12021): Found 3 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_gf2m_binary_algorithm_polynomials.vhd
+    Info (12022): Found design unit 1: e_gf2m_binary_algorithm_polynomials_parameters File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_binary_algorithm_polynomials.vhd Line: 23
+    Info (12022): Found design unit 2: e_gf2m_binary_algorithm_polynomials-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_binary_algorithm_polynomials.vhd Line: 57
+    Info (12023): Found entity 1: e_gf2m_binary_algorithm_polynomials File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_binary_algorithm_polynomials.vhd Line: 40
+Info (12021): Found 5 design units, including 2 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd
+    Info (12022): Found design unit 1: e_k163_point_multiplication_package File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 21
+    Info (12022): Found design unit 2: e_k163_point_multiplication-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 52
+    Info (12022): Found design unit 3: top_K163_point_multiplication-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 283
+    Info (12023): Found entity 1: e_k163_point_multiplication File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 35
+    Info (12023): Found entity 2: top_K163_point_multiplication File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 260
+Warning (12019): Can't analyze file -- file ../src/tb_sha256_testrom.vhd is missing
+Warning (12019): Can't analyze file -- file ../src/tb_sha256.vhd is missing
 Info (12021): Found 1 design units, including 0 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_sha256_types.vhd
     Info (12022): Found design unit 1: sha256_types File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256_types.vhd Line: 7
 Info (12021): Found 2 design units, including 0 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_sha256_functions.vhd
@@ -181,17 +210,16 @@ Info (12021): Found 1 design units, including 0 entities, in source file /users/
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_sha256.vhd
     Info (12022): Found design unit 1: sha256-behaviour File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256.vhd Line: 37
     Info (12023): Found entity 1: sha256 File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256.vhd Line: 15
-Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/tb_rng.vhd
-    Info (12022): Found design unit 1: tb_rng-testbench File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tb_rng.vhd Line: 14
-    Info (12023): Found entity 1: tb_rng File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tb_rng.vhd Line: 11
+Warning (12019): Can't analyze file -- file ../src/tb_rng.vhd is missing
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_rng.vhd
     Info (12022): Found design unit 1: e_rng-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_rng.vhd Line: 40
     Info (12023): Found entity 1: e_rng File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_rng.vhd Line: 22
-Error (12007): Top-level design entity "fpga-ecdsa" is undefined
-Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 1 warning
-    Error: Peak virtual memory: 667 megabytes
-    Error: Processing ended: Thu Jun 15 21:39:20 2017
-    Error: Elapsed time: 00:00:16
-    Error: Total CPU time (on all processors): 00:00:38
+Info (12127): Elaborating entity "tld_ecdsa" for the top level hierarchy
+Error (12061): Can't synthesize current design -- Top partition does not contain any logic
+Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 4 warnings
+    Error: Peak virtual memory: 666 megabytes
+    Error: Processing ended: Sun Jul 02 22:06:20 2017
+    Error: Elapsed time: 00:00:17
+    Error: Total CPU time (on all processors): 00:00:41
 
 

@@ -80,9 +80,11 @@ BEGIN
     BEGIN
         IF clk_i'event and clk_i = '1' THEN
             IF load = '1' THEN 
-                a <= f; c <= (OTHERS => '0');
+                a <= f; 
+                c <= (OTHERS => '0');
             ELSIF ce_ac = '1' THEN 
-                a <= '0'&b; c <= d; 
+                a <= '0'&b; 
+                c <= d; 
             END IF;
         END IF;
     END PROCESS registers_ac;
@@ -91,9 +93,11 @@ BEGIN
     BEGIN
         IF clk_i'event and clk_i = '1' THEN
             IF load = '1' THEN 
-                b <= h_i; d <= g_i;
+                b <= h_i; 
+                d <= g_i;
             ELSIF ce_bd = '1' THEN 
-                b <= next_b; d <= next_d;
+                b <= next_b; 
+                d <= next_d;
             END IF;
         END IF;
     END PROCESS registers_bd;
@@ -102,7 +106,7 @@ BEGIN
     BEGIN
         IF clk_i'event and clk_i = '1' THEN
             IF load = '1' THEN 
-                alpha <= conv_std_logic_vector(M, logM) ;
+                alpha <= conv_std_logic_vector(M, logM);
             ELSIF ce_ac = '1' THEN 
                 alpha <= beta;
             END IF;
@@ -116,7 +120,7 @@ BEGIN
     BEGIN
         IF clk_i'event and clk_i = '1' THEN
             IF load = '1' THEN 
-                beta <= conv_std_logic_vector(M-1, logM) ;
+                beta <= conv_std_logic_vector(M-1, logM);
             ELSIF ce_bd = '1' THEN 
                 beta <= next_beta;
             END IF;

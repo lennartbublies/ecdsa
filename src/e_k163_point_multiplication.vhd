@@ -43,12 +43,38 @@ ENTITY e_k163_point_multiplication IS
         yp_i: IN std_logic_vector(M-1 DOWNTO 0); 
         k: IN std_logic_vector(M-1 DOWNTO 0);
         
-        xq_io, yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+        xq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+        yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
 END e_k163_point_multiplication;
 
 ARCHITECTURE rtl of e_k163_point_multiplication IS
+    -- Import entity e_k163_point_addition
+    COMPONENT e_k163_point_addition IS
+        PORT(
+            clk_i: IN std_logic; 
+            rst_i: IN std_logic; 
+            enable_i: IN std_logic;
+            x1_i: IN std_logic_vector(M-1 DOWNTO 0);
+            y1_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            x2_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            y2_i: IN std_logic_vector(M-1 DOWNTO 0);
+            x3_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+            y3_o: OUT std_logic_vector(M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    END COMPONENT;
+    
+    -- Import entity e_classic_gf2m_squarer
+    COMPONENT e_classic_gf2m_squarer IS
+        PORT(
+            a_i: IN std_logic_vector(M-1 DOWNTO 0);
+            c_o: OUT std_logic_vector(M-1 DOWNTO 0)
+        );
+    END COMPONENT;
+    
+    -- Internal signals
     SIGNAL a, next_a, a_div_2: std_logic_vector(m DOWNTO 0);
     SIGNAL b, next_b: std_logic_vector(m-1 DOWNTO 0);
     SIGNAL xxP, yyP, next_xQ, next_yQ, xxPxoryyP, square_xxP, square_yyP, y1, x3, y3: std_logic_vector(m-1 DOWNTO 0);
@@ -62,7 +88,7 @@ ARCHITECTURE rtl of e_k163_point_multiplication IS
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate point addition entity
-    first_component: work.e_k163_point_addition PORT MAP(
+    first_component: e_k163_point_addition PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_addition,  
@@ -76,13 +102,13 @@ BEGIN
         );
 
     -- Instantiate squarer entity for x part
-    x_squarer: work.e_classic_gf2m_squarer PORT MAP( 
+    x_squarer: e_classic_gf2m_squarer PORT MAP( 
             a_i => xxP, 
             c_o => square_xxP
         );
 
     -- Instantiate squarer entity for y part    
-    y_squarer: work.e_classic_gf2m_squarer PORT MAP( 
+    y_squarer: e_classic_gf2m_squarer PORT MAP( 
             a_i => yyP, 
             c_o => square_yyP
         );
@@ -229,6 +255,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
+USE work.e_k163_point_multiplication_package.all;
 
 ENTITY top_K163_point_multiplication IS
     PORT (
@@ -254,11 +281,26 @@ ENTITY top_K163_point_multiplication IS
 END top_K163_point_multiplication;
 
 ARCHITECTURE rtl of top_K163_point_multiplication IS
+    -- Import entity e_k163_point_multiplication
+    COMPONENT e_k163_point_multiplication IS
+        PORT(
+            clk_i: IN std_logic; 
+            rst_i: IN std_logic; 
+            enable_i: IN std_logic;
+            xp_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            yp_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            k: IN std_logic_vector(M-1 DOWNTO 0);
+            xq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+            yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    END COMPONENT;
+
     -- Temporary signals for point P, Q and k
     SIGNAL xp, yp, k, xq_io, yq_io: std_logic_vector (162 DOWNTO 0);
 BEGIN
     -- Instantiate point multiplication entity
-    point_multiplier: work.e_k163_point_multiplication PORT MAP(
+    point_multiplier: e_k163_point_multiplication PORT MAP(
         xp_i => xp, 
         yp_i => yp, 
         k => k,
@@ -275,10 +317,10 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF en_xp_i = '1' THEN 
-                xp_i <= data_i; 
+                xp <= data_i; 
             END IF;
             IF en_yp_i = '1' THEN 
-                yp_i <= data_i; 
+                yp <= data_i; 
             END IF;
             IF en_k_i = '1'  THEN 
                k <= data_i; 
