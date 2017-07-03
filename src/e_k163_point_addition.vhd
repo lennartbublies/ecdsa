@@ -19,10 +19,10 @@ USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 
-PACKAGE package_K_163 IS
+PACKAGE e_k163_point_addition_package IS
   CONSTANT M: natural := 163;
   CONSTANT logm: natural := 8;
-END package_K_163;
+END e_k163_point_addition_package;
 
 ------------------------------------------------------------
 -- K163 elliptic curve point addition
@@ -32,9 +32,9 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-USE work.package_K_163.all;
+USE work.e_k163_point_addition_package.all;
 
-ENTITY e_k163_addition IS
+ENTITY e_k163_point_addition IS
     PORT(
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -52,9 +52,9 @@ ENTITY e_k163_addition IS
         y3_o: OUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
-END e_k163_addition;
+END e_k163_point_addition;
 
-ARCHITECTURE rtl of e_k163_addition IS
+ARCHITECTURE rtl of e_k163_point_addition IS
     -- Import entity e_gf2m_binary_algorithm_polynomials
     COMPONENT e_gf2m_binary_algorithm_polynomials IS
         PORT(

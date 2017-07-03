@@ -27,9 +27,9 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE p_gf2m_classic_squarer_parameters IS
     -- Constants
-    CONSTANT M: integer := 8;
-    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011";
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --FOR M=163
+    CONSTANT M: integer := 163;
+    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011";
+    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
 
     -- Types
     TYPE matrix_reductionR IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);
@@ -105,10 +105,10 @@ USE work.p_gf2m_classic_squarer_parameters.all;
 ENTITY e_gf2m_reducer IS
     PORT (
         -- Input SIGNAL
-        d: IN std_logic_vector(2*M-2 DOWNTO 0);
+        d_i: IN std_logic_vector(2*M-2 DOWNTO 0);
         
         -- Output SIGNAL
-        c: OUT std_logic_vector(M-1 DOWNTO 0)
+        c_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
 END e_gf2m_reducer;
 
@@ -122,17 +122,17 @@ BEGIN
     
     -- GENERATE M-1 XORs FOR each redcutions matrix row
     gen_xors: FOR j IN 0 TO M-1 GENERATE
-        l1: PROCESS(d) 
+        l1: PROCESS(d_i) 
             VARIABLE aux: std_logic;
             BEGIN
                 -- Store j-bit from input
-                aux := d(j);
+                aux := d_i(j);
                 
                 -- Compute target bit FOR each reduction matrix column
                 FOR i IN 0 TO M-2 LOOP 
-                    aux := aux xor (d(M+i) and R(j)(i)); 
+                    aux := aux xor (d_i(M+i) and R(j)(i)); 
                 END LOOP;
-                c(j) <= aux;
+                c_o(j) <= aux;
         END PROCESS;
     END GENERATE;
 END rtl;
@@ -160,24 +160,24 @@ ARCHITECTURE rtl OF e_classic_gf2m_squarer IS
     -- Import entity e_gf2m_reducer
     COMPONENT e_gf2m_reducer IS
         PORT(
-            d: IN std_logic_vector(2*M-2 DOWNTO 0);
-            c: OUT std_logic_vector(M-1 DOWNTO 0)
+            d_i: IN std_logic_vector(2*M-2 DOWNTO 0);
+            c_o: OUT std_logic_vector(M-1 DOWNTO 0)
         );
     end COMPONENT;
 
-    SIGNAL b: std_logic_vector(2*M-2 DOWNTO 0);
+    SIGNAL d: std_logic_vector(2*M-2 DOWNTO 0);
 BEGIN
-    b(0) <= a_i(0);
+    d(0) <= a_i(0);
 
     -- TODO - WHY IS IT CORRECT?
     square: FOR i IN 1 TO M-1 GENERATE
-        b(2*i-1) <= '0';
-        b(2*i) <= a_i(i);
+        d(2*i-1) <= '0';
+        d(2*i) <= a_i(i);
     END GENERATE;
 
     -- Instantiate polynomial reducer
     reducer: e_gf2m_reducer PORT MAP(
-            d => b, 
-            c => c_o
+            d_i => d, 
+            c_o => c_o
         );
 END rtl;

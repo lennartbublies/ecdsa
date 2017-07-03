@@ -24,7 +24,7 @@ use work.e_k163_point_multiplication_package.all;
 ENTITY tb_k163_point_multupliation_and_addition IS
 END tb_k163_point_multupliation_and_addition;
 
-ARCHITECTURE behavior OF tb_k163_point_multupliation_and_addition IS 
+ARCHITECTURE rtl OF tb_k163_point_multupliation_and_addition IS 
     -- Import entity e_k163_point_multiplication
     COMPONENT e_k163_point_multiplication IS
         PORT (
@@ -58,7 +58,7 @@ ARCHITECTURE behavior OF tb_k163_point_multupliation_and_addition IS
 
   -- Internal signals
   SIGNAL xP, yP, k, k_minus_1, xQ1, yQ1, xQ2, yQ2, xQ3, yQ3, xP_plus_yP:  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-  SIGNAL clk, rst, enable, start_add, ready, done_2, done_add: std_logic := '0';
+  SIGNAL clk, rst, enable, start_add, done, done_2, done_add: std_logic := '0';
   CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
   CONSTANT ONE: std_logic_vector(M-1 DOWNTO 0) := (0 => '1', OTHERS=>'0');
   CONSTANT DELAY : time := 100 ns;
@@ -78,7 +78,7 @@ BEGIN
         k => k,
         xq_io => xQ1, 
         yq_io => yQ1, 
-        ready_o => ready 
+        ready_o => done 
     );
 
     -- Instantiate seccond point multiplier entity
@@ -88,10 +88,10 @@ BEGIN
         enable_i => enable, 
         xp_i => xP, 
         yp_i => yP, 
-        k => k,
-        xq_io => xQ1, 
-        yq_io => yQ1, 
-        ready_o => ready 
+        k => k_minus_1,
+        xq_io => xQ2, 
+        yq_io => yQ2, 
+        ready_o => done_2 
     );
 
     -- Instantiate point addition entity
@@ -173,7 +173,7 @@ BEGIN
             initial_time := now;
             WAIT FOR PERIOD;
             enable <= '0';
-            WAIT UNTIL (ready = '1') and (done_2 = '1');
+            WAIT UNTIL (done = '1') and (done_2 = '1');
             final_time := now;
             cycles := (final_time - initial_time)/PERIOD;
             total_cycles := total_cycles+cycles;
@@ -210,7 +210,7 @@ BEGIN
         enable <= '1'; 
         WAIT FOR PERIOD;
         enable <= '0';
-        WAIT UNTIL ready = '1';
+        WAIT UNTIL done = '1';
         IF ( xQ1 /= xP or (yQ1 /= xP_plus_yP) ) THEN 
             write(TX_LOC,string'("ERROR!!! k.P = (n-1).P = -P = (xP, xP+yP) with n order of P")); write(TX_LOC, k);
             write(TX_LOC, string'(" )"));
