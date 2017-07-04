@@ -257,7 +257,7 @@ USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 USE work.e_k163_point_multiplication_package.all;
 
-ENTITY top_K163_point_multiplication IS
+ENTITY e_k163_point_multiplication_demux IS
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -278,9 +278,9 @@ ENTITY top_K163_point_multiplication IS
 
         ready_o: OUT std_logic
     );
-END top_K163_point_multiplication;
+END e_k163_point_multiplication_demux;
 
-ARCHITECTURE rtl of top_K163_point_multiplication IS
+ARCHITECTURE rtl of e_k163_point_multiplication_demux IS
     -- Import entity e_k163_point_multiplication
     COMPONENT e_k163_point_multiplication IS
         PORT(

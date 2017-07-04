@@ -1,15 +1,15 @@
---------------------------------------------------------------------------------
--- Test_Simple_K163_point_multiplication 
--- VHDL Test Bench FOR module: K163_point_multiplication.vhd 
---  
+----------------------------------------------------------------------------------------------------
+--  Testbench - Randum Number Generator 
+--  Executes NUMBER_TESTS operations with random values of K.
+--  Test k.P = (k-1).P + P, FOR a fixed known P.
 --
--- Executes NUMBER_TESTS operations with random values of K. 
--- Test k.P = (k-1).P + P, FOR a fixed known P.
+--  Finally k = n-1, being n = order of point P and test:
+--  k.P = (n-1).P = -P = (xP, xP+yP)
 --
--- Finally k = n-1, being N= order of point P and test:
--- k.P = (n-1).P = -P = (xP, xP+yP)
---
---------------------------------------------------------------------------------
+--  Autor: Lennart Bublies (inf100434)
+--  Date: 14.06.2017
+----------------------------------------------------------------------------------------------------
+
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE IEEE.std_logic_arith.all;
@@ -108,6 +108,7 @@ BEGIN
         ready_o => done_add
     );
 
+    -- Set point P for the computation
     k_minus_1 <= k - '1';
     xP <= "010" & x"fe13c0537bbc11acaa07d793de4e6d5e5c94eee8";
     yP <= "010" & x"89070fb05d38ff58321f2e800536d538ccdaa3d9";
@@ -124,12 +125,13 @@ BEGIN
         END LOOP CLOCK_LOOP;
     END PROCESS;
 
-    tb_proc : PROCESS --generate values
+    tb_proc : PROCESS 
+        -- Procedure to generate random value for k
         PROCEDURE gen_random(X : out std_logic_vector (M-1 DOWNTO 0); w: natural; s1, s2: inout Natural) IS
             VARIABLE i_x, aux: integer;
             VARIABLE rand: real;
         BEGIN
-            aux := W/16;
+            aux := w/16;
             FOR i IN 1 TO aux LOOP
                 UNIFORM(s1, s2, rand);
                 i_x := INTEGER(TRUNC(rand * real(65536)));-- real(2**16)));
@@ -161,13 +163,14 @@ BEGIN
         
         -- Loop over all test cases
         FOR I IN 1 TO NUMBER_TESTS LOOP
-            -- Generate random input
+            -- Generate random input for k
             gen_random(xx, M, seed1, seed2);
             WHILE (xx >= P_order) LOOP 
                 gen_random(xx, M, seed1, seed2); 
             END LOOP;
             
             -- Start test 1:
+            -- Computation of both multiplier have to finish within a given range 
             k <= xx;
             enable <= '1'; 
             initial_time := now;
@@ -186,6 +189,10 @@ BEGIN
             END IF;
 
             -- Start test 2:
+            -- Check if k.P = (k-1).P + P for a known P
+            --  uut1 computes k.P
+            --  uut2 computes (k-1).P
+            --  uut3 computes (k-1).P + P
             WAIT FOR PERIOD;
             start_add <= '1';
             WAIT FOR PERIOD;
@@ -206,6 +213,8 @@ BEGIN
         WAIT FOR DELAY;
      
         -- Start test 3:
+        -- Check if k.P = (n-1).P = -P = (xP, xP+yP)
+        --  uut1 computes k.P with k = (n-1)
         k <= P_order;
         enable <= '1'; 
         WAIT FOR PERIOD;

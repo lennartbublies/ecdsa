@@ -1,5 +1,5 @@
 Analysis & Synthesis report for fpga-ecdsa
-Mon Jul 03 20:56:04 2017
+Tue Jul 04 23:30:33 2017
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -13,12 +13,16 @@ Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
   5. Analysis & Synthesis Source Files Read
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
-  8. General Register Statistics
-  9. Port Connectivity Checks: "e_k163_point_addition:adder|e_classic_gf2m_squarer:lambda_square_computation|e_gf2m_reducer:reducer"
- 10. Port Connectivity Checks: "e_k163_point_addition:adder"
- 11. Post-Synthesis Netlist Statistics for Top Partition
- 12. Elapsed Time Per Partition
- 13. Analysis & Synthesis Messages
+  8. State Machine - |tld_ecdsa|sha256:hash|state
+  9. Registers Removed During Synthesis
+ 10. General Register Statistics
+ 11. Port Connectivity Checks: "e_k163_point_addition:adder"
+ 12. Port Connectivity Checks: "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_classic_gf2m_squarer:lambda_square_computation|e_gf2m_reducer:reducer"
+ 13. Port Connectivity Checks: "e_k163_point_multiplication:gen_key_multiplier"
+ 14. Port Connectivity Checks: "sha256:hash"
+ 15. Post-Synthesis Netlist Statistics for Top Partition
+ 16. Elapsed Time Per Partition
+ 17. Analysis & Synthesis Messages
 
 
 
@@ -45,7 +49,7 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Mon Jul 03 20:56:04 2017       ;
+; Analysis & Synthesis Status        ; Successful - Tue Jul 04 23:30:33 2017       ;
 ; Quartus Prime Version              ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; fpga-ecdsa                                  ;
 ; Top-level Entity Name              ; tld_ecdsa                                   ;
@@ -54,7 +58,7 @@ agreement for further details.
 ;     Total combinational functions  ; 0                                           ;
 ;     Dedicated logic registers      ; 0                                           ;
 ; Total registers                    ; 0                                           ;
-; Total pins                         ; 2                                           ;
+; Total pins                         ; 4                                           ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
 ; Embedded Multiplier 9-bit elements ; 0                                           ;
@@ -174,38 +178,42 @@ agreement for further details.
 ; ../src/e_gf2m_squarer.vhd                      ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd                      ;         ;
 ; ../src/e_gf2m_interleaved_mult.vhd             ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd             ;         ;
 ; ../src/e_gf2m_binary_algorithm_polynomials.vhd ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_binary_algorithm_polynomials.vhd ;         ;
+; ../src/e_sha256_types.vhd                      ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256_types.vhd                      ;         ;
+; ../src/e_sha256_functions.vhd                  ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256_functions.vhd                  ;         ;
+; ../src/e_sha256_constants.vhd                  ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256_constants.vhd                  ;         ;
+; ../src/e_sha256.vhd                            ; yes             ; User VHDL File  ; C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256.vhd                            ;         ;
 +------------------------------------------------+-----------------+-----------------+-----------------------------------------------------------------------------------+---------+
 
 
-+-----------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary         ;
-+---------------------------------------------+-------+
-; Resource                                    ; Usage ;
-+---------------------------------------------+-------+
-;                                             ;       ;
-; Total combinational functions               ; 0     ;
-; Logic element usage by number of LUT inputs ;       ;
-;     -- 4 input functions                    ; 0     ;
-;     -- 3 input functions                    ; 0     ;
-;     -- <=2 input functions                  ; 0     ;
-;                                             ;       ;
-; Logic elements by mode                      ;       ;
-;     -- normal mode                          ; 0     ;
-;     -- arithmetic mode                      ; 0     ;
-;                                             ;       ;
-; Total registers                             ; 0     ;
-;     -- Dedicated logic registers            ; 0     ;
-;     -- I/O registers                        ; 0     ;
-;                                             ;       ;
-; I/O pins                                    ; 2     ;
-;                                             ;       ;
-; Embedded Multiplier 9-bit elements          ; 0     ;
-;                                             ;       ;
-; Maximum fan-out node                        ; clk_i ;
-; Maximum fan-out                             ; 1     ;
-; Total fan-out                               ; 2     ;
-; Average fan-out                             ; 0.50  ;
-+---------------------------------------------+-------+
++----------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary              ;
++---------------------------------------------+------------+
+; Resource                                    ; Usage      ;
++---------------------------------------------+------------+
+;                                             ;            ;
+; Total combinational functions               ; 0          ;
+; Logic element usage by number of LUT inputs ;            ;
+;     -- 4 input functions                    ; 0          ;
+;     -- 3 input functions                    ; 0          ;
+;     -- <=2 input functions                  ; 0          ;
+;                                             ;            ;
+; Logic elements by mode                      ;            ;
+;     -- normal mode                          ; 0          ;
+;     -- arithmetic mode                      ; 0          ;
+;                                             ;            ;
+; Total registers                             ; 0          ;
+;     -- Dedicated logic registers            ; 0          ;
+;     -- I/O registers                        ; 0          ;
+;                                             ;            ;
+; I/O pins                                    ; 4          ;
+;                                             ;            ;
+; Embedded Multiplier 9-bit elements          ; 0          ;
+;                                             ;            ;
+; Maximum fan-out node                        ; gen_keys_i ;
+; Maximum fan-out                             ; 1          ;
+; Total fan-out                               ; 4          ;
+; Average fan-out                             ; 0.50       ;
++---------------------------------------------+------------+
 
 
 +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -213,9 +221,34 @@ agreement for further details.
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 ; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name ; Library Name ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
-; |tld_ecdsa                 ; 0 (0)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 2    ; 0            ; |tld_ecdsa          ; tld_ecdsa   ; work         ;
+; |tld_ecdsa                 ; 0 (0)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 4    ; 0            ; |tld_ecdsa          ; tld_ecdsa   ; work         ;
 +----------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------+-------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
+Encoding Type:  One-Hot
++-----------------------------------------------------+
+; State Machine - |tld_ecdsa|sha256:hash|state        ;
++-------------+-------------+------------+------------+
+; Name        ; state.FINAL ; state.BUSY ; state.IDLE ;
++-------------+-------------+------------+------------+
+; state.IDLE  ; 0           ; 0          ; 0          ;
+; state.BUSY  ; 0           ; 1          ; 1          ;
+; state.FINAL ; 1           ; 0          ; 1          ;
++-------------+-------------+------------+------------+
+
+
++-------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                  ;
++---------------------------------------+---------------------------------------------+
+; Register name                         ; Reason for Removal                          ;
++---------------------------------------+---------------------------------------------+
+; sha256:hash|current_iteration[0..5]   ; Stuck at GND due to stuck port clock_enable ;
+; sha256:hash|state.IDLE                ; Lost fanout                                 ;
+; sha256:hash|state.BUSY                ; Lost fanout                                 ;
+; sha256:hash|state.FINAL               ; Lost fanout                                 ;
+; Total Number of Removed Registers = 9 ;                                             ;
++---------------------------------------+---------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -233,176 +266,6 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 
 
-+---------------------------------------------------------------------------------------------------------------------------------+
-; Port Connectivity Checks: "e_k163_point_addition:adder|e_classic_gf2m_squarer:lambda_square_computation|e_gf2m_reducer:reducer" ;
-+--------+-------+----------+-----------------------------------------------------------------------------------------------------+
-; Port   ; Type  ; Severity ; Details                                                                                             ;
-+--------+-------+----------+-----------------------------------------------------------------------------------------------------+
-; d[323] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[321] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[319] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[317] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[315] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[313] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[311] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[309] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[307] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[305] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[303] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[301] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[299] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[297] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[295] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[293] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[291] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[289] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[287] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[285] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[283] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[281] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[279] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[277] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[275] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[273] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[271] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[269] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[267] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[265] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[263] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[261] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[259] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[257] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[255] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[253] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[251] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[249] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[247] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[245] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[243] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[241] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[239] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[237] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[235] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[233] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[231] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[229] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[227] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[225] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[223] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[221] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[219] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[217] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[215] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[213] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[211] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[209] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[207] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[205] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[203] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[201] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[199] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[197] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[195] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[193] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[191] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[189] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[187] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[185] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[183] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[181] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[179] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[177] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[175] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[173] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[171] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[169] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[167] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[165] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[163] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[161] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[159] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[157] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[155] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[153] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[151] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[149] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[147] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[145] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[143] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[141] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[139] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[137] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[135] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[133] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[131] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[129] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[127] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[125] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[123] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[121] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[119] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[117] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[115] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[113] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[111] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[109] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[107] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[105] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[103] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[101] ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[99]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[97]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[95]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[93]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[91]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[89]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[87]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[85]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[83]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[81]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[79]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[77]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[75]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[73]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[71]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[69]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[67]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[65]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[63]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[61]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[59]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[57]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[55]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[53]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[51]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[49]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[47]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[45]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[43]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[41]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[39]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[37]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[35]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[33]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[31]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[29]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[27]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[25]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[23]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[21]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[19]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[17]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[15]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[13]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[11]  ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[9]   ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[7]   ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[5]   ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[3]   ; Input ; Info     ; Stuck at GND                                                                                        ;
-; d[1]   ; Input ; Info     ; Stuck at GND                                                                                        ;
-+--------+-------+----------+-----------------------------------------------------------------------------------------------------+
-
-
 +-------------------------------------------------------------------------------------------------------------------+
 ; Port Connectivity Checks: "e_k163_point_addition:adder"                                                           ;
 +---------+--------+----------+-------------------------------------------------------------------------------------+
@@ -414,12 +277,452 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +---------+--------+----------+-------------------------------------------------------------------------------------+
 
 
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_classic_gf2m_squarer:lambda_square_computation|e_gf2m_reducer:reducer" ;
++----------+-------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Port     ; Type  ; Severity ; Details                                                                                                                                                    ;
++----------+-------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; d_i[323] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[321] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[319] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[317] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[315] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[313] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[311] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[309] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[307] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[305] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[303] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[301] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[299] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[297] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[295] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[293] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[291] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[289] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[287] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[285] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[283] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[281] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[279] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[277] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[275] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[273] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[271] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[269] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[267] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[265] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[263] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[261] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[259] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[257] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[255] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[253] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[251] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[249] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[247] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[245] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[243] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[241] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[239] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[237] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[235] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[233] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[231] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[229] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[227] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[225] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[223] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[221] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[219] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[217] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[215] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[213] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[211] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[209] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[207] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[205] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[203] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[201] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[199] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[197] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[195] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[193] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[191] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[189] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[187] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[185] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[183] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[181] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[179] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[177] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[175] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[173] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[171] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[169] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[167] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[165] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[163] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[161] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[159] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[157] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[155] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[153] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[151] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[149] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[147] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[145] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[143] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[141] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[139] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[137] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[135] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[133] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[131] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[129] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[127] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[125] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[123] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[121] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[119] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[117] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[115] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[113] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[111] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[109] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[107] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[105] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[103] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[101] ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[99]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[97]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[95]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[93]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[91]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[89]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[87]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[85]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[83]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[81]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[79]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[77]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[75]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[73]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[71]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[69]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[67]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[65]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[63]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[61]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[59]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[57]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[55]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[53]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[51]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[49]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[47]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[45]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[43]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[41]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[39]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[37]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[35]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[33]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[31]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[29]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[27]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[25]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[23]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[21]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[19]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[17]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[15]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[13]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[11]  ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[9]   ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[7]   ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[5]   ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[3]   ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
+; d_i[1]   ; Input ; Info     ; Stuck at GND                                                                                                                                               ;
++----------+-------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "e_k163_point_multiplication:gen_key_multiplier"                                               ;
++----------------+--------+----------+-------------------------------------------------------------------------------------+
+; Port           ; Type   ; Severity ; Details                                                                             ;
++----------------+--------+----------+-------------------------------------------------------------------------------------+
+; xp_i[159..153] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[145..142] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[129..128] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[126..123] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[121..119] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[117..114] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[104..103] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[99..98]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[82..78]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[74..71]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[65..62]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[60..57]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[51..49]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[46..45]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[43..42]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[36..33]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[28..26]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[15..13]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[11..9]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[7..5]     ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[152..149] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[147..146] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[141..135] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[131..130] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[113..109] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[107..105] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[97..96]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[88..83]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[70..69]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[67..66]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[56..55]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[53..52]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[48..47]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[32..31]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[25..24]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[22..21]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[17..16]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[2..0]     ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[162]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[161]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[160]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[148]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[134]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[133]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[132]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[127]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[122]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[118]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[108]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[102]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[101]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[100]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[95]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[94]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[93]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[92]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[91]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[90]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[89]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[77]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[76]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[75]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[68]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[61]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[54]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[44]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[41]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[40]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[39]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[38]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[37]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[30]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[29]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[23]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[20]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[19]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[18]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; xp_i[12]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[8]        ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[4]        ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xp_i[3]        ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[146..144] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[139..135] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[133..132] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[124..122] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[117..115] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[111..104] ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[100..99]  ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[93..92]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[84..80]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[75..73]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[53..52]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[50..49]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[47..46]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[37..35]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[31..30]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[27..26]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[23..22]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[20..19]   ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[9..6]     ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[4..3]     ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[158..156] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[154..153] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[151..147] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[143..140] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[131..127] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[119..118] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[114..112] ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[98..94]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[91..90]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[88..85]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[79..78]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[70..59]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[55..54]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[39..38]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[34..32]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[29..28]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[25..24]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[12..10]   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[2..1]     ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[162]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[161]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[160]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[159]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[155]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[152]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[134]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[126]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[125]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[121]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[120]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[103]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[102]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[101]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[89]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[77]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[76]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[72]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[71]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[58]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[57]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[56]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[51]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[48]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[45]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[44]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[43]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[42]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[41]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[40]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[21]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[18]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[17]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[16]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[15]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[14]       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[13]       ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; yp_i[5]        ; Input  ; Info     ; Stuck at GND                                                                        ;
+; yp_i[0]        ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[155..151]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[144..139]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[137..136]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[132..131]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[125..124]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[118..117]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[110..109]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[107..105]    ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[94..93]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[91..90]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[78..76]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[74..72]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[70..69]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[65..62]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[53..52]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[50..49]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[41..38]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[33..28]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[25..23]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[20..19]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[15..14]      ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[9..8]        ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[6..4]        ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[162..158]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[146..145]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[135..133]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[130..126]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[123..122]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[120..119]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[114..113]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[104..102]    ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[96..95]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[87..86]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[82..81]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[61..60]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[56..54]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[48..47]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[43..42]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[37..34]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[27..26]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[22..21]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[18..16]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[11..10]      ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[3..0]        ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[157]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[156]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[150]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[149]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[148]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[147]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[138]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[121]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[116]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[115]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[112]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[111]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[108]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[101]         ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[100]         ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[99]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[98]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[97]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[92]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[89]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[88]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[85]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[84]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[83]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[80]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[79]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[75]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[71]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[68]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[67]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[66]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[59]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[58]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[57]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[51]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[46]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[45]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[44]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[13]          ; Input  ; Info     ; Stuck at GND                                                                        ;
+; k[12]          ; Input  ; Info     ; Stuck at VCC                                                                        ;
+; k[7]           ; Input  ; Info     ; Stuck at GND                                                                        ;
+; xq_io          ; Bidir  ; Warning  ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; yq_io          ; Bidir  ; Warning  ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; ready_o        ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
++----------------+--------+----------+-------------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "sha256:hash"                                                                                ;
++--------------+--------+----------+-------------------------------------------------------------------------------------+
+; Port         ; Type   ; Severity ; Details                                                                             ;
++--------------+--------+----------+-------------------------------------------------------------------------------------+
+; enable       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; ready        ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; update       ; Input  ; Info     ; Stuck at GND                                                                        ;
+; word_address ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; word_input   ; Input  ; Info     ; Stuck at GND                                                                        ;
+; hash_output  ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; debug_port   ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
++--------------+--------+----------+-------------------------------------------------------------------------------------+
+
+
 +-----------------------------------------------------+
 ; Post-Synthesis Netlist Statistics for Top Partition ;
 +-------------------+---------------------------------+
 ; Type              ; Count                           ;
 +-------------------+---------------------------------+
-; boundary_port     ; 2                               ;
+; boundary_port     ; 4                               ;
 ;                   ;                                 ;
 ; Max LUT depth     ; 0.00                            ;
 ; Average LUT depth ; 0.00                            ;
@@ -441,12 +744,12 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
-    Info: Processing started: Mon Jul 03 20:55:48 2017
+    Info: Processing started: Tue Jul 04 23:30:16 2017
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off fpga-ecdsa -c fpga-ecdsa
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/tld_ecdsa.vhd
-    Info (12022): Found design unit 1: tld_ecdsa-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 25
+    Info (12022): Found design unit 1: tld_ecdsa-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 31
     Info (12023): Found entity 1: tld_ecdsa File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 17
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/tests/tb_k163_point_multiplication.vhd
     Info (12022): Found design unit 1: tb_k163_point_multupliation_and_addition-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/tests/tb_k163_point_multiplication.vhd Line: 27
@@ -454,11 +757,11 @@ Info (12021): Found 2 design units, including 1 entities, in source file /users/
 Info (12021): Found 5 design units, including 2 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd
     Info (12022): Found design unit 1: e_k163_point_multiplication_package File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 21
     Info (12022): Found design unit 2: e_k163_point_multiplication-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 52
-    Info (12022): Found design unit 3: top_K163_point_multiplication-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 283
+    Info (12022): Found design unit 3: e_k163_point_multiplication_demux-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 283
     Info (12023): Found entity 1: e_k163_point_multiplication File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 35
-    Info (12023): Found entity 2: top_K163_point_multiplication File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 260
+    Info (12023): Found entity 2: e_k163_point_multiplication_demux File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 260
 Info (12021): Found 3 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_k163_point_addition.vhd
-    Info (12022): Found design unit 1: package_K_163 File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 22
+    Info (12022): Found design unit 1: e_k163_point_addition_package File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 22
     Info (12022): Found design unit 2: e_k163_point_addition-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 57
     Info (12023): Found entity 1: e_k163_point_addition File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 37
 Info (12021): Found 6 design units, including 2 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd
@@ -490,41 +793,52 @@ Info (12021): Found 1 design units, including 0 entities, in source file /users/
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_sha256.vhd
     Info (12022): Found design unit 1: sha256-behaviour File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256.vhd Line: 37
     Info (12023): Found entity 1: sha256 File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256.vhd Line: 15
-Warning (12019): Can't analyze file -- file ../src/tb_rng.vhd is missing
-Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_rng.vhd
-    Info (12022): Found design unit 1: e_rng-rtl File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_rng.vhd Line: 40
-    Info (12023): Found entity 1: e_rng File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_rng.vhd Line: 22
 Info (12127): Elaborating entity "tld_ecdsa" for the top level hierarchy
-Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(57): used implicit default value for signal "px" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 57
-Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(57): used implicit default value for signal "py" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 57
-Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(57): used implicit default value for signal "qx" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 57
-Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(57): used implicit default value for signal "qy" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 57
-Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(57): object "ry" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 57
-Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(58): used implicit default value for signal "enable" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 58
-Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(58): object "ready" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 58
-Info (12128): Elaborating entity "e_k163_point_addition" for hierarchy "e_k163_point_addition:adder" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 74
-Info (12128): Elaborating entity "e_gf2m_binary_algorithm_polynomials" for hierarchy "e_k163_point_addition:adder|e_gf2m_binary_algorithm_polynomials:divider" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 103
-Info (12128): Elaborating entity "e_classic_gf2m_squarer" for hierarchy "e_k163_point_addition:adder|e_classic_gf2m_squarer:lambda_square_computation" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 114
-Info (12128): Elaborating entity "e_gf2m_reducer" for hierarchy "e_k163_point_addition:adder|e_classic_gf2m_squarer:lambda_square_computation|e_gf2m_reducer:reducer" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 179
+Warning (10540): VHDL Signal Declaration warning at tld_ecdsa.vhd(48): used explicit default value for signal "sha256_enable" because signal was never assigned a value File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 48
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(48): object "sha256_ready" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 48
+Warning (10540): VHDL Signal Declaration warning at tld_ecdsa.vhd(48): used explicit default value for signal "sha256_update" because signal was never assigned a value File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 48
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(49): object "sha256_word_address" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 49
+Warning (10540): VHDL Signal Declaration warning at tld_ecdsa.vhd(50): used explicit default value for signal "sha256_word_input" because signal was never assigned a value File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 50
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(50): object "sha256_debug_port" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 50
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(51): object "sha256_hash_output" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 51
+Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(83): used implicit default value for signal "px" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 83
+Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(83): used implicit default value for signal "py" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 83
+Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(83): used implicit default value for signal "qx" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 83
+Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(83): used implicit default value for signal "qy" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 83
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(83): object "ry" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 83
+Warning (10541): VHDL Signal Declaration warning at tld_ecdsa.vhd(84): used implicit default value for signal "enable" because signal was never assigned a value or an explicit default value. Use of implicit default value may introduce unintended design optimizations. File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 84
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(84): object "ready" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 84
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(95): object "N" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 95
+Warning (10036): Verilog HDL or VHDL warning at tld_ecdsa.vhd(96): object "done_gen_key" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 96
+Info (12128): Elaborating entity "sha256" for hierarchy "sha256:hash" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 107
+Warning (10542): VHDL Variable Declaration warning at e_sha256_functions.vhd(71): used initial value expression for variable "j" because variable was never assigned a value File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_sha256_functions.vhd Line: 71
+Info (12128): Elaborating entity "e_k163_point_multiplication" for hierarchy "e_k163_point_multiplication:gen_key_multiplier" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 120
+Info (12128): Elaborating entity "e_k163_point_addition" for hierarchy "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_multiplication.vhd Line: 91
+Info (12128): Elaborating entity "e_gf2m_binary_algorithm_polynomials" for hierarchy "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_gf2m_binary_algorithm_polynomials:divider" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 103
+Info (12128): Elaborating entity "e_classic_gf2m_squarer" for hierarchy "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_classic_gf2m_squarer:lambda_square_computation" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 114
+Info (12128): Elaborating entity "e_gf2m_reducer" for hierarchy "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_classic_gf2m_squarer:lambda_square_computation|e_gf2m_reducer:reducer" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 179
 Warning (10036): Verilog HDL or VHDL warning at e_gf2m_squarer.vhd(119): object "S" assigned a value but never read File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_squarer.vhd Line: 119
-Info (12128): Elaborating entity "e_gf2m_interleaved_multiplier" for hierarchy "e_k163_point_addition:adder|e_gf2m_interleaved_multiplier:multiplier" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 120
-Info (12128): Elaborating entity "e_gf2m_interleaved_data_path" for hierarchy "e_k163_point_addition:adder|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 170
+Info (12128): Elaborating entity "e_gf2m_interleaved_multiplier" for hierarchy "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_gf2m_interleaved_multiplier:multiplier" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_k163_point_addition.vhd Line: 120
+Info (12128): Elaborating entity "e_gf2m_interleaved_data_path" for hierarchy "e_k163_point_multiplication:gen_key_multiplier|e_k163_point_addition:first_component|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 170
 Warning (10492): VHDL Process Statement warning at e_gf2m_interleaved_mult.vhd(65): signal "rst_i" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 65
 Warning (10492): VHDL Process Statement warning at e_gf2m_interleaved_mult.vhd(80): signal "rst_i" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 80
 Warning (10492): VHDL Process Statement warning at e_gf2m_interleaved_mult.vhd(96): signal "rst_i" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/e_gf2m_interleaved_mult.vhd Line: 96
-Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
+Warning (12241): 2 hierarchies have connectivity warnings - see the Connectivity Checks report folder
+Info (17049): 3 registers lost all their fanouts during netlist optimizations.
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Warning (21074): Design contains 2 input pin(s) that do not drive logic
+Warning (21074): Design contains 4 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "gen_keys_i" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 24
+    Warning (15610): No output dependent on input pin "mode_i" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 27
     Warning (15610): No output dependent on input pin "clk_i" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 20
     Warning (15610): No output dependent on input pin "rst_i" File: C:/Users/mail/NAS/projects/fpga-ecdsa/src/tld_ecdsa.vhd Line: 21
-Info (21057): Implemented 2 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 2 input pins
+Info (21057): Implemented 4 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 4 input pins
     Info (21059): Implemented 0 output pins
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 19 warnings
-    Info: Peak virtual memory: 685 megabytes
-    Info: Processing ended: Mon Jul 03 20:56:04 2017
-    Info: Elapsed time: 00:00:16
-    Info: Total CPU time (on all processors): 00:00:38
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 30 warnings
+    Info: Peak virtual memory: 704 megabytes
+    Info: Processing ended: Tue Jul 04 23:30:33 2017
+    Info: Elapsed time: 00:00:17
+    Info: Total CPU time (on all processors): 00:00:35
 
 

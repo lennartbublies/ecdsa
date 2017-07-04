@@ -1,0 +1,12 @@
+{
+  "name": "gftable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "rye": "^0.0.3"
+  },
+  "devDependencies": {},
+  "author": "Philipp Kewisch",
+  "license": "MPL-2.0"
+}
