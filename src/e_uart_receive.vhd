@@ -13,12 +13,13 @@ ENTITY receive_data IS
 GENERIC( baud_rate : IN NATURAL RANGE 1200 TO 115200
     );
 PORT(   
-        clk      : IN std_logic;
-        rx       : IN std_logic;    -- input signal from rs232
-        rst      : IN std_logic;    -- low active async reset
-        wrreq    : OUT std_logic;   -- write request to trigger FIFO
-        out_data : OUT std_logic_vector (7 DOWNTO 0) -- parallel ascii output
-    );
+	clk      : IN std_logic;
+	rx       : IN std_logic;    -- input signal from rs232
+	rst      : IN std_logic;    -- low active async reset
+	mode_i	: IN std_logic;	-- Switch between SIGN (0) and VALIDATE (1)
+	wrreq    : OUT std_logic;   -- write request to trigger FIFO
+	out_data : OUT std_logic_vector (7 DOWNTO 0) -- parallel ascii output
+	);
 END ENTITY receive_data;
 
 
