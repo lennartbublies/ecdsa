@@ -1,10 +1,10 @@
 -------------------------------------------------------------------------------
--- Modul:        receive_data 
--- Beschreibung: RX-Signal in paralleles Signal wandeln
+-- Module:        receive_data 
+-- Description: 	RX-Signal in paralleles Signal wandeln
 --               
--- Autor:        Leander Schulz
--- Datum:        09.08.2016
--- Geändert:     20.09.2016
+-- Author:        Leander Schulz
+-- Date:        	09.08.2016
+-- Last change:   20.09.2016
 -------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -50,7 +50,7 @@ ARCHITECTURE rd_arch OF receive_data IS
 BEGIN -- ARCHITECTURE
     
 --- save the rx signal via shifting into s_data:
-    p_shift : PROCESS(ALL) --clk, rst_internal, rx)
+    p_shift : PROCESS(clk, rst_internal, rx)
     BEGIN
         IF rst = '0' THEN
             s_data <= (others => '0');
@@ -64,7 +64,7 @@ BEGIN -- ARCHITECTURE
         END IF;
     END PROCESS p_shift;
         
-    p_scan_symbol : PROCESS(ALL) --rx,scan_clk,rst,)
+    p_scan_symbol : PROCESS(rx,scan_clk,rst)
     BEGIN
         IF rst = '0' THEN
             bit_cnt <= 0;
@@ -78,7 +78,7 @@ BEGIN -- ARCHITECTURE
     END PROCESS p_scan_symbol;
     
 --- finite state machine to determine the current byte read state
-    p_byte_fsm : PROCESS(ALL)
+    p_byte_fsm : PROCESS(s_state,s_next,rst_internal,rx,scan_clk) --ALL)
     BEGIN
         s_next <= s_state;
         rst_internal <= '1';
@@ -104,7 +104,7 @@ BEGIN -- ARCHITECTURE
         END CASE;
     END PROCESS p_byte_fsm;
     
-    p_byte_store : PROCESS(ALL)
+    p_byte_store : PROCESS(rst,clk) --ALL)
     BEGIN
         IF rst = '0' THEN
             s_state <= idle;
@@ -114,7 +114,7 @@ BEGIN -- ARCHITECTURE
     END PROCESS p_byte_store;
 
 --- process to generate the clock signal 'scan_clk' to determine when to read rx
-    p_scan_clk : PROCESS(ALL) --clk,rst,rx) --(ALL)
+    p_scan_clk : PROCESS(clk,rst,rx) --(ALL)
     BEGIN
         IF rst = '0' THEN
             scan_clk <= '0';
@@ -148,7 +148,7 @@ BEGIN -- ARCHITECTURE
     END PROCESS p_scan_clk;
 
 --- push to output 
-    p_scan_out : PROCESS(ALL) --clk,bit_cnt,rst)
+    p_scan_out : PROCESS(clk,bit_cnt,rst,s_state,s_next)
     BEGIN 
         IF rst = '0' THEN
             out_data <= "00000000";
