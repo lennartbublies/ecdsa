@@ -1,5 +1,5 @@
 Flow report for fpga-ecdsa
-Tue Jul 04 23:30:44 2017
+Thu Jul 13 23:50:41 2017
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -41,21 +41,21 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Tue Jul 04 23:30:41 2017       ;
+; Flow Status                        ; Successful - Thu Jul 13 23:50:31 2017       ;
 ; Quartus Prime Version              ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; fpga-ecdsa                                  ;
 ; Top-level Entity Name              ; tld_ecdsa                                   ;
 ; Family                             ; Cyclone IV E                                ;
-; Total logic elements               ; 0 / 6,272 ( 0 % )                           ;
-;     Total combinational functions  ; 0 / 6,272 ( 0 % )                           ;
-;     Dedicated logic registers      ; 0 / 6,272 ( 0 % )                           ;
-; Total registers                    ; 0                                           ;
-; Total pins                         ; 4 / 92 ( 4 % )                              ;
+; Total logic elements               ; 5,372 / 28,848 ( 19 % )                     ;
+;     Total combinational functions  ; 5,229 / 28,848 ( 18 % )                     ;
+;     Dedicated logic registers      ; 3,334 / 28,848 ( 12 % )                     ;
+; Total registers                    ; 3334                                        ;
+; Total pins                         ; 332 / 533 ( 62 % )                          ;
 ; Total virtual pins                 ; 0                                           ;
-; Total memory bits                  ; 0 / 276,480 ( 0 % )                         ;
-; Embedded Multiplier 9-bit elements ; 0 / 30 ( 0 % )                              ;
-; Total PLLs                         ; 0 / 2 ( 0 % )                               ;
-; Device                             ; EP4CE6E22C6                                 ;
+; Total memory bits                  ; 0 / 608,256 ( 0 % )                         ;
+; Embedded Multiplier 9-bit elements ; 0 / 132 ( 0 % )                             ;
+; Total PLLs                         ; 0 / 4 ( 0 % )                               ;
+; Device                             ; EP4CE30F29C6                                ;
 ; Timing Models                      ; Final                                       ;
 +------------------------------------+---------------------------------------------+
 
@@ -65,7 +65,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 07/04/2017 23:30:17 ;
+; Start date & time ; 07/13/2017 23:47:46 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; fpga-ecdsa          ;
 +-------------------+---------------------+
@@ -76,7 +76,7 @@ agreement for further details.
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 88491850109464.149920381706012         ; --            ; --          ; --         ;
+; COMPILER_SIGNATURE_ID               ; 742718376059.149998246608272           ; --            ; --          ; --         ;
 ; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
 ; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
 ; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
@@ -90,11 +90,11 @@ agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:00:16     ; 1.0                     ; 704 MB              ; 00:00:35                           ;
-; Fitter                    ; 00:00:04     ; 1.0                     ; 1098 MB             ; 00:00:06                           ;
-; Assembler                 ; 00:00:01     ; 1.0                     ; 557 MB              ; 00:00:01                           ;
-; TimeQuest Timing Analyzer ; 00:00:02     ; 1.0                     ; 629 MB              ; 00:00:02                           ;
-; Total                     ; 00:00:23     ; --                      ; --                  ; 00:00:44                           ;
+; Analysis & Synthesis      ; 00:00:34     ; 1.0                     ; 732 MB              ; 00:00:56                           ;
+; Fitter                    ; 00:02:04     ; 1.0                     ; 1252 MB             ; 00:02:54                           ;
+; Assembler                 ; 00:00:03     ; 1.0                     ; 585 MB              ; 00:00:03                           ;
+; TimeQuest Timing Analyzer ; 00:00:08     ; 1.2                     ; 724 MB              ; 00:00:09                           ;
+; Total                     ; 00:02:49     ; --                      ; --                  ; 00:04:02                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

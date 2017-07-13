@@ -12,7 +12,8 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-use work.e_k163_point_multiplication_package.all;
+USE IEEE.numeric_std.ALL;
+USE work.e_k163_point_multiplication_package.all;
 
 ENTITY tld_ecdsa IS
     PORT (
@@ -20,11 +21,21 @@ ENTITY tld_ecdsa IS
         clk_i: IN std_logic; 
         rst_i: IN std_logic;
         
-        -- Generate (private) and public key
-        gen_keys_i : IN std_logic;
+        -- Generate (private and) public key
+        gen_keys_i: IN std_logic;
+        
+        -- Enable computation
+        enable_i: IN std_logic;
         
         -- Switch between SIGN and VALIDATE
-        mode_i: IN std_logic
+        mode_i: IN std_logic;
+        
+        -- Ready flag
+        ready_o: OUT std_logic;
+        
+        -- Signature
+        sign_r_o : OUT std_logic_vector(M-1 DOWNTO 0);
+        sign_s_o : OUT std_logic_vector(M-1 DOWNTO 0)
     );
 END tld_ecdsa;
 
@@ -83,6 +94,32 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL px, py, qx, qy, rx, ry: std_logic_vector(M-1 DOWNTO 0); 
     SIGNAL enable, ready: std_logic;
     
+    -- Import entity e_gf2m_binary_algorithm_polynomials
+    COMPONENT e_gf2m_binary_algorithm_polynomials IS
+        PORT(
+            clk_i: IN std_logic;  
+            rst_i: IN std_logic;  
+            enable_i: IN std_logic; 
+            g_i: IN std_logic_vector(M-1 DOWNTO 0);  
+            h_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            z_o: OUT std_logic_vector(M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    end COMPONENT;
+    
+    -- Import entity e_gf2m_interleaved_multiplier
+    COMPONENT e_gf2m_interleaved_multiplier IS
+        PORT(
+            clk_i: IN std_logic; 
+            rst_i: IN std_logic; 
+            enable_i: IN std_logic; 
+            a_i: IN std_logic_vector (M-1 DOWNTO 0); 
+            b_i: IN std_logic_vector (M-1 DOWNTO 0);
+            z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    end COMPONENT;
+    
     -- Internal signals -----------------------------------------
     
     -- Elliptic curve parameter of sect163k1 and generated private and public key
@@ -90,13 +127,29 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL xG : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- X of generator point G = (x, y)
     SIGNAL yG : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Y of generator point G = (x, y)
     SIGNAL dA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Private key dA = k
-    SIGNAL xQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qA = k.G = (xQA, yQA)
-    SIGNAL yQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qA = k.G = (xQA, yQA)
+    SIGNAL xQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qA = dA.G = (xQA, yQA)
+    SIGNAL yQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qA = dA.G = (xQA, yQA)
     SIGNAL N : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- Order of generator point G
     SIGNAL done_gen_key: std_logic := '0';
     
+    -- Parameter to sign a message, ONLY FOR TESTING!
+    SIGNAL k : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- k for point generator, should be cryptograic secure randum number!
+    SIGNAL xQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qB = dB.G = (xQB, yQB)
+    SIGNAL yQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qB = dB.G = (xQB, yQB)
+
+    -- MODE SIGN
+    SIGNAL xR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); 
+    SIGNAL yR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); 
+    SIGNAL tmp1, tmp2, tmp3 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL enable_sign_r, done_sign_r: std_logic := '0'; 
+    SIGNAL enable_sign_darx, done_sign_darx: std_logic := '0'; 
+    SIGNAL enable_sign_z2k, done_sign_z2k: std_logic := '0';
+    
+    -- Constants
+    CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    
     -- States for state machine
-    subtype states IS natural RANGE 0 TO 1;
+    subtype states IS natural RANGE 0 TO 7;
     SIGNAL current_state: states;
 BEGIN
     -- Set parameter of sect163k1
@@ -120,8 +173,10 @@ BEGIN
         debug_port => sha256_debug_port
     );
     
+    -- PUBLIC KEX -----------------------------------------------------------------
+   
     -- Instantiate multiplier to generate private and public key
-    gen_key_multiplier: e_k163_point_multiplication PORT MAP(
+    gen_key: e_k163_point_multiplication PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => gen_keys_i, 
@@ -132,6 +187,53 @@ BEGIN
         yq_io => yQA, 
         ready_o => done_gen_key 
     );
+    
+    -- SIGN -----------------------------------------------------------------
+    
+    -- Instantiate multiplier to compute R = k.G = (xR, yR)
+    sign_pmul_r: e_k163_point_multiplication PORT MAP(
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_sign_r, 
+        xp_i => xG, 
+        yp_i => yG, 
+        k => k,
+        xq_io => xR, 
+        yq_io => yR, 
+        ready_o => done_sign_r 
+    );
+      
+    -- Instantiate multiplier entity to compute dA * xR
+    sign_mul_darx: e_gf2m_interleaved_multiplier PORT MAP( 
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_sign_darx, 
+        a_i => dA,
+        b_i => xR,
+        z_o => tmp1,
+        ready_o => done_sign_darx
+    );
+
+    -- compute e + (dA * xR) 
+    sign_add_edarx: FOR i IN 0 TO 162 GENERATE
+        tmp2(i) <= tmp1(i) xor sha256_hash_output(i); -- TODO???
+    END GENERATE;
+
+    -- Instantiate divider entity to compute (e + dA*xR)/k
+    divider: e_gf2m_binary_algorithm_polynomials PORT MAP( 
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_sign_z2k,
+        g_i => tmp2, 
+        h_i => k,  
+        z_o => tmp3, 
+        ready_o => done_sign_z2k
+    );
+    
+    sign_r_o <= xR;
+    sign_s_o <= tmp3;
+    
+    -- VALIDATE -----------------------------------------------------------------
 
     -- Instantiate point addition entity
     adder: e_k163_point_addition PORT MAP ( 
@@ -146,10 +248,76 @@ BEGIN
         y3_o => ry,
         ready_o => ready
     );
-    
+        
     -- State machine process
     control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN
-    
+        -- Handle current state
+        --  0,1 : Default state
+        --  2,3 : SIGN -> compute R = k.G = (xR, yR)
+        --  4,5 : SIGN -> compute tmp1 = dA*xR, tmp2 = e+tmp1
+        --  6,7 : SIGN -> compute S = tmp2/k
+        --    ---> SIGN DONE
+        --  8,9 : VALI -> ...
+        CASE current_state IS
+            WHEN 0 TO 1 => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
+            WHEN 2 => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
+            WHEN 3 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
+            WHEN 4 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0';
+            WHEN 5 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
+            WHEN 6 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1';
+            WHEN 7 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
+        END CASE;
+        
+        IF rst_i = '1' THEN 
+            -- Reset state if reset is high
+            current_state <= 0;
+        ELSIF clk_i'event and clk_i = '1' THEN
+            -- Set next state
+            CASE current_state IS
+                WHEN 0 =>
+                    IF enable_i = '0' THEN 
+                        current_state <= 1; 
+                    END IF;
+                -- SIGN
+                WHEN 1 => 
+                    IF (enable_i = '1' and mode_i = '0') THEN 
+                        current_state <= 2; 
+                    ELSIF (enable_i = '1' and mode_i = '1') THEN
+                        current_state <= 0; -- TODO
+                    END IF;
+                WHEN 2 =>
+                    current_state <= 3;
+                WHEN 3 => 
+                    IF (done_sign_r = '1') THEN
+                        -- Validate R: restart if R = 0
+                        IF (tmp3 = ZERO) THEN
+                            current_state <= 2;
+                        ELSE
+                            current_state <= 4;
+                        END IF;
+					END IF;
+                WHEN 4 =>
+                    current_state <= 5;
+                WHEN 5 => 
+                    IF (done_sign_darx = '1') THEN
+                        current_state <= 6;
+                    END IF;
+                WHEN 6 =>
+                    current_state <= 7;
+                WHEN 7 => 
+                    IF (done_sign_z2k = '1') THEN
+                        -- Validate S: restart if S = 0
+                        IF (tmp3 = ZERO) THEN
+                            current_state <= 2;
+                        ELSE
+                            current_state <= 0;
+                        END IF;
+					END IF;
+                -- VALIDATE
+                --WHEN 9 =>
+                    -- .......
+            END CASE;
+        END IF;
     END PROCESS;
 END;
