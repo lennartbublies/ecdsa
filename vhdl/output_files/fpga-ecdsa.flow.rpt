@@ -1,5 +1,5 @@
 Flow report for fpga-ecdsa
-Thu Jul 13 23:50:41 2017
+Mon Jul 24 21:37:36 2017
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -41,22 +41,20 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Thu Jul 13 23:50:31 2017       ;
+; Flow Status                        ; Flow Failed - Mon Jul 24 21:37:36 2017      ;
 ; Quartus Prime Version              ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; fpga-ecdsa                                  ;
 ; Top-level Entity Name              ; tld_ecdsa                                   ;
 ; Family                             ; Cyclone IV E                                ;
-; Total logic elements               ; 5,372 / 28,848 ( 19 % )                     ;
-;     Total combinational functions  ; 5,229 / 28,848 ( 18 % )                     ;
-;     Dedicated logic registers      ; 3,334 / 28,848 ( 12 % )                     ;
+; Total logic elements               ; 5,229                                       ;
+;     Total combinational functions  ; 5,229                                       ;
+;     Dedicated logic registers      ; 3,334                                       ;
 ; Total registers                    ; 3334                                        ;
-; Total pins                         ; 332 / 533 ( 62 % )                          ;
+; Total pins                         ; 659                                         ;
 ; Total virtual pins                 ; 0                                           ;
-; Total memory bits                  ; 0 / 608,256 ( 0 % )                         ;
-; Embedded Multiplier 9-bit elements ; 0 / 132 ( 0 % )                             ;
-; Total PLLs                         ; 0 / 4 ( 0 % )                               ;
-; Device                             ; EP4CE30F29C6                                ;
-; Timing Models                      ; Final                                       ;
+; Total memory bits                  ; 0                                           ;
+; Embedded Multiplier 9-bit elements ; 0                                           ;
+; Total PLLs                         ; 0                                           ;
 +------------------------------------+---------------------------------------------+
 
 
@@ -65,7 +63,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 07/13/2017 23:47:46 ;
+; Start date & time ; 07/24/2017 21:36:49 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; fpga-ecdsa          ;
 +-------------------+---------------------+
@@ -76,7 +74,7 @@ agreement for further details.
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 742718376059.149998246608272           ; --            ; --          ; --         ;
+; COMPILER_SIGNATURE_ID               ; 742718376059.150092500912572           ; --            ; --          ; --         ;
 ; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
 ; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
 ; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; tld_ecdsa   ; Top        ;
@@ -85,29 +83,25 @@ agreement for further details.
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------------+
-; Flow Elapsed Time                                                                                                             ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:00:34     ; 1.0                     ; 732 MB              ; 00:00:56                           ;
-; Fitter                    ; 00:02:04     ; 1.0                     ; 1252 MB             ; 00:02:54                           ;
-; Assembler                 ; 00:00:03     ; 1.0                     ; 585 MB              ; 00:00:03                           ;
-; TimeQuest Timing Analyzer ; 00:00:08     ; 1.2                     ; 724 MB              ; 00:00:09                           ;
-; Total                     ; 00:02:49     ; --                      ; --                  ; 00:04:02                           ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
++--------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                        ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis ; 00:00:44     ; 1.0                     ; 802 MB              ; 00:01:06                           ;
+; Fitter               ; 00:00:01     ; 1.0                     ; 757 MB              ; 00:00:01                           ;
+; Total                ; 00:00:45     ; --                      ; --                  ; 00:01:07                           ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
-+-----------------------------------------------------------------------------------------+
-; Flow OS Summary                                                                         ;
-+---------------------------+------------------+------------+------------+----------------+
-; Module Name               ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
-+---------------------------+------------------+------------+------------+----------------+
-; Analysis & Synthesis      ; DESKTOP-NF70JQ0  ; Windows 10 ; 10.0       ; x86_64         ;
-; Fitter                    ; DESKTOP-NF70JQ0  ; Windows 10 ; 10.0       ; x86_64         ;
-; Assembler                 ; DESKTOP-NF70JQ0  ; Windows 10 ; 10.0       ; x86_64         ;
-; TimeQuest Timing Analyzer ; DESKTOP-NF70JQ0  ; Windows 10 ; 10.0       ; x86_64         ;
-+---------------------------+------------------+------------+------------+----------------+
++------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                    ;
++----------------------+------------------+------------+------------+----------------+
+; Module Name          ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
++----------------------+------------------+------------+------------+----------------+
+; Analysis & Synthesis ; DESKTOP-NF70JQ0  ; Windows 10 ; 10.0       ; x86_64         ;
+; Fitter               ; DESKTOP-NF70JQ0  ; Windows 10 ; 10.0       ; x86_64         ;
++----------------------+------------------+------------+------------+----------------+
 
 
 ------------
@@ -115,8 +109,6 @@ agreement for further details.
 ------------
 quartus_map --read_settings_files=on --write_settings_files=off fpga-ecdsa -c fpga-ecdsa
 quartus_fit --read_settings_files=off --write_settings_files=off fpga-ecdsa -c fpga-ecdsa
-quartus_asm --read_settings_files=off --write_settings_files=off fpga-ecdsa -c fpga-ecdsa
-quartus_sta fpga-ecdsa -c fpga-ecdsa
 
 
 

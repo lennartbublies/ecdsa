@@ -18,9 +18,9 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE p_gf2m_classic_multiplier_parameters IS
     -- Constants
-    CONSTANT M: integer := 8;
-    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011";
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --FOR M=163
+    CONSTANT M: integer := 163;
+    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011";
+    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --FOR M=163
 
     -- Types
     TYPE matrix_reductionR IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);
@@ -154,7 +154,7 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 USE work.p_gf2m_classic_multiplier_parameters.all;
 
-ENTITY e_gf2m_reducer IS
+ENTITY e_gf2m_cm_reducer IS
     PORT (
         -- Input SIGNAL
         d: IN std_logic_vector(2*M-2 DOWNTO 0);
@@ -162,9 +162,9 @@ ENTITY e_gf2m_reducer IS
         -- Output SIGNAL
         c: OUT std_logic_vector(M-1 DOWNTO 0)
     );
-END e_gf2m_reducer;
+END e_gf2m_cm_reducer;
 
-ARCHITECTURE rtl OF e_gf2m_reducer IS
+ARCHITECTURE rtl OF e_gf2m_cm_reducer IS
     -- Initial reduction matrix from polynomial F
     CONSTANT R: matrix_reductionR := reduction_matrix_R;
     -- Temporary SIGNAL, neccessary?
@@ -201,9 +201,9 @@ USE work.p_gf2m_classic_multiplier_parameters.all;
 
 ENTITY e_classic_gf2m_multiplier IS
     PORT (
-        a: IN std_logic_vector(M-1 DOWNTO 0); 
-        b: IN std_logic_vector(M-1 DOWNTO 0);
-        c: OUT std_logic_vector(M-1 DOWNTO 0)
+        a_i: IN std_logic_vector(M-1 DOWNTO 0); 
+        b_i: IN std_logic_vector(M-1 DOWNTO 0);
+        c_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
 END e_classic_gf2m_multiplier;
 
@@ -216,7 +216,7 @@ ARCHITECTURE rtl OF e_classic_gf2m_multiplier IS
     END COMPONENT;
   
     -- Instantiate polynomial reducer
-    COMPONENT e_gf2m_reducer PORT (
+    COMPONENT e_gf2m_cm_reducer PORT (
         d: IN std_logic_vector(2*M-2 DOWNTO 0);
         c: OUT std_logic_vector(M-1 DOWNTO 0));
     END COMPONENT;
@@ -224,6 +224,14 @@ ARCHITECTURE rtl OF e_classic_gf2m_multiplier IS
     SIGNAL d: std_logic_vector(2*M-2 DOWNTO 0);
 BEGIN
     -- Combine polynomial multiplier and reducer
-    instance_multiplier:  e_gf2m_multiplier PORT MAP(a => a, b => b, d => d);
-    instance_reducer: e_gf2m_reducer PORT MAP(d => d, c => c);
+    instance_multiplier: e_gf2m_multiplier PORT MAP(
+        a => a_i, 
+        b => b_i, 
+        d => d
+    );
+
+    instance_reducer: e_gf2m_cm_reducer PORT MAP(
+        d => d, 
+        c => c_o
+    );
 END rtl;

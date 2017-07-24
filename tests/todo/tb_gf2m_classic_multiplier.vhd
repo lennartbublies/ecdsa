@@ -15,6 +15,15 @@ ENTITY tb_classic_gf2m_multiplication IS
 END tb_classic_gf2m_multiplication;
 
 ARCHITECTURE rtl OF tb_classic_gf2m_multiplication IS 
+    -- Import entity e_classic_gf2m_multiplier
+    COMPONENT e_classic_gf2m_multiplier IS
+        PORT(
+            a: IN std_logic_vector(M-1 DOWNTO 0); 
+            b: IN std_logic_vector(M-1 DOWNTO 0);
+            c: OUT std_logic_vector(M-1 DOWNTO 0)
+        );
+    END COMPONENT;
+
 	-- Input signals:
 	SIGNAL rst : std_logic := '0';
 	SIGNAL clk : std_logic;
@@ -30,7 +39,7 @@ ARCHITECTURE rtl OF tb_classic_gf2m_multiplication IS
     CONSTANT clk_period : time := 100 ns;
 BEGIN
     -- Instantiate the unit under test
-    uut: work.e_classic_gf2m_multiplier PORT MAP( 
+    uut: e_classic_gf2m_multiplier PORT MAP( 
             a => a, 
             b => b, 
             c => c 
@@ -49,39 +58,39 @@ BEGIN
     tb : PROCESS
     BEGIN
         -- WAIT 100 ns FOR global reset to finish
-        WAIT FOR clk_period;
-        a <= "10101010";
-        b <= "10101010";
+        --WAIT FOR clk_period;
+        --a <= "10101010";
+        --b <= "10101010";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
         
-        WAIT FOR clk_period;
-        a <= "10101010";
-        b <= "00000000";
+        --WAIT FOR clk_period;
+        --a <= "10101010";
+        --b <= "00000000";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
              
-        WAIT FOR clk_period;
-        a <= "11111111";
-        b <= "10101010";
+        --WAIT FOR clk_period;
+        --a <= "11111111";
+        --b <= "10101010";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
              
-        WAIT FOR clk_period;
-        a <= "10101010";
-        b <= "01010101";
+        --WAIT FOR clk_period;
+        --a <= "10101010";
+        --b <= "01010101";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
              
-        WAIT FOR clk_period;
-        a <= "01010101";
-        b <= "01010101";
+        --WAIT FOR clk_period;
+        --a <= "01010101";
+        --b <= "01010101";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
              
-        WAIT FOR clk_period;
-        a <= "10000000";
-        b <= "00000010";
+        --WAIT FOR clk_period;
+        --a <= "10000000";
+        --b <= "00000010";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
              
-        WAIT FOR clk_period;
-        a <= "01000000";
-        b <= "00000100";
+        --WAIT FOR clk_period;
+        --a <= "01000000";
+        --b <= "00000100";
         --ASSERT c = "00000000" REPORT "00000000 * 00000000 MOD f != 00000000";
              
         WAIT FOR clk_period;

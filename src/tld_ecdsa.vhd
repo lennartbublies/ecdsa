@@ -29,13 +29,20 @@ ENTITY tld_ecdsa IS
         
         -- Switch between SIGN and VALIDATE
         mode_i: IN std_logic;
+
+        -- Signature
+        r_i: IN std_logic_vector(M-1 DOWNTO 0);
+        s_i: IN std_logic_vector(M-1 DOWNTO 0);
         
         -- Ready flag
         ready_o: OUT std_logic;
         
+        -- Signature valid
+        valid_o: OUT std_logic;
+        
         -- Signature
-        sign_r_o : OUT std_logic_vector(M-1 DOWNTO 0);
-        sign_s_o : OUT std_logic_vector(M-1 DOWNTO 0)
+        sign_r_o: OUT std_logic_vector(M-1 DOWNTO 0);
+        sign_s_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
 END tld_ecdsa;
 
@@ -56,11 +63,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
             debug_port : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
-    SIGNAL sha256_enable, sha256_ready, sha256_update : std_logic := '0';
-    SIGNAL sha256_word_address : std_logic_vector(3 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL sha256_word_input, sha256_debug_port : std_logic_vector(31 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL sha256_hash_output : std_logic_vector(255 DOWNTO 0) := (OTHERS=>'0');
-    
+
     -- Import entity e_k163_point_multiplication
     COMPONENT e_k163_point_multiplication IS
         PORT (
@@ -91,8 +94,6 @@ ARCHITECTURE rtl OF tld_ecdsa IS
             ready_o: OUT std_logic
         );
     END COMPONENT;
-    SIGNAL px, py, qx, qy, rx, ry: std_logic_vector(M-1 DOWNTO 0); 
-    SIGNAL enable, ready: std_logic;
     
     -- Import entity e_gf2m_binary_algorithm_polynomials
     COMPONENT e_gf2m_binary_algorithm_polynomials IS
@@ -119,8 +120,26 @@ ARCHITECTURE rtl OF tld_ecdsa IS
             ready_o: OUT std_logic
         );
     end COMPONENT;
+
+    -- Import entity e_gf2m_eea_inversion
+    COMPONENT e_gf2m_eea_inversion IS
+        PORT(
+            clk_i: IN std_logic; 
+            rst_i: IN std_logic; 
+            enable_i: IN std_logic; 
+            a_i: IN std_logic_vector (M-1 DOWNTO 0);
+            z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    end COMPONENT;
     
     -- Internal signals -----------------------------------------
+    
+    -- HASH Entity
+    SIGNAL sha256_enable, sha256_ready, sha256_update : std_logic := '0';
+    SIGNAL sha256_word_address : std_logic_vector(3 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL sha256_word_input, sha256_debug_port : std_logic_vector(31 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL sha256_hash_output : std_logic_vector(255 DOWNTO 0) := (OTHERS=>'0');    
     
     -- Elliptic curve parameter of sect163k1 and generated private and public key
     --  See http://www.secg.org/SEC2-Ver-1.0.pdf for more information
@@ -138,18 +157,31 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL yQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qB = dB.G = (xQB, yQB)
 
     -- MODE SIGN
-    SIGNAL xR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); 
-    SIGNAL yR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); 
-    SIGNAL tmp1, tmp2, tmp3 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL enable_sign_r, done_sign_r: std_logic := '0'; 
+    SIGNAL xR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- X component of point R
+    SIGNAL yR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Y component of point R
+    SIGNAL tmp1, tmp2, tmp3 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
+    SIGNAL enable_sign_r, done_sign_r: std_logic := '0';          -- Enable/Disable signature computation
     SIGNAL enable_sign_darx, done_sign_darx: std_logic := '0'; 
     SIGNAL enable_sign_z2k, done_sign_z2k: std_logic := '0';
     
-    -- Constants
+    -- MODE VERIFY
+    SIGNAL invs : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL tmp4, tmp5 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
+    SIGNAL enable_verify_invs, done_verify_invs : std_logic := '0'; 
+    SIGNAL enable_verify_w12, done_verify_w1, done_verify_w2 : std_logic := '0'; 
+    SIGNAL enable_verify_u12, done_verify_u1, done_verify_u2 : std_logic := '0'; 
+    SIGNAL enable_verify_u1gu2qb, enable_verify_u1gu2q, done_verify_u1g, done_verify_u2qb : std_logic := '0';
+    SIGNAL enable_verify_P, done_verify_P : std_logic := '0';
+    SIGNAL xU1G, yU1G : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL xU2QB, yU2QB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL xP, yP : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL valid : std_logic := '0';
+    
+    -- Constantsenable_verify_u12
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     
     -- States for state machine
-    subtype states IS natural RANGE 0 TO 7;
+    subtype states IS natural RANGE 0 TO 15;
     SIGNAL current_state: states;
 BEGIN
     -- Set parameter of sect163k1
@@ -159,6 +191,8 @@ BEGIN
     dA  <= "000" & x"2FA9FB1832696E2A6D29776BCA3653C3F398D370";
     --xQA <= "000" & x"0000000000000000000000000000000000000000";
     --yQA <= "000" & x"0000000000000000000000000000000000000000";
+    --xQB <= "000" & x"0000000000000000000000000000000000000000";
+    --yQB <= "000" & x"0000000000000000000000000000000000000000";
  
     -- Instantiate sha256 entity to compute hashes
     hash: sha256 PORT MAP(
@@ -235,38 +269,105 @@ BEGIN
     
     -- VALIDATE -----------------------------------------------------------------
 
+    -- Instantiate inversion entity to compute w = 1/s
+    verify_invs: e_gf2m_eea_inversion PORT MAP (
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_verify_invs,
+        a_i => s_i,
+        z_o => invs,
+        ready_o => done_verify_invs
+    );
+
+    -- Instantiate multiplier entity to compute u1 = ew
+    verify_mul_u1: e_gf2m_interleaved_multiplier PORT MAP( 
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_verify_u12, 
+        a_i => sha256_hash_output(M-1 DOWNTO 0),
+        b_i => s_i,
+        z_o => tmp4,
+        ready_o => done_verify_u1
+    );
+
+    -- Instantiate multiplier entity to compute u2 = rw
+    verify_mul_u2: e_gf2m_interleaved_multiplier PORT MAP( 
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_verify_u12, 
+        a_i => r_i,
+        b_i => s_i,
+        z_o => tmp5,
+        ready_o => done_verify_u2
+    );
+    
+    -- Instantiate multiplier to compute tmp6 = u1.G
+    sign_pmul_u1gu2q: e_k163_point_multiplication PORT MAP(
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_verify_u1gu2q, 
+        xp_i => xG, 
+        yp_i => yG, 
+        k => tmp4,
+        xq_io => xU1G, 
+        yq_io => yU1G, 
+        ready_o => done_verify_u1g
+    );
+    
+    -- Instantiate multiplier to compute tmp7 = u2.QB
+    sign_pmul_u1gu2qb: e_k163_point_multiplication PORT MAP(
+        clk_i => clk_i, 
+        rst_i => rst_i, 
+        enable_i => enable_verify_u1gu2qb, 
+        xp_i => xQB, 
+        yp_i => yQB, 
+        k => tmp5,
+        xq_io => xU2QB, 
+        yq_io => yU2QB, 
+        ready_o => done_verify_u2qb
+    );
+
     -- Instantiate point addition entity
     adder: e_k163_point_addition PORT MAP ( 
         clk_i => clk_i, 
         rst_i => rst_i, 
-        enable_i => enable,
-        x1_i => px, 
-        y1_i => py, 
-        x2_i => qx, 
-        y2_i => qy,
-        x3_io => rx, 
-        y3_o => ry,
-        ready_o => ready
+        enable_i => enable_verify_P,
+        x1_i => xU1G, 
+        y1_i => yU1G, 
+        x2_i => xU2QB, 
+        y2_i => yU2QB,
+        x3_io => xP, 
+        y3_o => yP,
+        ready_o => done_verify_P
     );
         
     -- State machine process
     control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN
         -- Handle current state
-        --  0,1 : Default state
-        --  2,3 : SIGN -> compute R = k.G = (xR, yR)
-        --  4,5 : SIGN -> compute tmp1 = dA*xR, tmp2 = e+tmp1
-        --  6,7 : SIGN -> compute S = tmp2/k
+        --  0,1   : Default state
+        --  2,3   : SIGN   -> compute R = k.G = (xR, yR)
+        --  4,5   : SIGN   -> compute tmp1 = dA*xR, tmp2 = e+tmp1
+        --  6,7   : SIGN   -> compute S = tmp2/k
         --    ---> SIGN DONE
-        --  8,9 : VALI -> ...
+        --  8,9   : VERIFY -> compute 1/S
+        --  10,11 : VERIFY -> compute u1 = ew und u2 = rw
         CASE current_state IS
-            WHEN 0 TO 1 => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
-            WHEN 2 => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
-            WHEN 3 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
-            WHEN 4 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0';
-            WHEN 5 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
-            WHEN 6 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1';
-            WHEN 7 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0';
+            WHEN 0 TO 1 => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; 
+            WHEN 2  => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 3  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 4  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 5  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 6  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 7  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 8  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '1'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 9  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 10 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 11 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 12 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0';
+            WHEN 13 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 14 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1';
+            WHEN 15 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
         END CASE;
         
         IF rst_i = '1' THEN 
@@ -315,9 +416,38 @@ BEGIN
                         END IF;
 					END IF;
                 -- VALIDATE
-                --WHEN 9 =>
-                    -- .......
+                WHEN 8 =>
+                    current_state <= 9;
+                WHEN 9 =>
+                    IF (done_verify_invs = '1') THEN
+                        current_state <= 10;
+                    END IF;
+                WHEN 10 =>
+                    current_state <= 11;
+                WHEN 11 =>
+                    IF (done_verify_w1 = '1' and done_verify_w2 = '1') THEN
+                        current_state <= 12;
+                    END IF;
+                WHEN 12 =>
+                    current_state <= 13;   
+                WHEN 13 =>
+                    IF (done_verify_u1g = '1' and done_verify_u2qb = '1') THEN
+                        current_state <= 14;
+                    END IF;
+                WHEN 14 =>
+                    current_state <= 15;    
+                WHEN 15 =>
+                    IF (done_verify_P = '1') THEN
+                        current_state <= 0;
+                        IF (xP = r_i) THEN
+                            valid <= '1';
+                        ELSE    
+                            valid <= '0';
+                        END IF;
+                    END IF;
             END CASE;
         END IF;
     END PROCESS;
+    
+    valid_o <= valid;
 END;

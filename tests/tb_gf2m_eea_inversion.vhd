@@ -17,12 +17,33 @@ USE std.textio.ALL;
 USE work.p_gf2m_eea_inversion_package.all;
 
 ENTITY tb_eea_inversion IS
-END test_eea_inversion;
+END tb_eea_inversion;
 
-ARCHITECTURE behavior OF test_eea_inversion IS 
+ARCHITECTURE rtl OF tb_eea_inversion IS 
+    -- Import entity e_gf2m_eea_inversion
+    COMPONENT e_gf2m_eea_inversion IS
+        PORT (
+            clk_i: IN std_logic;
+            rst_i: IN std_logic; 
+            enable_i: IN std_logic; 
+            a_i: IN std_logic_vector (M-1 DOWNTO 0);
+            z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+            ready_o: OUT std_logic
+        );
+    END COMPONENT;
+
+    -- Import entity e_classic_gf2m_multiplier
+    COMPONENT e_classic_gf2m_multiplier IS
+        PORT(
+            a_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            b_i: IN std_logic_vector(M-1 DOWNTO 0);
+            c_o: OUT std_logic_vector(M-1 DOWNTO 0)
+        );
+    END COMPONENT;
+
     -- Internal signals
     SIGNAL x, z, z_by_x :  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL clk, reset, start, done: std_logic;
+    SIGNAL clk, rst, enable, done: std_logic;
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     CONSTANT ONE: std_logic_vector(M-1 DOWNTO 0) := (0 => '1', OTHERS=>'0');
     CONSTANT DELAY : time := 100 ns;
@@ -31,21 +52,21 @@ ARCHITECTURE behavior OF test_eea_inversion IS
     CONSTANT OFFSET : time := 0 ns;
     CONSTANT NUMBER_TESTS: natural := 10;
 BEGIN
-    -- Instantiate eea inversion
-    uut1: work.e_gf2m_eea_inversion PORT MAP(
-            a => x, 
-            clk => clk, 
-            reset => reset, 
-            start => start,
-            z => z, 
-            ready => done
+    -- Instantiate eea inversion entity
+    uut1: e_gf2m_eea_inversion PORT MAP(
+            clk_i => clk, 
+            rst_i => rst, 
+            enable_i => enable,
+            a_i => x, 
+            z_o => z, 
+            ready_o => done
         );
                           
-    -- Instantiate classic multiplication                        
-    uut2: work.e_classic_gf2m_multiplier PORT MAP(
-            a => x, 
-            b => z, 
-            c => z_by_x 
+    -- Instantiate classic multiplication entity                      
+    uut2: e_classic_gf2m_multiplier PORT MAP(
+            a_i => x, 
+            b_i => z, 
+            c_o => z_by_x 
         );
 
     -- Create clock signal
@@ -69,7 +90,7 @@ BEGIN
             aux := W/16;
             FOR i IN 1 TO aux LOOP
                 UNIFORM(s1, s2, rand);
-                i_x := INTEGER(TRUNC(rand * real(2**16)));
+                i_x := INTEGER(TRUNC(rand * real(65536)));-- real(2**16)));
                 x(i*16-1 DOWNTO (i-1)*16) := CONV_STD_LOGIC_VECTOR (i_x, 16);
             END LOOP;
                 UNIFORM(s1, s2, rand);
@@ -87,11 +108,12 @@ BEGIN
         VARIABLE xx: std_logic_vector (M-1 DOWNTO 0) ;
     BEGIN
         min_cycles:= 2**20;
-        start <= '0'; reset <= '1';
+        enable <= '0'; rst <= '1';
         WAIT FOR PERIOD;
-        reset <= '0';
+        rst <= '0';
         WAIT FOR PERIOD;
 
+        -- Generate random test cases
         FOR I IN 1 TO NUMBER_TESTS LOOP
             gen_random(xx, M, seed1, seed2);
             WHILE (xx = ZERO) LOOP 
@@ -99,14 +121,16 @@ BEGIN
             END LOOP;
             x <= xx;
 
-            start <= '1'; initial_time := now;
+            -- Check needed number of cycles
+            enable <= '1'; initial_time := now;
             WAIT FOR PERIOD;
-            start <= '0';
+            enable <= '0';
             WAIT UNTIL done = '1';
             final_time := now;
             cycles := (final_time - initial_time)/PERIOD;
             total_cycles := total_cycles+cycles;
-            --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " & integer'image(total_cycles) SEVERITY WARNING;
+            ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & 
+              "  TotalCycles: " & integer'image(total_cycles) SEVERITY WARNING;
             
             IF cycles > max_cycles THEN     
                 max_cycles:= cycles; 
@@ -117,6 +141,7 @@ BEGIN
 
             WAIT FOR 2*PERIOD;
 
+            -- Validate if x * x^-1 = 1 
             IF ( ONE /= z_by_x) THEN 
                 write(TX_LOC,string'("ERROR!!! z_by_x=")); write(TX_LOC, z_by_x);
                 write(TX_LOC,string'("/= ONE=")); 

@@ -19,10 +19,9 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE p_gf2m_eea_inversion_package IS
     -- Constants
-    CONSTANT M: integer := 8;
+    CONSTANT M: integer := 163;
     CONSTANT logM: integer := 3;
-    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011"; --for M=8 bits
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
+    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
 END p_gf2m_eea_inversion_package;
 
 
@@ -101,13 +100,17 @@ USE work.p_gf2m_eea_inversion_package.all;
 
 ENTITY e_gf2m_eea_inversion IS
 PORT (
+    -- Clock, reset and enable
+    clk_i: IN std_logic;
+    rst_i: IN std_logic; 
+    enable_i: IN std_logic; 
+
     -- Input signals
-    A: IN std_logic_vector (M-1 DOWNTO 0);
-    clk, rst, start: IN std_logic; 
+    a_i: IN std_logic_vector (M-1 DOWNTO 0);
 
     -- Output signals
-    Z: OUT std_logic_vector (M-1 DOWNTO 0);
-    ready: OUT std_logic
+    z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+    ready_o: OUT std_logic
 );
 END e_gf2m_eea_inversion;
 
@@ -134,23 +137,29 @@ ARCHITECTURE rtl of e_gf2m_eea_inversion IS
     SIGNAL d, new_d: std_logic_vector(logM DOWNTO 0);
 BEGIN
     -- Instantiate inversion data path
-    data_path_block: eea_inversion_data_path PORT MAP(
-        r => r, s => s,
-        u => u, v => v, d => d, 
-        new_r => new_r, new_s => new_s,
-        new_u => new_u, new_v => new_v, new_d => new_d 
+    data_path_block: e_gf2m_eea_inversion_data_path PORT MAP(
+        r => r, 
+        s => s,
+        u => u, 
+        v => v, 
+        d => d, 
+        new_r => new_r, 
+        new_s => new_s,
+        new_u => new_u, 
+        new_v => new_v, 
+        new_d => new_d 
     );
 
-    z <= u(M-1 DOWNTO 0);
+    z_o <= u(M-1 DOWNTO 0);
 
-    PROCESS(clk, rst)
+    PROCESS(clk_i, rst_i)
     BEGIN
         -- Reset entity on reset
-        IF rst = '1' or first_step = '1' THEN 
-            r <= ('0' & A); s <= ('1' & F);
+        IF rst_i = '1' or first_step = '1' THEN 
+            r <= ('0' & a_i); s <= ('1' & F);
             u <= (0 => '1', OTHERS => '0'); v <= (OTHERS => '0');
             d <= (OTHERS => '0');
-        ELSIF clk'event and clk = '1' THEN
+        ELSIF clk_i'event and clk_i = '1' THEN
             IF capture = '1' THEN
                 r <= new_r; s <= new_s;
                 u <= new_u; v <= new_v;
@@ -159,11 +168,11 @@ BEGIN
         END IF;
     END PROCESS;
 
-    counter: PROCESS(rst, clk)
+    counter: PROCESS(rst_i, clk_i)
     BEGIN
-        IF rst = '1' THEN 
+        IF rst_i = '1' THEN 
             count <= 0;
-        ELSIF clk'event and clk = '1' THEN
+        ELSIF clk_i'event and clk_i = '1' THEN
             IF first_step = '1' THEN 
                 count <= 0;
             ELSIF capture = '1' THEN
@@ -172,22 +181,36 @@ BEGIN
         END IF;
     END PROCESS counter;
 
-    control_unit: PROCESS(clk, rst, current_state, count)
+    -- State machine
+    control_unit: PROCESS(clk_i, rst_i, current_state, count)
     BEGIN
+        -- Handle current state
         CASE current_state IS
-            WHEN 0 TO 1 => first_step <= '0'; ready <= '1'; capture <= '0';
-            WHEN 2 => first_step <= '1'; ready <= '0'; capture <= '0';
-            WHEN 3 => first_step <= '0'; ready <= '0'; capture <= '1';
+            WHEN 0 TO 1 => first_step <= '0'; ready_o <= '1'; capture <= '0';
+            WHEN 2 => first_step <= '1'; ready_o <= '0'; capture <= '0';
+            WHEN 3 => first_step <= '0'; ready_o <= '0'; capture <= '1';
         END CASE;
 
-        IF rst = '1' THEN 
+        IF rst_i = '1' THEN
+            -- Reset state if reset is high
             current_state <= 0;
-        ELSIF clk'event and clk = '1' THEN
+        ELSIF clk_i'event and clk_i = '1' THEN
+            -- Set next state
             CASE current_state IS
-                WHEN 0 => IF start = '0' THEN current_state <= 1; END IF;
-                WHEN 1 => IF start = '1' THEN current_state <= 2; END IF;
-                WHEN 2 => current_state <= 3;
-            WHEN 3 => IF count = 2*M-1 THEN current_state <= 0; END IF;
+                WHEN 0 => 
+                    IF enable_i = '0' THEN 
+                        current_state <= 1; 
+                    END IF;
+                WHEN 1 => 
+                    IF enable_i = '1' THEN 
+                        current_state <= 2; 
+                    END IF;
+                WHEN 2 => 
+                    current_state <= 3;
+            WHEN 3 => 
+                IF count = 2*M-1 THEN 
+                    current_state <= 0; 
+                END IF;
             END CASE;
         END IF;
     END PROCESS control_unit;
