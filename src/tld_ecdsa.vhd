@@ -8,12 +8,30 @@
 --  Date: 02.07.2017
 ----------------------------------------------------------------------------------------------------
 
+------------------------------------------------------------
+-- GF(2^M) ecdsa package
+------------------------------------------------------------
+
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 USE IEEE.numeric_std.ALL;
-USE work.e_k163_point_multiplication_package.all;
+
+PACKAGE tld_k163_ecdsa_package IS
+  CONSTANT M: natural := 163;
+END tld_k163_ecdsa_package;
+
+------------------------------------------------------------
+-- GF(2^M) ecdsa top level entity
+------------------------------------------------------------
+
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.all;
+USE IEEE.std_logic_arith.all;
+USE IEEE.std_logic_unsigned.all;
+USE IEEE.numeric_std.ALL;
+USE work.tld_k163_ecdsa_package.all;
 
 ENTITY tld_ecdsa IS
     PORT (
@@ -22,7 +40,7 @@ ENTITY tld_ecdsa IS
         rst_i: IN std_logic;
         
         -- Generate (private and) public key
-        gen_keys_i: IN std_logic;
+        --gen_keys_i: IN std_logic;
         
         -- Enable computation
         enable_i: IN std_logic;
@@ -149,7 +167,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL xQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qA = dA.G = (xQA, yQA)
     SIGNAL yQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qA = dA.G = (xQA, yQA)
     SIGNAL N : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- Order of generator point G
-    SIGNAL done_gen_key: std_logic := '0';
+    --SIGNAL done_gen_key: std_logic := '0';
     
     -- Parameter to sign a message, ONLY FOR TESTING!
     SIGNAL k : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- k for point generator, should be cryptograic secure randum number!
@@ -184,13 +202,18 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     subtype states IS natural RANGE 0 TO 15;
     SIGNAL current_state: states;
 BEGIN
+    -- generator point: 2fe13c0537bbc11acaa7d793de4e6d5e5c94ee, 2897fb05d38ff58321f2e80536d538ccdaa3
+    -- private key: 2ac4d729602cbe5de8469692ddb6f49aad1ecf932
+    -- public key:0166990bebc978a86a2a711d8ee44988c953ef354
+    --            aeeb153e69f9b0c121871ced96b0b8cc4dc39ad81
+
     -- Set parameter of sect163k1
     xG  <= "010" & x"FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
     yG  <= "010" & x"89070FB05D38FF58321F2E800536D538CCDAA3D9";
     N   <= "100" & x"000000000000000000020108A2E0CC0D99f8A5EE";
-    dA  <= "000" & x"2FA9FB1832696E2A6D29776BCA3653C3F398D370";
-    --xQA <= "000" & x"0000000000000000000000000000000000000000";
-    --yQA <= "000" & x"0000000000000000000000000000000000000000";
+    dA  <= "010" & x"AC4D729602CBE5DE8469692DDB6F49AAD1ECF932";
+    xQA <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
+    yQA <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
     --xQB <= "000" & x"0000000000000000000000000000000000000000";
     --yQB <= "000" & x"0000000000000000000000000000000000000000";
  
@@ -210,17 +233,17 @@ BEGIN
     -- PUBLIC KEX -----------------------------------------------------------------
    
     -- Instantiate multiplier to generate private and public key
-    gen_key: e_k163_point_multiplication PORT MAP(
-        clk_i => clk_i, 
-        rst_i => rst_i, 
-        enable_i => gen_keys_i, 
-        xp_i => xG, 
-        yp_i => yG, 
-        k => dA,
-        xq_io => xQA, 
-        yq_io => yQA, 
-        ready_o => done_gen_key 
-    );
+    --gen_key: e_k163_point_multiplication PORT MAP(
+    --    clk_i => clk_i, 
+    --    rst_i => rst_i, 
+    --    enable_i => gen_keys_i, 
+    --    xp_i => xG, 
+    --    yp_i => yG, 
+    --    k => dA,
+    --    xq_io => xQA, 
+    --    yq_io => yQA, 
+    --    ready_o => done_gen_key 
+    --);
     
     -- SIGN -----------------------------------------------------------------
     

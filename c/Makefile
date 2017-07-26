@@ -11,6 +11,7 @@ KEYSIZE ?= 25
 
 BUILDDIR = build
 TESTSRC = src/eccprint.c src/eccmath.c src/eccmemory.c src/ecdsa.c src/sha256.c test/test_check.c
+MAINSRC = src/eccprint.c src/eccmath.c src/eccmemory.c src/ecdsa.c src/sha256.c test/main.c
 
 ifdef TEST_VERBOSE
 DEFINES += -DTEST_VERBOSE
@@ -21,6 +22,7 @@ endif
 
 HDR = $(wildcard include/*.h)
 TESTOBJ = $(TESTSRC:%.c=%.o)
+MAINOBJ = $(MAINSRC:%.c=%.o)
 
 CFLAGS_INCLUDES = -Isrc -Iinclude
 
@@ -41,6 +43,14 @@ test: testbuild
 	$(BUILDDIR)/test
 test-%: testbuild
 	$(BUILDDIR)/test $*
+
+mainbuild: $(HDR) $(MAINOBJ)
+	$(CC) $(CFLAGS) $(CFLAGS_INCLUDES) $(LDFLAGS) -o $(BUILDDIR)/ecdsa_test $(DEFINES)  $(addprefix $(BUILDDIR)/,$(notdir $(MAINOBJ)))
+
+main: mainbuild
+	$(BUILDDIR)/ecdsa_test
+main-%: mainbuild
+	$(BUILDDIR)/ecdsa_test $*
 
 valgrind:
 	$(VALGRIND) $(VALGRINDFLAGS) $(BUILDDIR)/test

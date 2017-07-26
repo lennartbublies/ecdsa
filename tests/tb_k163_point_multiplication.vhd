@@ -114,7 +114,8 @@ BEGIN
     yP <= "010" & x"89070fb05d38ff58321f2e800536d538ccdaa3d9";
     xP_plus_yP <= xP xor yP;
 
-    PROCESS -- clock process FOR clk
+    -- clock process FOR clk
+    PROCESS 
     BEGIN
         WAIT FOR OFFSET;
         CLOCK_LOOP : LOOP
@@ -125,7 +126,8 @@ BEGIN
         END LOOP CLOCK_LOOP;
     END PROCESS;
 
-    tb_proc : PROCESS 
+    -- Start test cases
+    tb : PROCESS 
         -- Procedure to generate random value for k
         PROCEDURE gen_random(X : out std_logic_vector (M-1 DOWNTO 0); w: natural; s1, s2: inout Natural) IS
             VARIABLE i_x, aux: integer;
@@ -170,7 +172,7 @@ BEGIN
             END LOOP;
             
             -- Start test 1:
-            -- Computation of both multiplier have to finish within a given range 
+            -- Count runtime
             k <= xx;
             enable <= '1'; 
             initial_time := now;

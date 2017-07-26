@@ -81,8 +81,8 @@ BEGIN
         END LOOP CLOCK_LOOP;
     END PROCESS;
 
-    -- Generate Values
-    tb_proc : PROCESS 
+    -- Start test cases
+    tb : PROCESS 
         PROCEDURE gen_random(X : OUT std_logic_vector (M-1 DOWNTO 0); w: natural; s1, s2: inout Natural) IS
             VARIABLE i_x, aux: integer;
             VARIABLE rand: real;
