@@ -1,14 +1,14 @@
-Analysis & Synthesis Status : Successful - Sat Jul 29 21:17:03 2017
+Analysis & Synthesis Status : Failed - Thu Aug 10 19:22:47 2017
 Quartus II 64-Bit Version : 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition
 Revision Name : fpga-ecdsa
 Top-level Entity Name : tld_ecdsa
 Family : Cyclone II
-Total logic elements : 14,967
-    Total combinational functions : 14,967
-    Dedicated logic registers : 8,349
-Total registers : 8349
-Total pins : 821
-Total virtual pins : 0
-Total memory bits : 0
-Embedded Multiplier 9-bit elements : 0
-Total PLLs : 0
+Total logic elements : N/A until Partition Merge
+    Total combinational functions : N/A until Partition Merge
+    Dedicated logic registers : N/A until Partition Merge
+Total registers : N/A until Partition Merge
+Total pins : N/A until Partition Merge
+Total virtual pins : N/A until Partition Merge
+Total memory bits : N/A until Partition Merge
+Embedded Multiplier 9-bit elements : N/A until Partition Merge
+Total PLLs : N/A until Partition Merge

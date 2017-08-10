@@ -16,7 +16,8 @@
 // --- ecsda funcs ---
 
 static eccint_t KK[21] = {
-          0x92,0xA3,0x8B,0x73,0xEA,0x4F,0x2B,0xB9,0x8F,0xD2,0xC1,0x18,0xE4,0x34,0x2A,0x5A,0xC9,0x30,0xD3,0xE0,0x05
+          //0x03,0x35,0x5B,0xF8,0x3C,0x49,0x7F,0x92,0x2F,0xFA,0xEC,0x53,0xC7,0x31,0x5B,0x34,0x8F,0xAF,0xB4,0xDA,0x2F
+          0x2F,0xDA,0xB4,0xAF,0x8F,0x34,0x5B,0x31,0xC7,0x53,0xEC,0xFA,0x2F,0x92,0x7F,0x49,0x3C,0xF8,0x5B,0x35,0x03 // swapped
 };
 
 // Generate random bytes into dst
@@ -90,7 +91,6 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
             //eccint_mod(k, curve->n, k, curve);
 
             // Compute kP = (x_1, y_1) and convert x_1 to integer
-            //eccint_point_mul(k, &curve->P, &point, curve);
             eccint_point_mul(k, &curve->P, &point, curve);
 
             // Compute r = x_1 mod n
@@ -173,6 +173,19 @@ int ecc_verify_verbose(const eccint_point_t *publickey, const eccint_t *hash, co
     // Convert the x-coordinate of X to an integer
     // Compute v = x_1 mod n
     eccint_mod(X.x, curve->n, v, curve);
+
+    printf("# w = \n    ");
+    ecc_print_n(w, curve->words);
+    printf("# u_1 = \n    ");
+    ecc_print_n(u1, curve->words);
+    printf("# u_2 = \n    ");
+    ecc_print_n(u2, curve->words);
+    printf("# x_1 =  (u_1 * P)\n");
+    ecc_print_point_n(&X1, curve->words);
+    printf("# x_2 =  (u_2 * Q)\n");
+    ecc_print_point_n(&X2, curve->words);
+    printf("# x =  (u_1 * P + u_2 * Q)\n");
+    ecc_print_point_n(&X, curve->words);
 
     // If v = r then accept
     return (eccint_cmp(v, r, curve->words) != 0);

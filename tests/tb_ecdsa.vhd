@@ -172,7 +172,41 @@ BEGIN
         END LOOP; 
 
         WAIT FOR DELAY;
-        
+
+        -- C RESULTS - VALUES MAY BE SWAPPED!
+
+        -- ################## SIGNATURE TEMP ###: 
+        -- # k = 
+        --     03355BF83C497F922FFAEC53C7315B348FAFB4DA2F
+        -- # kP = 
+        -- x = 01F8BBFA559093A29A1E240D0BDA21FA344FBBE354
+        -- y = 001AF7EE247897E8577EDF70A9AD5F7E640D6C7E19
+        -- # r =  (kPx)
+        --     01F8BBFA559093A29A1E240D0BDA21FA344FBBE354
+        -- # e + d * kPx  = 
+        --     0ED2A52CECC3D4987E33F26CD53E4DBB4547C50DF7
+        -- # s =  ((e + d * kPx)/k)
+        --     03FB3BC46A33F716453F811C26A3F5F5085ABBDE3E
+        -- ################## SIGNATURE TEMP ###: 
+
+        -- ################## VERIFIY TEMP ###: 
+        -- # w = 
+        --     0169D552F6E38168C9BF8803BEB247E02738FE1E84
+        -- # u_1 = 
+        --     04097C817506A38353AB34C4E30967E9E7D0726F4C
+        -- # u_2 = 
+        --     07D4ECE872FAECB4205540710DB317AEB9784CCC8E
+        -- # x_1 =  (u_1 * P)
+        -- x = 016815438D3CDFE16E4D45561A65CD517120D19B12
+        -- y = 01E2913A037972B64A5425C26327F6E954B2972CEF
+        -- # x_2 =  (u_2 * Q)
+        -- x = 00CF503AE721EA9E91CBA9B83C3550C8E691C10BB7
+        -- y = 05F26A2407ACBBD2505D40D1D00808BF94BEC04484
+        -- # x =  (u_1 * P + u_2 * Q)
+        -- x = 03BA0D75DDF7C306071564E6C65868620422FCBEA6
+        -- y = 07948DDD26282759A6D4393A984B94738E52FCE86C
+        -- ################## VERIFIY TEMP END ###: 
+
         avg_cycles := real(total_cycles)/real(NUMBER_TESTS);
 
         -- Report results

@@ -13,7 +13,7 @@ void ecc_print_binary(const eccint_t a) {
 
 void ecc_print(const eccint_t *in, const size_t size) {
     ssize_t i;
-/*#ifdef PRINT_SWAP
+#ifdef PRINT_SWAP
     printf("{ ");
     for (i = 0; size > 1 && i < size - 1;i++) {
         printf("0b");
@@ -23,16 +23,15 @@ void ecc_print(const eccint_t *in, const size_t size) {
     printf("0b");
     ecc_print_binary(in[size - 1]);
     printf(" }");
-#else*/
-    //for (i = size - 1; i >= 1; i--) {
-    for (i = 0; size > 1 && i < size - 1;i++) {
+#else
+    for (i = size - 1; i >= 1; i--) {
         //ecc_print_binary(in[i]);
         //printf(" ");
         printf("%02X", in[i]);
     }
     //ecc_print_binary(in[i]);
     printf("%02X", in[i]);
-//#endif
+#endif
 }
 
 void ecc_print_n(const eccint_t *in, const size_t size) {
