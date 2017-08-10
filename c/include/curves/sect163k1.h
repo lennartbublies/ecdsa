@@ -42,4 +42,5 @@ static curve_t sect163k1 = {
     .m = 163,
     .mod_fast = eccint_mod_sect163k1
 };
+
 #endif

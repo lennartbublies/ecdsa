@@ -14,7 +14,8 @@ int ecc_keygen(eccint_point_t *publickey, eccint_t *privatekey, const curve_t *c
 int ecc_validate_publickey(const eccint_point_t *publickey, const curve_t *curve);
 
 void ecc_sign(const eccint_t *privatekey, const eccint_t *hash, eccint_signature_t *signature, const curve_t *curve);
-int ecc_verify(const eccint_point_t *publickey, const eccint_t *hash,
-               const eccint_signature_t *signature, const curve_t *curve);
+void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_signature_t *signature, const curve_t *curve, eccint_t verbose);
+int ecc_verify(const eccint_point_t *publickey, const eccint_t *hash, const eccint_signature_t *signature, const curve_t *curve);
+int ecc_verify_verbose(const eccint_point_t *publickey, const eccint_t *hash, const eccint_signature_t *signature, const curve_t *curve, eccint_t verbose);
 
 #endif

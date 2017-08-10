@@ -48,6 +48,9 @@ ENTITY tld_ecdsa IS
         -- Switch between SIGN and VALIDATE
         mode_i: IN std_logic;
 
+        -- Hash
+        hash_i: IN std_logic_vector(M-1 DOWNTO 0);
+
         -- Signature
         r_i: IN std_logic_vector(M-1 DOWNTO 0);
         s_i: IN std_logic_vector(M-1 DOWNTO 0);
@@ -68,19 +71,19 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     -- Components -----------------------------------------
     
     -- Import entity sha256
-    COMPONENT sha256 IS
-        PORT (
-            clk : IN std_logic;
-            reset : IN std_logic;
-            enable : IN std_logic;
-            ready : OUT std_logic;
-            update : IN std_logic;
-            word_address : OUT std_logic_vector(3 DOWNTO 0);
-            word_input : IN std_logic_vector(31 DOWNTO 0);
-            hash_output : OUT std_logic_vector(255 DOWNTO 0);
-            debug_port : OUT std_logic_vector(31 DOWNTO 0)
-        );
-    END COMPONENT;
+    --COMPONENT sha256 IS
+    --    PORT (
+    --        clk : IN std_logic;
+    --        reset : IN std_logic;
+    --        enable : IN std_logic;
+    --        ready : OUT std_logic;
+    --        update : IN std_logic;
+    --        word_address : OUT std_logic_vector(3 DOWNTO 0);
+    --        word_input : IN std_logic_vector(31 DOWNTO 0);
+    --        hash_output : OUT std_logic_vector(255 DOWNTO 0);
+    --        debug_port : OUT std_logic_vector(31 DOWNTO 0)
+    --    );
+    --END COMPONENT;
 
     -- Import entity e_k163_point_multiplication
     COMPONENT e_k163_point_multiplication IS
@@ -154,10 +157,10 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     -- Internal signals -----------------------------------------
     
     -- HASH Entity
-    SIGNAL sha256_enable, sha256_ready, sha256_update : std_logic := '0';
-    SIGNAL sha256_word_address : std_logic_vector(3 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL sha256_word_input, sha256_debug_port : std_logic_vector(31 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL sha256_hash_output : std_logic_vector(255 DOWNTO 0) := (OTHERS=>'0');    
+    --SIGNAL sha256_enable, sha256_ready, sha256_update : std_logic := '0';
+    --SIGNAL sha256_word_address : std_logic_vector(3 DOWNTO 0) := (OTHERS=>'0');
+    --SIGNAL sha256_word_input, sha256_debug_port : std_logic_vector(31 DOWNTO 0) := (OTHERS=>'0');
+    --SIGNAL sha256_hash_output : std_logic_vector(255 DOWNTO 0) := (OTHERS=>'0');    
     
     -- Elliptic curve parameter of sect163k1 and generated private and public key
     --  See http://www.secg.org/SEC2-Ver-1.0.pdf for more information
@@ -206,6 +209,7 @@ BEGIN
     -- private key: 2ac4d729602cbe5de8469692ddb6f49aad1ecf932
     -- public key:0166990bebc978a86a2a711d8ee44988c953ef354
     --            aeeb153e69f9b0c121871ced96b0b8cc4dc39ad81
+    -- 
 
     -- Set parameter of sect163k1
     xG  <= "010" & x"FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
@@ -214,21 +218,22 @@ BEGIN
     dA  <= "010" & x"AC4D729602CBE5DE8469692DDB6F49AAD1ECF932";
     xQA <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
     yQA <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
-    --xQB <= "000" & x"0000000000000000000000000000000000000000";
-    --yQB <= "000" & x"0000000000000000000000000000000000000000";
+    xQB <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
+    yQB <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
+    k   <=       x"92A38B73EA4F2BB98FD2C118E4342A5AC930D3E005";
  
     -- Instantiate sha256 entity to compute hashes
-    hash: sha256 PORT MAP(
-        clk => clk_i,
-        reset => rst_i,
-        enable => sha256_enable, 
-        ready => sha256_ready,
-        update => sha256_update,
-        word_address => sha256_word_address,
-        word_input => sha256_word_input,
-        hash_output => sha256_hash_output, -- ONLY 163 BIT ARE USED!
-        debug_port => sha256_debug_port
-    );
+    --hash: sha256 PORT MAP(
+    --    clk => clk_i,
+    --    reset => rst_i,
+    --    enable => sha256_enable, 
+    --    ready => sha256_ready,
+    --    update => sha256_update,
+    --    word_address => sha256_word_address,
+    --    word_input => sha256_word_input,
+    --    hash_output => sha256_hash_output, -- ONLY 163 BIT ARE USED!
+    --    debug_port => sha256_debug_port
+    --);
     
     -- PUBLIC KEX -----------------------------------------------------------------
    
@@ -273,7 +278,7 @@ BEGIN
 
     -- compute e + (dA * xR) 
     sign_add_edarx: FOR i IN 0 TO 162 GENERATE
-        tmp2(i) <= tmp1(i) xor sha256_hash_output(i); -- TODO???
+        tmp2(i) <= tmp1(i) xor hash_i(i); -- TODO???
     END GENERATE;
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
@@ -307,7 +312,7 @@ BEGIN
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
-        a_i => sha256_hash_output(M-1 DOWNTO 0),
+        a_i => hash_i, --sha256_hash_output(M-1 DOWNTO 0),
         b_i => s_i,
         z_o => tmp4,
         ready_o => done_verify_u1
@@ -408,7 +413,7 @@ BEGIN
                     IF (enable_i = '1' and mode_i = '0') THEN 
                         current_state <= 2; 
                     ELSIF (enable_i = '1' and mode_i = '1') THEN
-                        current_state <= 0; -- TODO
+                        current_state <= 8;
                     END IF;
                 WHEN 2 =>
                     current_state <= 3;

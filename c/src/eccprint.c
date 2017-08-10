@@ -13,7 +13,7 @@ void ecc_print_binary(const eccint_t a) {
 
 void ecc_print(const eccint_t *in, const size_t size) {
     ssize_t i;
-#ifdef PRINT_SWAP
+/*#ifdef PRINT_SWAP
     printf("{ ");
     for (i = 0; size > 1 && i < size - 1;i++) {
         printf("0b");
@@ -23,15 +23,16 @@ void ecc_print(const eccint_t *in, const size_t size) {
     printf("0b");
     ecc_print_binary(in[size - 1]);
     printf(" }");
-#else
-    for (i = size - 1; i >= 1; i--) {
-        ecc_print_binary(in[i]);
-        printf(" ");
-        //printf("0x%02X, ", in[i]);
+#else*/
+    //for (i = size - 1; i >= 1; i--) {
+    for (i = 0; size > 1 && i < size - 1;i++) {
+        //ecc_print_binary(in[i]);
+        //printf(" ");
+        printf("%02X", in[i]);
     }
-    ecc_print_binary(in[i]);
-    //printf("0x%02X", in[i]);
-#endif
+    //ecc_print_binary(in[i]);
+    printf("%02X", in[i]);
+//#endif
 }
 
 void ecc_print_n(const eccint_t *in, const size_t size) {
@@ -61,14 +62,14 @@ void ecc_print_dn(const eccint_t *in, const size_t size) {
 void ecc_print_point(const eccint_point_t *in, const size_t size) {
     printf("x = ");
     ecc_print(in->x, size);
-    printf("  y = ");
+    printf("\ny = ");
     ecc_print(in->y, size);
 }
 
 void ecc_print_point_v(const eccint_point_t *in, const size_t size) {
     printf("x = ");
     ecc_print_v(in->x, size);
-    printf("  y = ");
+    printf("\ny = ");
     ecc_print_v(in->y, size);
 }
 
@@ -94,7 +95,7 @@ void ecc_print_point_vn(const eccint_point_t *in, const size_t size) {
 void ecc_print_signature(const eccint_signature_t *in, const size_t size) {
     printf("r = ");
     ecc_print(in->r, size);
-    printf("  s = ");
+    printf("\ns = ");
     ecc_print(in->s, size);
 }
 

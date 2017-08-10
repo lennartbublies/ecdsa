@@ -25,7 +25,6 @@ ARCHITECTURE rtl OF tb_k163_ecdsa IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic;
-            gen_keys_i: IN std_logic;
             enable_i: IN std_logic;
             mode_i: IN std_logic;
             r_i: IN std_logic_vector(M-1 DOWNTO 0);
@@ -51,16 +50,15 @@ BEGIN
     -- Instantiate ecdsa entity
     uut1: tld_ecdsa PORT MAP(
         clk_i => clk, 
-        rst_i => rst, 
-        gen_keys_i => enable_keys_i, 
+        rst_i => rst,
         enable_i => enable, 
         mode_i => mode, 
         r_i => ri,
         s_i => si, 
         ready_o => done, 
         valid_o => valid,
-        sign_r_o => ro,
-        sign_s_o => so 
+        sign_r_o => ri,
+        sign_s_o => si 
     );
 
     -- clock process FOR clk
@@ -75,7 +73,7 @@ BEGIN
         END LOOP CLOCK_LOOP;
     END PROCESS;
 
-    tb_proc : PROCESS 
+    tb : PROCESS 
         -- Procedure to generate random value for k
         PROCEDURE gen_random(X : out std_logic_vector (M-1 DOWNTO 0); w: natural; s1, s2: inout Natural) IS
             VARIABLE i_x, aux: integer;
@@ -101,6 +99,7 @@ BEGIN
         VARIABLE avg_cycles: real;
         VARIABLE initial_time, final_time: time;
         VARIABLE xx: std_logic_vector (M-1 DOWNTO 0) ;
+        VARIABLE hash: std_logic_vector (M-1 DOWNTO 0) ;
     BEGIN
         min_cycles:= 2**20;
         
@@ -118,44 +117,58 @@ BEGIN
             WHILE (xx = ZERO) LOOP 
                 gen_random(xx, M, seed1, seed2); 
             END LOOP;
-            --x <= xx;
+            --hash <= xx;
             
             -- Start test 1:
             -- Count runtime
-            --enable <= '1'; 
-            --initial_time := now;
-            --WAIT FOR PERIOD;
-            --enable <= '0';
-            --WAIT UNTIL (done = '1') and (done_2 = '1');
-            --final_time := now;
-            --cycles := (final_time - initial_time)/PERIOD;
-            --total_cycles := total_cycles+cycles;
+            enable <= '1'; 
+            initial_time := now;
+            WAIT FOR PERIOD;
+            enable <= '0';
+            WAIT UNTIL (done = '1');
+            final_time := now;
+            cycles := (final_time - initial_time)/PERIOD;
+            total_cycles := total_cycles+cycles;
             --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " 
             --  & integer'image(total_cycles) SEVERITY WARNING;
-            --IF cycles > max_cycles THEN  
-            --    max_cycles:= cycles; 
-            --END IF;
-            --IF cycles < min_cycles THEN  
-            --    min_cycles:= cycles; 
-            --END IF;
+            IF cycles > max_cycles THEN  
+                max_cycles:= cycles; 
+            END IF;
+            IF cycles < min_cycles THEN  
+                min_cycles:= cycles; 
+            END IF;
 
             -- Start test 2:
             -- Sign and verify
-            --WAIT FOR PERIOD;
-            --start_add <= '1';
-            --WAIT FOR PERIOD;
-            --start_add <= '0';
-            --WAIT UNTIL done_add = '1';
+            WAIT FOR PERIOD;
+            enable <= '1';
+            mode <= '0';
+            WAIT FOR PERIOD;
+            enable <= '0';
+            WAIT UNTIL done = '1';
 
-            --WAIT FOR 2*PERIOD;
+            WAIT FOR 2*PERIOD;
 
-            --IF ( xQ1 /= xQ3 or (yQ1 /= yQ3) ) THEN 
-            --    write(TX_LOC,string'("ERROR!!! k.P /= (k-1)*P + P; k = ")); write(TX_LOC, k);
-            --    write(TX_LOC, string'(" )"));
-            --    TX_STR(TX_LOC.all'range) := TX_LOC.all;
-            --    Deallocate(TX_LOC);
-            --    ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
-            --END IF;  
+            
+
+            WAIT FOR PERIOD;
+            enable <= '1';
+            mode <= '1';
+            WAIT FOR PERIOD;
+            enable <= '0';
+            WAIT UNTIL done = '1';
+
+            WAIT FOR 2*PERIOD;
+
+            
+            
+            IF ( valid = '0' ) THEN 
+                write(TX_LOC,string'("ERROR!!! Signature invalid"));
+                write(TX_LOC, string'(" )"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                Deallocate(TX_LOC);
+                ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+            END IF;  
         END LOOP; 
 
         WAIT FOR DELAY;
