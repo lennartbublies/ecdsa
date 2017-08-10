@@ -189,7 +189,6 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL invs : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL tmp4, tmp5 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
     SIGNAL enable_verify_invs, done_verify_invs : std_logic := '0'; 
-    SIGNAL enable_verify_w12, done_verify_w1, done_verify_w2 : std_logic := '0'; 
     SIGNAL enable_verify_u12, done_verify_u1, done_verify_u2 : std_logic := '0'; 
     SIGNAL enable_verify_u1gu2qb, enable_verify_u1gu2q, done_verify_u1g, done_verify_u2qb : std_logic := '0';
     SIGNAL enable_verify_P, done_verify_P : std_logic := '0';
@@ -220,7 +219,7 @@ BEGIN
     yQA <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
     xQB <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
     yQB <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
-    k   <=       x"92A38B73EA4F2BB98FD2C118E4342A5AC930D3E005";
+    k   <= "011" & x"355BF83C497F922FFAEC53C7315B348FAFB4DA2F";
  
     -- Instantiate sha256 entity to compute hashes
     --hash: sha256 PORT MAP(
@@ -381,21 +380,21 @@ BEGIN
         --  8,9   : VERIFY -> compute 1/S
         --  10,11 : VERIFY -> compute u1 = ew und u2 = rw
         CASE current_state IS
-            WHEN 0 TO 1 => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; 
-            WHEN 2  => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 3  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 4  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 5  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 6  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 7  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 8  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '1'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 9  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 10 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 11 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 12 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0';
-            WHEN 13 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 14 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1';
-            WHEN 15 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_w12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 0 TO 1 => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; 
+            WHEN 2  => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 3  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 4  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 5  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 6  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 7  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 8  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '1'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 9  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 10 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 11 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 12 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0';
+            WHEN 13 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 14 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1';
+            WHEN 15 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
         END CASE;
         
         IF rst_i = '1' THEN 
@@ -453,7 +452,7 @@ BEGIN
                 WHEN 10 =>
                     current_state <= 11;
                 WHEN 11 =>
-                    IF (done_verify_w1 = '1' and done_verify_w2 = '1') THEN
+                    IF (done_verify_u1 = '1' and done_verify_u2 = '1') THEN
                         current_state <= 12;
                     END IF;
                 WHEN 12 =>

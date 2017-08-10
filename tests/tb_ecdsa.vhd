@@ -27,6 +27,7 @@ ARCHITECTURE rtl OF tb_k163_ecdsa IS
             rst_i: IN std_logic;
             enable_i: IN std_logic;
             mode_i: IN std_logic;
+            hash_i: IN std_logic_vector(M-1 DOWNTO 0);
             r_i: IN std_logic_vector(M-1 DOWNTO 0);
             s_i: IN std_logic_vector(M-1 DOWNTO 0);
             ready_o: OUT std_logic;
@@ -39,13 +40,14 @@ ARCHITECTURE rtl OF tb_k163_ecdsa IS
     -- Internal signals
     SIGNAL ri, si, ro, so:  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL clk, rst, enable, mode, done, valid, enable_keys_i: std_logic := '0';
+    SIGNAL hash: std_logic_vector (M-1 DOWNTO 0) ;
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     CONSTANT ONE: std_logic_vector(M-1 DOWNTO 0) := (0 => '1', OTHERS=>'0');
     CONSTANT DELAY : time := 100 ns;
     CONSTANT PERIOD : time := 200 ns;
     CONSTANT DUTY_CYCLE : real := 0.5;
     CONSTANT OFFSET : time := 0 ns;
-    CONSTANT NUMBER_TESTS: natural := 20;
+    CONSTANT NUMBER_TESTS: natural := 1;
 BEGIN
     -- Instantiate ecdsa entity
     uut1: tld_ecdsa PORT MAP(
@@ -53,6 +55,7 @@ BEGIN
         rst_i => rst,
         enable_i => enable, 
         mode_i => mode, 
+        hash_i => hash,
         r_i => ri,
         s_i => si, 
         ready_o => done, 
@@ -99,7 +102,6 @@ BEGIN
         VARIABLE avg_cycles: real;
         VARIABLE initial_time, final_time: time;
         VARIABLE xx: std_logic_vector (M-1 DOWNTO 0) ;
-        VARIABLE hash: std_logic_vector (M-1 DOWNTO 0) ;
     BEGIN
         min_cycles:= 2**20;
         
@@ -117,7 +119,7 @@ BEGIN
             WHILE (xx = ZERO) LOOP 
                 gen_random(xx, M, seed1, seed2); 
             END LOOP;
-            --hash <= xx;
+            hash <= xx;
             
             -- Start test 1:
             -- Count runtime
@@ -129,8 +131,8 @@ BEGIN
             final_time := now;
             cycles := (final_time - initial_time)/PERIOD;
             total_cycles := total_cycles+cycles;
-            --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " 
-            --  & integer'image(total_cycles) SEVERITY WARNING;
+            ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " 
+              & integer'image(total_cycles) SEVERITY WARNING;
             IF cycles > max_cycles THEN  
                 max_cycles:= cycles; 
             END IF;
@@ -140,7 +142,7 @@ BEGIN
 
             -- Start test 2:
             -- Sign and verify
-            WAIT FOR PERIOD;
+            WAIT FOR 2*PERIOD;
             enable <= '1';
             mode <= '0';
             WAIT FOR PERIOD;
@@ -148,8 +150,6 @@ BEGIN
             WAIT UNTIL done = '1';
 
             WAIT FOR 2*PERIOD;
-
-            
 
             WAIT FOR PERIOD;
             enable <= '1';
@@ -160,8 +160,6 @@ BEGIN
 
             WAIT FOR 2*PERIOD;
 
-            
-            
             IF ( valid = '0' ) THEN 
                 write(TX_LOC,string'("ERROR!!! Signature invalid"));
                 write(TX_LOC, string'(" )"));
