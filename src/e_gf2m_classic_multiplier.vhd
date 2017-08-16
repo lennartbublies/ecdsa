@@ -19,7 +19,6 @@ USE IEEE.std_logic_unsigned.all;
 PACKAGE p_gf2m_classic_multiplier_parameters IS
     -- Constants
     CONSTANT M: integer := 163;
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011";
     CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --FOR M=163
 
     -- Types

@@ -190,7 +190,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL tmp4, tmp5 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
     SIGNAL enable_verify_invs, done_verify_invs : std_logic := '0'; 
     SIGNAL enable_verify_u12, done_verify_u1, done_verify_u2 : std_logic := '0'; 
-    SIGNAL enable_verify_u1gu2qb, enable_verify_u1gu2q, done_verify_u1g, done_verify_u2qb : std_logic := '0';
+    SIGNAL enable_verify_u1gu2qb, done_verify_u1g, done_verify_u2qb : std_logic := '0';
     SIGNAL enable_verify_P, done_verify_P : std_logic := '0';
     SIGNAL xU1G, yU1G : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL xU2QB, yU2QB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
@@ -209,18 +209,37 @@ BEGIN
     -- public key:0166990bebc978a86a2a711d8ee44988c953ef354
     --            aeeb153e69f9b0c121871ced96b0b8cc4dc39ad81
     -- 
-
+    
     -- Set parameter of sect163k1
     xG  <= "010" & x"FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
     yG  <= "010" & x"89070FB05D38FF58321F2E800536D538CCDAA3D9";
     N   <= "100" & x"000000000000000000020108A2E0CC0D99f8A5EE";
-    dA  <= "010" & x"AC4D729602CBE5DE8469692DDB6F49AAD1ECF932";
-    xQA <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
-    yQA <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
-    xQB <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
-    yQB <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
+  --dA  <= "010" & x"AC4D729602CBE5DE8469692DDB6F49AAD1ECF932";
+    dA  <= "011" & x"8DBECA356DB37E542A636F9DDCD8643CB8722487";
+  --xQA <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
+  --yQA <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
+    xQA <= "000" & x"D5B7391E8940565BD98587DF0BF8461E326B05D1";
+    yQA <= "000" & x"FF47471D622B5D82C98D58629679CAFFB2336514";
+  --xQB <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
+  --yQB <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
+  --xQB <= "000" & x"D4845314B7851DA63B9569E812A6602A22493216";
+  --yQB <= "000" & x"0D5B712A2981DD2FB1AFA15FE4079C79A3724BB0";
+    xQB <= "000" & x"D5B7391E8940565BD98587DF0BF8461E326B05D1";
+    yQB <= "000" & x"FF47471D622B5D82C98D58629679CAFFB2336514";
     k   <= "011" & x"355BF83C497F922FFAEC53C7315B348FAFB4DA2F";
+  --k   <= "111" & x"DAB4AF8F345B31C753ECFA2F927F493CF85B3503";
  
+    -- Set parameter of sect163k1
+--    xG  <= x"02FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
+--    yG  <= x"0289070FB05D38FF58321F2E800536D538CCDAA3D9";
+--    N   <= x"04000000000000000000020108A2E0CC0D99F8A5EF";
+--    dA  <= x"0B8DBECA356DB37E542A636F9DDCD8643CB8722487";
+--    xQA <= x"00D5B7391E8940565BD98587DF0BF8461E326B05D1";
+--    yQA <= x"00FF47471D622B5D82C98D58629679CAFFB2336514";
+--    xQB <= x"00D4845314B7851DA63B9569E812A6602A22493216";
+--    yQB <= x"000D5B712A2981DD2FB1AFA15FE4079C79A3724BB0";
+--    k   <= x"03355BF83C497F922FFAEC53C7315B348FAFB4DA2F";
+
     -- Instantiate sha256 entity to compute hashes
     --hash: sha256 PORT MAP(
     --    clk => clk_i,
@@ -312,7 +331,7 @@ BEGIN
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
         a_i => hash_i, --sha256_hash_output(M-1 DOWNTO 0),
-        b_i => s_i,
+        b_i => invs,
         z_o => tmp4,
         ready_o => done_verify_u1
     );
@@ -323,7 +342,7 @@ BEGIN
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
         a_i => r_i,
-        b_i => s_i,
+        b_i => invs,
         z_o => tmp5,
         ready_o => done_verify_u2
     );
@@ -332,7 +351,7 @@ BEGIN
     sign_pmul_u1gu2q: e_k163_point_multiplication PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i, 
-        enable_i => enable_verify_u1gu2q, 
+        enable_i => enable_verify_u1gu2qb, 
         xp_i => xG, 
         yp_i => yG, 
         k => tmp4,

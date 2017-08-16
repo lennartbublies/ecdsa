@@ -28,9 +28,8 @@ USE IEEE.std_logic_unsigned.all;
 PACKAGE p_gf2m_classic_squarer_parameters IS
     -- Constants
     CONSTANT M: integer := 163;
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011";
     CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
-
+    
     -- Types
     TYPE matrix_reductionR IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);
     
@@ -115,11 +114,7 @@ END e_gf2m_reducer;
 ARCHITECTURE rtl OF e_gf2m_reducer IS
     -- Initial reduction matrix from polynomial F
     CONSTANT R: matrix_reductionR := reduction_matrix_R;
-    -- Temporary SIGNAL, neccessary?
-    SIGNAL S: matrix_reductionR;
 BEGIN
-    S <= R; -- TODO: neccessary?
-    
     -- GENERATE M-1 XORs FOR each redcutions matrix row
     gen_xors: FOR j IN 0 TO M-1 GENERATE
         l1: PROCESS(d_i) 
@@ -169,7 +164,14 @@ ARCHITECTURE rtl OF e_classic_gf2m_squarer IS
 BEGIN
     d(0) <= a_i(0);
 
-    -- TODO - WHY IS IT CORRECT?
+    -- Polynomial multiplication
+    --  Calculates: x * x
+    --    101100 -> 010001010000
+    --        -              -
+    --       -             -
+    --      -            -
+    --     -           -
+    --    -          -
     square: FOR i IN 1 TO M-1 GENERATE
         d(2*i-1) <= '0';
         d(2*i) <= a_i(i);

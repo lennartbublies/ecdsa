@@ -21,7 +21,6 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE e_k163_point_addition_package IS
   CONSTANT M: natural := 163;
-  CONSTANT logm: natural := 8;
 END e_k163_point_addition_package;
 
 ------------------------------------------------------------
@@ -100,6 +99,7 @@ ARCHITECTURE rtl of e_k163_point_addition IS
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate divider entity
+    --  Calculate s = (py-qy)/(px-qx)
     divider: e_gf2m_binary_algorithm_polynomials PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
@@ -109,14 +109,16 @@ BEGIN
         z_o => lambda, 
         ready_o => div_done
     );
-
-    -- Instantiate squarer entity
+    
+    -- Instantiate squarer 
+    --  Calculate s^2
     lambda_square_computation: e_classic_gf2m_squarer PORT MAP( 
         a_i => lambda, 
         c_o => lambda_square
     );
   
     -- Instantiate multiplier entity
+    --  Calculate s * (px - rx)
     multiplier: e_gf2m_interleaved_multiplier PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
@@ -127,13 +129,15 @@ BEGIN
         ready_o => mult_done
     );
 
-    -- Set divider input from entity input 
+    -- Set divider input from entity input
+    --  Calculate (py-qy) and (px-qx)
     divider_inputs: FOR i IN 0 TO M-1 GENERATE 
         div_in1(i) <= y1_i(i) xor y2_i(i);
         div_in2(i) <= x1_i(i) xor x2_i(i);
     END GENERATE;
 
     -- Set multiplier input from entity input 
+    --  Calculate (px - rx)
     multiplier_inputs: FOR i IN 0 TO 162 GENERATE
         mult_in2(i) <= x1_i(i) xor x3_io(i);
     END GENERATE;
@@ -141,10 +145,13 @@ BEGIN
     x3_io(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
     
     -- Set output
+    --  Calculate rx = s^2 - s - (px-qx)
+    --  TODO: WHY "-s"?
     x_output: FOR i IN 1 TO 162 GENERATE
         x3_io(i) <= lambda_square(i) xor lambda(i) xor div_in2(i);
     END GENERATE;
-
+    --  Calculate ry = s * (px - rx) - rx - py
+    --  TODO: WHY "-rx"?
     y_output: FOR i IN 0 TO 162 GENERATE
         y3_o(i) <= mult_out(i) xor x3_io(i) xor y1_i(i);
     END GENERATE;
@@ -153,6 +160,9 @@ BEGIN
     control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN
         -- Handle current state
+        --  0,1   : Default state
+        --  2,3   : Calculate s = (py-qy)/(px-qx), s^2
+        --  4,5,6 : Calculate rx/ry 
         CASE current_state IS
             WHEN 0 TO 1 => start_div <= '0'; start_mult <= '0'; ready_o <= '1';
             WHEN 2 => start_div <= '1'; start_mult <= '0'; ready_o <= '0';

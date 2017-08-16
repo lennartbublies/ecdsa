@@ -4,7 +4,7 @@
 --  Ports:
 -- 
 --  Source:
---   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/K163_addition.vhd
+--   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/K163_point_multiplication.vhd
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 29.06.2017
@@ -88,6 +88,7 @@ ARCHITECTURE rtl of e_k163_point_multiplication IS
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate point addition entity
+    --  Calculate (x3, y3) = (xxp, y1) + (xq, yq)
     first_component: e_k163_point_addition PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
@@ -102,17 +103,20 @@ BEGIN
         );
 
     -- Instantiate squarer entity for x part
+    --  Calculate xxp^2
     x_squarer: e_classic_gf2m_squarer PORT MAP( 
             a_i => xxP, 
             c_o => square_xxP
         );
 
     -- Instantiate squarer entity for y part    
+    --  Calculate yyp^2
     y_squarer: e_classic_gf2m_squarer PORT MAP( 
             a_i => yyP, 
             c_o => square_yyP
         );
 
+    -- Calculate xxp XOR yyp
     xor_gates: FOR i IN 0 TO m-1 GENERATE 
         xxPxoryyP(i) <= xxP(i) xor yyP(i); 
     END GENERATE;
@@ -140,7 +144,8 @@ BEGIN
             IF load = '1' THEN 
                 Q_infinity <= '1';
             ELSIF ce_Q = '1' THEN 
-                xq_io <= next_xQ; yq_io <= next_yQ; 
+                xq_io <= next_xQ; 
+                yq_io <= next_yQ; 
                 Q_infinity <= '0'; 
             END IF;
         END IF;
@@ -175,6 +180,11 @@ BEGIN
     control_unit: PROCESS(clk_i, rst_i, current_state, addition_done, aEqual0, bEqual0, a(0), a1xorb0, Q_infinity)
     BEGIN
         -- Handle current state
+        --  0,1   : Default state
+        --  2,3   : Load k, xp, yp, ...
+        --  4,5   : Square xxp, yyp, ...
+        --  6,7   :
+        --
         CASE current_state IS
             WHEN 0 TO 1 => sel_1 <= '0'; sel_2 <= "00"; carry <= '0'; load <= '0'; ce_P <= '0'; ce_Q <= '0'; ce_ab <= '0'; start_addition <= '0'; ready_o <= '1';
             WHEN 2 => sel_1 <= '0'; sel_2 <= "00"; carry <= '0'; load <= '1'; ce_P <= '0'; ce_Q <= '0'; ce_ab <= '0'; start_addition <= '0'; ready_o <= '0';
@@ -265,7 +275,7 @@ ENTITY e_k163_point_multiplication_demux IS
         enable_i: IN std_logic;
         
         -- Input data
-        data_i: IN std_logic_vector(162 DOWNTO 0);
+        data_i: IN std_logic_vector(M-1 DOWNTO 0);
         
         -- Set type of input data (xp_i, yp_i or k value)
         en_xp_i: IN std_logic; 
@@ -273,7 +283,7 @@ ENTITY e_k163_point_multiplication_demux IS
         en_k_i: IN std_logic;
 
         -- Calculated output data
-        out_o: INOUT std_logic_vector(162 DOWNTO 0);
+        out_o: INOUT std_logic_vector(M-1 DOWNTO 0);
         xy_o: IN std_logic;
 
         ready_o: OUT std_logic
@@ -297,7 +307,7 @@ ARCHITECTURE rtl of e_k163_point_multiplication_demux IS
     END COMPONENT;
 
     -- Temporary signals for point P, Q and k
-    SIGNAL xp, yp, k, xq_io, yq_io: std_logic_vector (162 DOWNTO 0);
+    SIGNAL xp, yp, k, xq_io, yq_io: std_logic_vector (M-1 DOWNTO 0);
 BEGIN
     -- Instantiate point multiplication entity
     point_multiplier: e_k163_point_multiplication PORT MAP(

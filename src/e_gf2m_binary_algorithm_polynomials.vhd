@@ -181,6 +181,3 @@ BEGIN
         END IF;
     END PROCESS control_unit;
 END rtl;
-
-
- 
