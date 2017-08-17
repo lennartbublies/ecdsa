@@ -54,8 +54,8 @@ ENTITY e_k163_point_addition IS
 END e_k163_point_addition;
 
 ARCHITECTURE rtl of e_k163_point_addition IS
-    -- Import entity e_gf2m_binary_algorithm_polynomials
-    COMPONENT e_gf2m_binary_algorithm_polynomials IS
+    -- Import entity e_gf2m_divider
+    COMPONENT e_gf2m_divider IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -100,7 +100,7 @@ ARCHITECTURE rtl of e_k163_point_addition IS
 BEGIN
     -- Instantiate divider entity
     --  Calculate s = (py-qy)/(px-qx)
-    divider: e_gf2m_binary_algorithm_polynomials PORT MAP( 
+    divider: e_gf2m_divider PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_div,

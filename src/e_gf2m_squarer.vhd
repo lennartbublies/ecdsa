@@ -2,13 +2,14 @@
 --  ENTITY - GF(2^M) Classic Squaring
 --  Computes the polynomial multiplication A.A mod f IN GF(2**m)
 --
---  Its IS based on classic modular multiplier, but USE the fact that
---  squaring a polinomial IS simplier than multiply.
---
 --  Ports:
 --   a_i : Input to square
 --   c_o : Square of input
 -- 
+--  Example:
+--   (x^2 + x + 1)^2 = (x^4+x^2+1) 
+--     1 1 1         =   1 0 1 0 1
+--
 --  Source:
 --   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/classic_squarer.vhd
 --
@@ -166,12 +167,10 @@ BEGIN
 
     -- Polynomial multiplication
     --  Calculates: x * x
-    --    101100 -> 010001010000
-    --        -              -
-    --       -             -
-    --      -            -
-    --     -           -
-    --    -          -
+    --    1 1 1 = 1 0 1 0 1
+    --        -           -
+    --      -         -
+    --    -       -
     square: FOR i IN 1 TO M-1 GENERATE
         d(2*i-1) <= '0';
         d(2*i) <= a_i(i);

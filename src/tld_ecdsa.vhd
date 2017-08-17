@@ -116,8 +116,8 @@ ARCHITECTURE rtl OF tld_ecdsa IS
         );
     END COMPONENT;
     
-    -- Import entity e_gf2m_binary_algorithm_polynomials
-    COMPONENT e_gf2m_binary_algorithm_polynomials IS
+    -- Import entity e_gf2m_divider
+    COMPONENT e_gf2m_divider IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -300,7 +300,7 @@ BEGIN
     END GENERATE;
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
-    divider: e_gf2m_binary_algorithm_polynomials PORT MAP( 
+    divider: e_gf2m_divider PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_z2k,

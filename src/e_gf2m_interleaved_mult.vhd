@@ -4,6 +4,22 @@
 --
 --  Ports:
 -- 
+--  Example:
+--   (x^2+x+1)*(x^2+1) = x^4+x^3+x+1
+--    1 1 1   * 1 0 1  = 11011 (bit-shift and XOR, shifts 2*M-2 bits)
+--                 
+--   BIT-SHIFT and XOR:        
+--    11100 <- [1] 0  1   shift 2 bits
+--      111 <-  1  0 [1]  shift 0 bits
+--    11011 <-            XOR result
+--
+--    -> Result has more then M bits, so we've to reduce it by irreducible polynomial like 1011
+--       11011 
+--       1011  <- shift 1 bits (degree 4 - degree 3)
+--        1101 <- shift 0 bits (degree 3 - degree 3)
+--        1011
+--         110
+--
 --  Source:
 --   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/interleaved_mult.vhd
 --
@@ -118,7 +134,7 @@ BEGIN
 END rtl;
 
 -----------------------------------
--- GF(2^M) interleaved multipication
+-- GF(2^M) interleaved multiplication
 -----------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
@@ -197,6 +213,9 @@ BEGIN
     control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN
         -- Handle current state
+        --  0,1   : Default state
+        --  2     : Load input arguments (initialize registers)
+        --  3     : Shift input
         CASE current_state IS
             WHEN 0 TO 1 => inic <= '0'; shiftr <= '0'; ready_o <= '1'; cec <= '0';
             WHEN 2 => inic <= '1'; shiftr <= '0'; ready_o <= '0'; cec <= '0';
