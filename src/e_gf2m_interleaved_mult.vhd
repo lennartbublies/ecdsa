@@ -37,7 +37,9 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE p_gf2m_interleaved_mult_package IS
     -- Constants
+    --CONSTANT M: integer := 8;
     CONSTANT M: integer := 163;
+    --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
     CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
 END p_gf2m_interleaved_mult_package;
 
@@ -215,11 +217,11 @@ BEGIN
         -- Handle current state
         --  0,1   : Default state
         --  2     : Load input arguments (initialize registers)
-        --  3     : Shift input
+        --  3     : Shift and add
         CASE current_state IS
-            WHEN 0 TO 1 => inic <= '0'; shiftr <= '0'; ready_o <= '1'; cec <= '0';
-            WHEN 2 => inic <= '1'; shiftr <= '0'; ready_o <= '0'; cec <= '0';
-            WHEN 3 => inic <= '0'; shiftr <= '1'; ready_o <= '0'; cec <= '1';
+            WHEN 0 TO 1 => inic <= '0'; shiftr <= '0'; cec <= '0'; ready_o <= '1';
+            WHEN 2      => inic <= '1'; shiftr <= '0'; cec <= '0'; ready_o <= '0';
+            WHEN 3      => inic <= '0'; shiftr <= '1'; cec <= '1'; ready_o <= '0';
         END CASE;
 
         IF rst_i = '1' THEN 

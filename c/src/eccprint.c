@@ -25,12 +25,12 @@ void ecc_print(const eccint_t *in, const size_t size) {
     printf(" }");
 #else
     for (i = size - 1; i >= 1; i--) {
-        ecc_print_binary(in[i]);
+        //ecc_print_binary(in[i]);
         //printf(" ");
-        //printf("%02X", in[i]);
+        printf("%02X", in[i]);
     }
-    ecc_print_binary(in[i]);
-    //printf("%02X", in[i]);
+    //ecc_print_binary(in[i]);
+    printf("%02X", in[i]);
 #endif
 }
 

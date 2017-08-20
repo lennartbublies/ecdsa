@@ -28,7 +28,9 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE p_gf2m_classic_squarer_parameters IS
     -- Constants
+    --CONSTANT M: integer := 8;
     CONSTANT M: integer := 163;
+    --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
     CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
     
     -- Types
@@ -42,43 +44,19 @@ PACKAGE BODY p_gf2m_classic_squarer_parameters IS
     FUNCTION reduction_matrix_R RETURN matrix_reductionR IS
     VARIABLE R: matrix_reductionR;
     BEGIN
-        -- Initialise matrix WITH zeros
-        --   000000
-        --   000000
-        --   000000
-        --   000000
-        --   000000
-        --   000000
-        --   000000
-        --   000000
+        -- Initialise matrix
         FOR j IN 0 TO M-1 LOOP
             FOR i IN 0 TO M-2 LOOP
                 R(j)(i) := '0'; 
             END LOOP;
         END LOOP;
         
-        -- Copy F polynomial "00011011" TO array 
-        --   000001
-        --   000001
-        --   000000
-        --   000001
-        --   000001
-        --   000000
-        --   000000
-        --   000000
+        -- Copy polynomial 
         FOR j IN 0 TO M-1 LOOP
             R(j)(0) := F(j);
         END LOOP;
         
-        -- Compute .... (after first round)
-        --   0000 0 1
-        --   0000 1 1
-        --   0000 1 0     
-        --   0000 1 1     
-        --   0000 1 1     
-        --   0000 1 0     
-        --   0000 1 0     
-        --   0000 1 0     
+        -- Compute lookup table   
         FOR i IN 1 TO M-2 LOOP
             FOR j IN 0 TO M-1 LOOP
                 IF j = 0 THEN 
@@ -142,7 +120,7 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 USE work.p_gf2m_classic_squarer_parameters.all;
 
-ENTITY e_classic_gf2m_squarer IS
+ENTITY e_gf2m_classic_squarer IS
     PORT (
         -- Input SIGNAL
         a_i: IN std_logic_vector(M-1 DOWNTO 0);
@@ -150,9 +128,9 @@ ENTITY e_classic_gf2m_squarer IS
         -- Output SIGNAL
         c_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
-END e_classic_gf2m_squarer;
+END e_gf2m_classic_squarer;
 
-ARCHITECTURE rtl OF e_classic_gf2m_squarer IS
+ARCHITECTURE rtl OF e_gf2m_classic_squarer IS
     -- Import entity e_gf2m_reducer
     COMPONENT e_gf2m_reducer IS
         PORT(

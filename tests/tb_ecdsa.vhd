@@ -170,7 +170,7 @@ BEGIN
         END LOOP; 
 
         WAIT FOR DELAY;
-        
+
         avg_cycles := real(total_cycles)/real(NUMBER_TESTS);
 
         -- Report results

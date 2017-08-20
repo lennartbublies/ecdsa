@@ -1,5 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 --  ENTITY - Elliptic Curve Point Multiplication IN K163
+--  Implementation with Double-And-Add algorithm
 --
 --  Ports:
 -- 
@@ -66,8 +67,8 @@ ARCHITECTURE rtl of e_k163_point_multiplication IS
         );
     END COMPONENT;
     
-    -- Import entity e_classic_gf2m_squarer
-    COMPONENT e_classic_gf2m_squarer IS
+    -- Import entity e_gf2m_classic_squarer
+    COMPONENT e_gf2m_classic_squarer IS
         PORT(
             a_i: IN std_logic_vector(M-1 DOWNTO 0);
             c_o: OUT std_logic_vector(M-1 DOWNTO 0)
@@ -104,14 +105,14 @@ BEGIN
 
     -- Instantiate squarer entity for x part
     --  Calculate xxp^2
-    x_squarer: e_classic_gf2m_squarer PORT MAP( 
+    x_squarer: e_gf2m_classic_squarer PORT MAP( 
             a_i => xxP, 
             c_o => square_xxP
         );
 
     -- Instantiate squarer entity for y part    
     --  Calculate yyp^2
-    y_squarer: e_classic_gf2m_squarer PORT MAP( 
+    y_squarer: e_gf2m_classic_squarer PORT MAP( 
             a_i => yyP, 
             c_o => square_yyP
         );

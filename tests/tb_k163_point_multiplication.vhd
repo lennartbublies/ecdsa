@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
---  Testbench - Randum Number Generator 
+--  Testbench - K163 Point Multiplication 
 --  Executes NUMBER_TESTS operations with random values of K.
 --  Test k.P = (k-1).P + P, FOR a fixed known P.
 --
@@ -21,10 +21,10 @@ USE std.textio.ALL;
 
 use work.e_k163_point_multiplication_package.all;
 
-ENTITY tb_k163_point_multupliation_and_addition IS
-END tb_k163_point_multupliation_and_addition;
+ENTITY tb_k163_point_multupliation IS
+END tb_k163_point_multupliation;
 
-ARCHITECTURE rtl OF tb_k163_point_multupliation_and_addition IS 
+ARCHITECTURE rtl OF tb_k163_point_multupliation IS 
     -- Import entity e_k163_point_multiplication
     COMPONENT e_k163_point_multiplication IS
         PORT (

@@ -19,8 +19,11 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE p_gf2m_eea_inversion_package IS
     -- Constants
+    --CONSTANT M: integer := 8;
     CONSTANT M: integer := 163;
-    CONSTANT logM: integer := 3;
+    --CONSTANT logM: integer := 4;
+    CONSTANT logM: integer := 8;
+    --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
     CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
 END p_gf2m_eea_inversion_package;
 

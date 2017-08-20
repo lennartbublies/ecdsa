@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
---  Testbench - GF(2^M) Extended Euclidean Inversion
+--  Testbench - GF(2^M) Inversion
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 22.06.2017
@@ -11,68 +11,69 @@ USE IEEE.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 USE ieee.numeric_std.ALL;
 USE ieee.std_logic_textio.ALL;
-USE ieee.math_real.all; -- FOR UNIFORM, TRUNC
+use ieee.math_real.all; -- for UNIFORM, TRUNC
 
 USE std.textio.ALL;
-USE work.p_gf2m_eea_inversion_package.all;
+USE work.e_gf2m_divider_parameters.all;
 
-ENTITY tb_eea_inversion IS
-END tb_eea_inversion;
+ENTITY tb_k163_divider IS
+END tb_k163_divider;
 
-ARCHITECTURE rtl OF tb_eea_inversion IS 
-    -- Import entity e_gf2m_eea_inversion
-    COMPONENT e_gf2m_eea_inversion IS
-        PORT (
-            clk_i: IN std_logic;
-            rst_i: IN std_logic; 
+ARCHITECTURE behavior OF tb_k163_divider IS 
+    -- Import entity e_classic_gf2m_multiplier
+    COMPONENT e_classic_gf2m_multiplier
+        PORT(
+            a_i : IN std_logic_vector(M-1 DOWNTO 0);
+            b_i : IN std_logic_vector(M-1 DOWNTO 0);
+            c_o : OUT std_logic_vector(M-1 DOWNTO 0)
+        );
+    END COMPONENT;
+    
+    -- Import entity e_gf2m_divider
+    COMPONENT e_gf2m_divider IS
+        PORT(
+            clk_i: IN std_logic;  
+            rst_i: IN std_logic;  
             enable_i: IN std_logic; 
-            a_i: IN std_logic_vector (M-1 DOWNTO 0);
-            z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+            g_i: IN std_logic_vector(M-1 DOWNTO 0);  
+            h_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            z_o: OUT std_logic_vector(M-1 DOWNTO 0);
             ready_o: OUT std_logic
         );
     END COMPONENT;
-
-    -- Import entity e_classic_gf2m_multiplier
-    COMPONENT e_classic_gf2m_multiplier IS
-        PORT(
-            a_i: IN std_logic_vector(M-1 DOWNTO 0); 
-            b_i: IN std_logic_vector(M-1 DOWNTO 0);
-            c_o: OUT std_logic_vector(M-1 DOWNTO 0)
-        );
-    END COMPONENT;
-
-    -- Internal signals
-    SIGNAL x, z, z_by_x :  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL clk, rst, enable, done: std_logic;
-    CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    CONSTANT ONE: std_logic_vector(M-1 DOWNTO 0) := (0 => '1', OTHERS=>'0');
-    CONSTANT DELAY : time := 100 ns;
-    CONSTANT PERIOD : time := 200 ns;
-    CONSTANT DUTY_CYCLE : real := 0.5;
-    CONSTANT OFFSET : time := 0 ns;
-    CONSTANT NUMBER_TESTS: natural := 20;
+  
+  -- Internal signals
+  SIGNAL x, y, z, z_by_y :  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+  SIGNAL clk, reset, start, done: std_logic;
+  CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+  CONSTANT DELAY : time := 100 ns;
+  CONSTANT PERIOD : time := 200 ns;
+  CONSTANT DUTY_CYCLE : real := 0.5;
+  CONSTANT OFFSET : time := 0 ns;
+  CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
-    -- Instantiate eea inversion entity
-    uut1: e_gf2m_eea_inversion PORT MAP(
-            clk_i => clk, 
-            rst_i => rst, 
-            enable_i => enable,
-            a_i => x, 
-            z_o => z, 
-            ready_o => done
-        );
-                          
-    -- Instantiate classic multiplication entity                      
-    uut2: e_classic_gf2m_multiplier PORT MAP(
-            a_i => x, 
-            b_i => z, 
-            c_o => z_by_x 
-        );
+    -- Instantiate divider entity to compute z=x/y
+    uut1:  e_gf2m_divider PORT MAP(
+        clk_i => clk, 
+        rst_i => reset, 
+        enable_i => start,
+        g_i => x, 
+        h_i => y,
+        z_o => z, 
+        ready_o => done
+    );
+    
+    -- Instantiate multiplier entity to compute z*y=x
+    uut2: e_classic_gf2m_multiplier PORT MAP( 
+        a_i => z, 
+        b_i => y, 
+        c_o => z_by_y
+    );
 
-    -- Create clock signal
-    PROCESS -- clock process FOR clk
+    -- Clock process for clk
+    PROCESS 
     BEGIN
-        WAIT FOR OFFSET;
+        WAIT for OFFSET;
         CLOCK_LOOP : LOOP
             clk <= '0';
             WAIT FOR (PERIOD *(1.0 - DUTY_CYCLE));
@@ -99,54 +100,57 @@ BEGIN
         END PROCEDURE;
 
         VARIABLE TX_LOC : LINE;
-        VARIABLE TX_STR : String(1 TO 4096);
+        VARIABLE TX_STR : String(1 to 4096);
         VARIABLE seed1, seed2: positive; 
         VARIABLE i_x, i_y, i_p, i_z, i_yz_modp: integer;
         VARIABLE cycles, max_cycles, min_cycles, total_cycles: integer := 0;
         VARIABLE avg_cycles: real;
         VARIABLE initial_time, final_time: time;
-        VARIABLE xx: std_logic_vector (M-1 DOWNTO 0) ;
+        VARIABLE xx: std_logic_vector (M-1 DownTo 0) ;
     BEGIN
         min_cycles:= 2**20;
-        enable <= '0'; rst <= '1';
+        start <= '0'; reset <= '1';
         WAIT FOR PERIOD;
-        rst <= '0';
+        reset <= '0';
         WAIT FOR PERIOD;
 
-        -- Generate random test cases
-        FOR I IN 1 TO NUMBER_TESTS LOOP
+        for I in 1 to NUMBER_TESTS LOOP
+            -- Generate random number for x and y
             gen_random(xx, M, seed1, seed2);
-            WHILE (xx = ZERO) LOOP 
-                gen_random(xx, M, seed1, seed2); 
-            END LOOP;
             x <= xx;
 
-            -- Check needed number of cycles
-            enable <= '1'; initial_time := now;
+            gen_random(xx, M, seed1, seed2);
+            while (xx = ZERO) LOOP 
+                gen_random(xx, M, seed1, seed2); 
+            END LOOP;
+            y <= xx;
+
+            -- Count runtime
+            start <= '1'; initial_time := now;
             WAIT FOR PERIOD;
-            enable <= '0';
-            WAIT UNTIL done = '1';
+            start <= '0';
+            wait until done = '1';
             final_time := now;
             cycles := (final_time - initial_time)/PERIOD;
             total_cycles := total_cycles+cycles;
-            ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & 
-              "  TotalCycles: " & integer'image(total_cycles) SEVERITY WARNING;
-            
-            IF cycles > max_cycles THEN     
+            --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " & integer'image(total_cycles) SEVERITY WARNING;
+            IF cycles > max_cycles THEN  
                 max_cycles:= cycles; 
             END IF;
+            
             IF cycles < min_cycles THEN  
                 min_cycles:= cycles; 
             END IF;
 
             WAIT FOR 2*PERIOD;
 
-            -- Validate if x * x^-1 = 1 
-            IF ( ONE /= z_by_x) THEN 
-                write(TX_LOC,string'("ERROR!!! z_by_x=")); write(TX_LOC, z_by_x);
-                write(TX_LOC,string'("/= ONE=")); 
+            -- Check if c=a/b and c*b=a
+            IF ( x /= z_by_y ) THEN 
+                write(TX_LOC,string'("ERROR!!! z_by_y=")); write(TX_LOC, z_by_y);
+                write(TX_LOC,string'("/= x=")); write(TX_LOC, x);
                 write(TX_LOC,string'("( z=")); write(TX_LOC, z);
                 write(TX_LOC,string'(") using: ( A =")); write(TX_LOC, x);
+                write(TX_LOC, string'(", B =")); write(TX_LOC, y);
                 write(TX_LOC, string'(", F = 1")); write(TX_LOC, F);
                 write(TX_LOC, string'(" )"));
                 TX_STR(TX_LOC.all'range) := TX_LOC.all;
@@ -154,13 +158,12 @@ BEGIN
                 ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
             END IF;  
         END LOOP;
-        
+
         WAIT FOR DELAY;
-        
-        avg_cycles := real(total_cycles)/real(NUMBER_TESTS);
-        
+
         -- Report results
-        ASSERT (FALSE) REPORT
+        avg_cycles := real(total_cycles)/real(NUMBER_TESTS);
+            ASSERT (FALSE) REPORT
             "Simulation successful!.  MinCycles: " & integer'image(min_cycles) &
             "  MaxCycles: " & integer'image(max_cycles) & "  TotalCycles: " & integer'image(total_cycles) &
             "  AvgCycles: " & real'image(avg_cycles)

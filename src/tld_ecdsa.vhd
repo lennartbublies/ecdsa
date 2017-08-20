@@ -180,14 +180,14 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     -- MODE SIGN
     SIGNAL xR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- X component of point R
     SIGNAL yR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Y component of point R
-    SIGNAL tmp1, tmp2, tmp3 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
+    SIGNAL xrda, e_xrda, s : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
     SIGNAL enable_sign_r, done_sign_r: std_logic := '0';          -- Enable/Disable signature computation
     SIGNAL enable_sign_darx, done_sign_darx: std_logic := '0'; 
     SIGNAL enable_sign_z2k, done_sign_z2k: std_logic := '0';
     
     -- MODE VERIFY
-    SIGNAL invs : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL tmp4, tmp5 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
+    SIGNAL w : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL U1, U2 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Temporary results for signature computation
     SIGNAL enable_verify_invs, done_verify_invs : std_logic := '0'; 
     SIGNAL enable_verify_u12, done_verify_u1, done_verify_u2 : std_logic := '0'; 
     SIGNAL enable_verify_u1gu2qb, done_verify_u1g, done_verify_u2qb : std_logic := '0';
@@ -204,41 +204,18 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     subtype states IS natural RANGE 0 TO 15;
     SIGNAL current_state: states;
 BEGIN
-    -- generator point: 2fe13c0537bbc11acaa7d793de4e6d5e5c94ee, 2897fb05d38ff58321f2e80536d538ccdaa3
-    -- private key: 2ac4d729602cbe5de8469692ddb6f49aad1ecf932
-    -- public key:0166990bebc978a86a2a711d8ee44988c953ef354
-    --            aeeb153e69f9b0c121871ced96b0b8cc4dc39ad81
-    -- 
-    
     -- Set parameter of sect163k1
     xG  <= "010" & x"FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
     yG  <= "010" & x"89070FB05D38FF58321F2E800536D538CCDAA3D9";
     N   <= "100" & x"000000000000000000020108A2E0CC0D99f8A5EE";
-  --dA  <= "010" & x"AC4D729602CBE5DE8469692DDB6F49AAD1ECF932";
-    dA  <= "011" & x"8DBECA356DB37E542A636F9DDCD8643CB8722487";
-  --xQA <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
-  --yQA <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
-    xQA <= "000" & x"D5B7391E8940565BD98587DF0BF8461E326B05D1";
-    yQA <= "000" & x"FF47471D622B5D82C98D58629679CAFFB2336514";
-  --xQB <= "000" & x"166990BEBC978A86A2A711D8EE44988C953EF354";
-  --yQB <= x"AEEB153E69F9B0C121871CED96B0B8CC4DC39AD8" & "001";
+    dA  <= "101" & x"4E78BA70719678AFC09BA25E822B81FCF23B87CA";
+    xQA <= "110" & x"80B2E0F985A6533D584FED618B7A061E79B9B917";
+    yQA <= "011" & x"9D123A952BA8E94F234884E9DBA5CEC4E38C94BA";
   --xQB <= "000" & x"D4845314B7851DA63B9569E812A6602A22493216";
   --yQB <= "000" & x"0D5B712A2981DD2FB1AFA15FE4079C79A3724BB0";
     xQB <= "000" & x"D5B7391E8940565BD98587DF0BF8461E326B05D1";
     yQB <= "000" & x"FF47471D622B5D82C98D58629679CAFFB2336514";
-    k   <= "011" & x"355BF83C497F922FFAEC53C7315B348FAFB4DA2F";
-  --k   <= "111" & x"DAB4AF8F345B31C753ECFA2F927F493CF85B3503";
- 
-    -- Set parameter of sect163k1
---    xG  <= x"02FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
---    yG  <= x"0289070FB05D38FF58321F2E800536D538CCDAA3D9";
---    N   <= x"04000000000000000000020108A2E0CC0D99F8A5EF";
---    dA  <= x"0B8DBECA356DB37E542A636F9DDCD8643CB8722487";
---    xQA <= x"00D5B7391E8940565BD98587DF0BF8461E326B05D1";
---    yQA <= x"00FF47471D622B5D82C98D58629679CAFFB2336514";
---    xQB <= x"00D4845314B7851DA63B9569E812A6602A22493216";
---    yQB <= x"000D5B712A2981DD2FB1AFA15FE4079C79A3724BB0";
---    k   <= x"03355BF83C497F922FFAEC53C7315B348FAFB4DA2F";
+    k   <= "000" & x"CD06203260EEE9549351BD29733E7D1E2ED49D88";
 
     -- Instantiate sha256 entity to compute hashes
     --hash: sha256 PORT MAP(
@@ -290,13 +267,13 @@ BEGIN
         enable_i => enable_sign_darx, 
         a_i => dA,
         b_i => xR,
-        z_o => tmp1,
+        z_o => xrda,
         ready_o => done_sign_darx
     );
 
     -- compute e + (dA * xR) 
-    sign_add_edarx: FOR i IN 0 TO 162 GENERATE
-        tmp2(i) <= tmp1(i) xor hash_i(i); -- TODO???
+    sign_add_edarx: FOR i IN 0 TO M-1 GENERATE
+        e_xrda(i) <= xrda(i) xor hash_i(i);
     END GENERATE;
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
@@ -304,14 +281,14 @@ BEGIN
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_z2k,
-        g_i => tmp2, 
+        g_i => e_xrda, 
         h_i => k,  
-        z_o => tmp3, 
+        z_o => s, 
         ready_o => done_sign_z2k
     );
     
     sign_r_o <= xR;
-    sign_s_o <= tmp3;
+    sign_s_o <= s;
     
     -- VALIDATE -----------------------------------------------------------------
 
@@ -321,7 +298,7 @@ BEGIN
         rst_i => rst_i, 
         enable_i => enable_verify_invs,
         a_i => s_i,
-        z_o => invs,
+        z_o => w,
         ready_o => done_verify_invs
     );
 
@@ -330,9 +307,9 @@ BEGIN
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
-        a_i => hash_i, --sha256_hash_output(M-1 DOWNTO 0),
-        b_i => invs,
-        z_o => tmp4,
+        a_i => hash_i,
+        b_i => w,
+        z_o => U1,
         ready_o => done_verify_u1
     );
 
@@ -342,8 +319,8 @@ BEGIN
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
         a_i => r_i,
-        b_i => invs,
-        z_o => tmp5,
+        b_i => w,
+        z_o => U2,
         ready_o => done_verify_u2
     );
     
@@ -354,7 +331,7 @@ BEGIN
         enable_i => enable_verify_u1gu2qb, 
         xp_i => xG, 
         yp_i => yG, 
-        k => tmp4,
+        k => U1,
         xq_io => xU1G, 
         yq_io => yU1G, 
         ready_o => done_verify_u1g
@@ -367,7 +344,7 @@ BEGIN
         enable_i => enable_verify_u1gu2qb, 
         xp_i => xQB, 
         yp_i => yQB, 
-        k => tmp5,
+        k => U2,
         xq_io => xU2QB, 
         yq_io => yU2QB, 
         ready_o => done_verify_u2qb
@@ -393,8 +370,8 @@ BEGIN
         -- Handle current state
         --  0,1   : Default state
         --  2,3   : SIGN   -> compute R = k.G = (xR, yR)
-        --  4,5   : SIGN   -> compute tmp1 = dA*xR, tmp2 = e+tmp1
-        --  6,7   : SIGN   -> compute S = tmp2/k
+        --  4,5   : SIGN   -> compute xrda = dA*xR, e_xrda = e+xrda
+        --  6,7   : SIGN   -> compute S = e_xrda/k
         --    ---> SIGN DONE
         --  8,9   : VERIFY -> compute 1/S
         --  10,11 : VERIFY -> compute u1 = ew und u2 = rw
@@ -438,7 +415,7 @@ BEGIN
                 WHEN 3 => 
                     IF (done_sign_r = '1') THEN
                         -- Validate R: restart if R = 0
-                        IF (tmp3 = ZERO) THEN
+                        IF (s = ZERO) THEN
                             current_state <= 2;
                         ELSE
                             current_state <= 4;
@@ -455,7 +432,7 @@ BEGIN
                 WHEN 7 => 
                     IF (done_sign_z2k = '1') THEN
                         -- Validate S: restart if S = 0
-                        IF (tmp3 = ZERO) THEN
+                        IF (s = ZERO) THEN
                             current_state <= 2;
                         ELSE
                             current_state <= 0;

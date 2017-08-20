@@ -20,6 +20,7 @@ USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 
 PACKAGE e_k163_point_addition_package IS
+  --CONSTANT M: natural := 8;
   CONSTANT M: natural := 163;
 END e_k163_point_addition_package;
 
@@ -67,8 +68,8 @@ ARCHITECTURE rtl of e_k163_point_addition IS
         );
     end COMPONENT;
     
-    -- Import entity e_classic_gf2m_squarer
-    COMPONENT e_classic_gf2m_squarer IS
+    -- Import entity e_gf2m_classic_squarer
+    COMPONENT e_gf2m_classic_squarer IS
         PORT(
             a_i: IN std_logic_vector(M-1 DOWNTO 0);
             c_o: OUT std_logic_vector(M-1 DOWNTO 0)
@@ -112,7 +113,7 @@ BEGIN
     
     -- Instantiate squarer 
     --  Calculate s^2
-    lambda_square_computation: e_classic_gf2m_squarer PORT MAP( 
+    lambda_square_computation: e_gf2m_classic_squarer PORT MAP( 
         a_i => lambda, 
         c_o => lambda_square
     );
@@ -138,21 +139,20 @@ BEGIN
 
     -- Set multiplier input from entity input 
     --  Calculate (px - rx)
-    multiplier_inputs: FOR i IN 0 TO 162 GENERATE
+    multiplier_inputs: FOR i IN 0 TO M-1 GENERATE
         mult_in2(i) <= x1_i(i) xor x3_io(i);
     END GENERATE;
 
+    -- Set x3(0)
     x3_io(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
     
     -- Set output
     --  Calculate rx = s^2 - s - (px-qx)
-    --  TODO: WHY "-s"?
-    x_output: FOR i IN 1 TO 162 GENERATE
+    x_output: FOR i IN 1 TO M-1 GENERATE
         x3_io(i) <= lambda_square(i) xor lambda(i) xor div_in2(i);
     END GENERATE;
     --  Calculate ry = s * (px - rx) - rx - py
-    --  TODO: WHY "-rx"?
-    y_output: FOR i IN 0 TO 162 GENERATE
+    y_output: FOR i IN 0 TO M-1 GENERATE
         y3_o(i) <= mult_out(i) xor x3_io(i) xor y1_i(i);
     END GENERATE;
 

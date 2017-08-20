@@ -36,8 +36,11 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE e_gf2m_divider_parameters IS
     -- Constants
+    --CONSTANT M: integer := 8;
     CONSTANT M: integer := 163;
+    --CONSTANT logM: integer := 4;--logM IS the number of bits of m plus an additional sign bit
     CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
+    --CONSTANT F: std_logic_vector(M downto 0):= "100011011"; --for M=8 bits
     CONSTANT F: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9"; --FOR M=163
 END e_gf2m_divider_parameters;
 
@@ -136,16 +139,28 @@ BEGIN
         END IF;
     END PROCESS register_beta;
 
+    -- Shift and Add
+    --  IF b(0)=0 THEN
+    --      next_b(i) = b(i+1) 
+    --  ELSIF b(0)=1 THEN 
+    --      next_b(i) = b(i+1) + a(i+1)
+    --  ENDIF
     first_iteration: FOR i IN 0 TO M-2 GENERATE
         next_b(i) <= (b(0) and (b(i+1) xor a(i+1))) or (not(b(0)) and b(i+1));
     END GENERATE;
     next_b(M-1) <= b(0) and a(M);
 
+    -- Shift and Add
+    --  IF b(0)=0 THEN
+    --      next_d(i) = (F(i+1)&next_d(M-1)) + d(i+1)              ????? (F(i+1)&next_d(M-1)) ?????
+    --  ELSIF b(0)=1 THEN 
+    --      next_d(i) = (F(i+1)&next_d(M-1)) + d(i+1) + c(i+1)     ????? (F(i+1)&next_d(M-1)) ?????
+    --  ENDIF
     second_iteration: FOR i IN 0 TO M-2 GENERATE
         next_d(i) <= (F(i+1) and next_d(M-1)) xor ((b(0) and (d(i+1) xor c(i+1))) or (not(b(0)) and d(i+1)));
     END GENERATE;
     next_d(M-1) <= (b(0) and (d(0) xor c(0))) or (not(b(0)) and d(0));
-    
+
     WITH ce_ac SELECT dec_input <= beta WHEN '0', alpha WHEN OTHERS;
     next_beta <= dec_input - 1;
     
@@ -162,7 +177,7 @@ BEGIN
         -- Handle current state
         --  0,1   : Default state
         --  2     : Load input arguments
-        --  3,4   : 
+        --  3,4   : Calculation...
         CASE current_state IS
             WHEN 0 TO 1 => 
                 ce_ac <= '0'; ce_bd <='0'; load <= '0'; ready_o <= '1';
