@@ -6,10 +6,11 @@
 #include "eccmemory.h"
 #include "ecdsa.h"
 
-#include "curves/sect163k1.h"
+//#include "curves/sect163k1.h"
+#include "curves/testcurve2x9.h"
 #include "sha256.h"
 
-static eccint_t dA[21] = {
+/*static eccint_t dA[21] = {
           //0x0b,0x8d,0xbe,0xca,0x35,0x6d,0xb3,0x7e,0x54,0x2a,0x63,0x6f,0x9d,0xdc,0xd8,0x64,0x3c,0xb8,0x72,0x24,0x87
           //0x87,0x24,0x72,0xB8,0x3C,0x64,0xD8,0xDC,0x9D,0x6F,0x63,0x2A,0x54,0x7E,0xB3,0x6D,0x35,0xCA,0xBE,0x8D,0x0B // swapped
           0xCA,0x87,0x3B,0xF2,0xFC,0x81,0x2B,0x82,0x5E,0xA2,0x9B,0xC0,0xAF,0x78,0x96,0x71,0x70,0xBA,0x78,0x4E,0x05 // swapped
@@ -36,12 +37,40 @@ static eccint_point_t QB =  {
 
 static eccint_t testhash[21] = {
           0xA3,0x38,0xC1,0x9A,0x62,0x30,0xAE,0x5,0x02,0xD4,0x1E,0xAB,0x3F,0x6B,0x83,0xFC,0xB2,0x14,0xB3,0x47,0x08
+};*/
+
+//00000010 10100100
+//x = 00000001 10111001
+//y = 00000000 00110111
+
+
+static eccint_t dA[2] = {
+    0b00111110, 0b00000000
+};
+
+static eccint_point_t QA =  { 
+    .x = {0b11000101, 0b00000000},
+    .y = {0b11011010, 0b00000001}
+};
+
+static eccint_t dB[8] = {
+    0b00100010, 0b00000011
+};
+
+static eccint_point_t QB =  { 
+    .x = {0b11110001, 0b00000001},
+    .y = {0b11100100, 0b00000000}
+};
+
+static eccint_t testhash[2] = {
+    0b01000111, 0b00000010 
 };
 
 int
 main(int argc, char** argv)
 {
-    const curve_t *curve = &sect163k1;
+    //const curve_t *curve = &sect163k1;
+    const curve_t *curve = &testcurve9;
     eccint_t *privatekey_dA = dA;
     eccint_point_t *publickey_QA = &QA;
     eccint_t *privatekey_dB = dB;
@@ -52,29 +81,24 @@ main(int argc, char** argv)
     
     // -- Vars -------------------------------------------
     
-    //eccint_point_t publickey;
-    //eccint_t privatekey[curve->words];
-    //ecc_keygen(&publickey, privatekey, curve);
-    //ecc_print(privatekey, curve->words);
-    //ecc_print_point(&publickey, curve->words);
+    /*eccint_point_t publickey;
+    eccint_t privatekey[curve->words];
+    ecc_keygen(&publickey, privatekey, curve);
+    ecc_print_n(privatekey, curve->words);
+    ecc_print_point_n(&publickey, curve->words);*/
     
-    // -- PRIVATE/PUBLIC KEY FOR A (receiver, C/VHDL implementation)
-    // generator point: 2fe13c0537bbc11acaa7d793de4e6d5e5c94eee8, 2897fb05d38ff58321f2e80536d538ccdaa3d9
-    // private key:  b8dbeca356db37e542a636f9ddcd8643cb8722487
-    // public key:   d5b7391e8940565bd98587df0bf8461e326b05d1, 
-    //               ff47471d622b5d82c98d58629679caffb2336514
-    // k:            F07F9827C7E76977BCD4CD18E4342A5AC930D3E01D
-
-    // -- PRIVATE/PUBLIC KEY SENDER (sender)
-    // private key:  8a38cb930dcce8a9c1eab3f6b71f524344615a7
-    // public key:   d4845314b7851da63b9569e812a6602a22493216, 
-    //               d5b712a2981dd2fb1afa15fe4079c79a3724bb0
+    /*eccint_t hash2[curve->words];
+    eccint_urand(hash2, curve->words);
+    eccint_mod(hash2, curve->n, hash2, curve);
+    ecc_print_n(hash2, curve->words);*/
 
     printf("-------------------------------\n");
     printf("Curve:\n");
     printf("-------------------------------\n");
     printf("generator point: \n");
-    ecc_print_point(&curve->P, curve->words);
+    ecc_print_point_n(&curve->P, curve->words);
+    printf("mod f: \n");
+    ecc_print(curve->q, curve->words);
     printf("\n\n");
     
     printf("-------------------------------\n");

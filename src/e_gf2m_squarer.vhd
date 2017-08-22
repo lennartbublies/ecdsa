@@ -29,9 +29,11 @@ USE IEEE.std_logic_unsigned.all;
 PACKAGE p_gf2m_classic_squarer_parameters IS
     -- Constants
     --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 163;
+    CONSTANT M: integer := 9;
+    --CONSTANT M: integer := 163;
     --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
-    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
+    CONSTANT F: std_logic_vector(M-1 downto 0):= "000000011"; --for M=9 bits
+    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
     
     -- Types
     TYPE matrix_reductionR IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);

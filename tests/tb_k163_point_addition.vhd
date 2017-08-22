@@ -62,7 +62,7 @@ BEGIN
         ready_o => done
     );
 
-    -- clock process FOR clk
+    -- Clock process FOR clk
     PROCESS 
     BEGIN
         WAIT FOR OFFSET;
@@ -85,15 +85,15 @@ BEGIN
         WAIT FOR PERIOD;
         
         -- Set point P for the computation
-        xP <= "00000100"; 
-        yP <= "00000010";
-        xQ <= "00001100";
-        yQ <= "00001001";
+        xP <= "000000010"; 
+        yP <= "000001111";
+        xQ <= "000001100";
+        yQ <= "000001100";
 
-        --xP <= "11110000"; 
-        --yP <= "00010100";
-        --xQ <= "00001001";
-        --yQ <= "00000010";
+        --xP <= "10101010"; 
+        --yP <= "10101010";
+        --xQ <= "00000000";
+        --yQ <= "00000000";
         
         --yP <= "00001101"; 
         --xP <= "00101010"; 

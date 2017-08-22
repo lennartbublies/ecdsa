@@ -20,8 +20,8 @@ ENTITY tb_k163_divider IS
 END tb_k163_divider;
 
 ARCHITECTURE behavior OF tb_k163_divider IS 
-    -- Import entity e_classic_gf2m_multiplier
-    COMPONENT e_classic_gf2m_multiplier
+    -- Import entity e_gf2m_classic_multiplier
+    COMPONENT e_gf2m_classic_multiplier
         PORT(
             a_i : IN std_logic_vector(M-1 DOWNTO 0);
             b_i : IN std_logic_vector(M-1 DOWNTO 0);
@@ -30,7 +30,7 @@ ARCHITECTURE behavior OF tb_k163_divider IS
     END COMPONENT;
     
     -- Import entity e_gf2m_divider
-    COMPONENT e_gf2m_divider IS
+    COMPONENT e_gf2m_divider_inv IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -53,7 +53,7 @@ ARCHITECTURE behavior OF tb_k163_divider IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate divider entity to compute z=x/y
-    uut1:  e_gf2m_divider PORT MAP(
+    uut1:  e_gf2m_divider_inv PORT MAP(
         clk_i => clk, 
         rst_i => reset, 
         enable_i => start,
@@ -64,7 +64,7 @@ BEGIN
     );
     
     -- Instantiate multiplier entity to compute z*y=x
-    uut2: e_classic_gf2m_multiplier PORT MAP( 
+    uut2: e_gf2m_classic_multiplier PORT MAP( 
         a_i => z, 
         b_i => y, 
         c_o => z_by_y

@@ -21,7 +21,8 @@ USE IEEE.std_logic_unsigned.all;
 
 PACKAGE e_k163_point_addition_package IS
   --CONSTANT M: natural := 8;
-  CONSTANT M: natural := 163;
+  CONSTANT M: natural := 9;
+  --CONSTANT M: natural := 163;
 END e_k163_point_addition_package;
 
 ------------------------------------------------------------
@@ -56,7 +57,7 @@ END e_k163_point_addition;
 
 ARCHITECTURE rtl of e_k163_point_addition IS
     -- Import entity e_gf2m_divider
-    COMPONENT e_gf2m_divider IS
+    COMPONENT e_gf2m_divider_inv IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -101,7 +102,7 @@ ARCHITECTURE rtl of e_k163_point_addition IS
 BEGIN
     -- Instantiate divider entity
     --  Calculate s = (py-qy)/(px-qx)
-    divider: e_gf2m_divider PORT MAP( 
+    divider: e_gf2m_divider_inv PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_div,

@@ -20,7 +20,9 @@ USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 
 PACKAGE e_k163_point_multiplication_package IS
-  CONSTANT M: natural := 163;
+  --CONSTANT M: natural := 8;
+  CONSTANT M: natural := 9;
+  --CONSTANT M: natural := 163;
   CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
 END e_k163_point_multiplication_package;
 

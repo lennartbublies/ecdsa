@@ -19,9 +19,11 @@ USE IEEE.std_logic_unsigned.all;
 PACKAGE p_gf2m_classic_multiplier_parameters IS
     -- Constants
     --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 163;
+    CONSTANT M: integer := 9;
+    --CONSTANT M: integer := 163;
     --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
-    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --FOR M=163
+    CONSTANT F: std_logic_vector(M-1 downto 0):= "000000011"; --for M=9 bits
+    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --FOR M=163
 
     -- Types
     TYPE matrix_reductionR IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);
@@ -176,15 +178,15 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 USE work.p_gf2m_classic_multiplier_parameters.all;
 
-ENTITY e_classic_gf2m_multiplier IS
+ENTITY e_gf2m_classic_multiplier IS
     PORT (
         a_i: IN std_logic_vector(M-1 DOWNTO 0); 
         b_i: IN std_logic_vector(M-1 DOWNTO 0);
         c_o: OUT std_logic_vector(M-1 DOWNTO 0)
     );
-END e_classic_gf2m_multiplier;
+END e_gf2m_classic_multiplier;
 
-ARCHITECTURE rtl OF e_classic_gf2m_multiplier IS
+ARCHITECTURE rtl OF e_gf2m_classic_multiplier IS
     -- Instantiate polynomial multiplier
     COMPONENT e_gf2m_multiplier PORT (
         a: IN std_logic_vector(M-1 DOWNTO 0);

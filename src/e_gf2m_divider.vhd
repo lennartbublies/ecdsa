@@ -37,11 +37,13 @@ USE IEEE.std_logic_unsigned.all;
 PACKAGE e_gf2m_divider_parameters IS
     -- Constants
     --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 163;
-    --CONSTANT logM: integer := 4;--logM IS the number of bits of m plus an additional sign bit
-    CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
+    CONSTANT M: integer := 9;
+    --CONSTANT M: integer := 163;
+    CONSTANT logM: integer := 4;--logM IS the number of bits of m plus an additional sign bit
+    --CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
     --CONSTANT F: std_logic_vector(M downto 0):= "100011011"; --for M=8 bits
-    CONSTANT F: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9"; --FOR M=163
+    CONSTANT F: std_logic_vector(M downto 0):= "1000000011"; --for M=9 bits
+    --CONSTANT F: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9"; --FOR M=163
 END e_gf2m_divider_parameters;
 
 ------------------------------------------------------------

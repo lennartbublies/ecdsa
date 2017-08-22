@@ -123,26 +123,26 @@ BEGIN
             
             -- Start test 1:
             -- Count runtime
-            enable <= '1'; 
-            initial_time := now;
-            WAIT FOR PERIOD;
-            enable <= '0';
-            WAIT UNTIL (done = '1');
-            final_time := now;
-            cycles := (final_time - initial_time)/PERIOD;
-            total_cycles := total_cycles+cycles;
-            --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " 
-            --  & integer'image(total_cycles) SEVERITY WARNING;
-            IF cycles > max_cycles THEN  
-                max_cycles:= cycles; 
-            END IF;
-            IF cycles < min_cycles THEN  
-                min_cycles:= cycles; 
-            END IF;
+--            enable <= '1'; 
+--            initial_time := now;
+--            WAIT FOR PERIOD;
+--            enable <= '0';
+--            WAIT UNTIL (done = '1');
+--            final_time := now;
+--            cycles := (final_time - initial_time)/PERIOD;
+--            total_cycles := total_cycles+cycles;
+--            --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " 
+--            --  & integer'image(total_cycles) SEVERITY WARNING;
+--            IF cycles > max_cycles THEN  
+--                max_cycles:= cycles; 
+--            END IF;
+--            IF cycles < min_cycles THEN  
+--                min_cycles:= cycles; 
+--            END IF;
 
             -- Start test 2:
             -- Sign and verify
-            WAIT FOR 2*PERIOD;
+--            WAIT FOR 2*PERIOD;
             enable <= '1';
             mode <= '0';
             WAIT FOR PERIOD;
@@ -151,22 +151,22 @@ BEGIN
 
             WAIT FOR 2*PERIOD;
 
-            WAIT FOR PERIOD;
-            enable <= '1';
-            mode <= '1';
-            WAIT FOR PERIOD;
-            enable <= '0';
-            WAIT UNTIL done = '1';
+--            WAIT FOR PERIOD;
+--            enable <= '1';
+--            mode <= '1';
+--            WAIT FOR PERIOD;
+--            enable <= '0';
+--            WAIT UNTIL done = '1';
 
-            WAIT FOR 2*PERIOD;
+--            WAIT FOR 2*PERIOD;
 
-            IF ( valid = '0' ) THEN 
-                write(TX_LOC,string'("ERROR!!! Signature invalid"));
-                write(TX_LOC, string'(" )"));
-                TX_STR(TX_LOC.all'range) := TX_LOC.all;
-                Deallocate(TX_LOC);
-                ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
-            END IF;  
+--            IF ( valid = '0' ) THEN 
+--                write(TX_LOC,string'("ERROR!!! Signature invalid"));
+--                write(TX_LOC, string'(" )"));
+--                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+--                Deallocate(TX_LOC);
+--                ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+--            END IF;  
         END LOOP; 
 
         WAIT FOR DELAY;

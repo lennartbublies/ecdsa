@@ -33,7 +33,7 @@ ARCHITECTURE rtl OF tb_eea_inversion IS
     END COMPONENT;
 
     -- Import entity e_classic_gf2m_multiplier
-    COMPONENT e_classic_gf2m_multiplier IS
+    COMPONENT e_gf2m_classic_multiplier IS
         PORT(
             a_i: IN std_logic_vector(M-1 DOWNTO 0); 
             b_i: IN std_logic_vector(M-1 DOWNTO 0);
@@ -63,7 +63,7 @@ BEGIN
         );
                           
     -- Instantiate classic multiplication entity                      
-    uut2: e_classic_gf2m_multiplier PORT MAP(
+    uut2: e_gf2m_classic_multiplier PORT MAP(
             a_i => x, 
             b_i => z, 
             c_o => z_by_x 

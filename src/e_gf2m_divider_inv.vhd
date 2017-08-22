@@ -20,7 +20,8 @@ USE IEEE.std_logic_unsigned.all;
 PACKAGE e_gf2m_divider_inv_parameters IS
     -- Constants
     --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 163;
+    CONSTANT M: integer := 9;
+    --CONSTANT M: integer := 163;
 END e_gf2m_divider_inv_parameters;
 
 ------------------------------------------------------------
@@ -80,7 +81,7 @@ ARCHITECTURE rtl of e_gf2m_divider_inv IS
     SIGNAL enable_inversion, done_inversion, enable_multiplication, done_multiplication: std_logic;
 
     -- Define all available states
-    subtype states IS natural RANGE 0 TO 5;
+    subtype states IS natural RANGE 0 TO 6;
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate inversion entity to compute h^-1
@@ -116,7 +117,7 @@ BEGIN
             WHEN 2      => enable_inversion <='1'; enable_multiplication <= '0'; ready_o <= '0';
             WHEN 3      => enable_inversion <='0'; enable_multiplication <= '0'; ready_o <= '0';
             WHEN 4      => enable_inversion <='0'; enable_multiplication <= '1'; ready_o <= '0';
-            WHEN 5      => enable_inversion <='0'; enable_multiplication <= '0'; ready_o <= '0';
+            WHEN 5 TO 6 => enable_inversion <='0'; enable_multiplication <= '0'; ready_o <= '0';
         END CASE;
 
         IF rst_i = '1' THEN 
@@ -140,11 +141,13 @@ BEGIN
                         current_state <= 4; 
                     END IF;
                 WHEN 4 =>
-                    current_state <= 0;
+                    current_state <= 5;
                 WHEN 5 =>
                     IF done_multiplication = '1' THEN 
-                        current_state <= 0; 
+                        current_state <= 6; 
                     END IF;
+                WHEN 6 =>
+                    current_state <= 0; 
             END CASE;
         END IF;
     END PROCESS control_unit;
