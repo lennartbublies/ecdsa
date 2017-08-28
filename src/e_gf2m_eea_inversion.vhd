@@ -22,7 +22,8 @@ PACKAGE p_gf2m_eea_inversion_package IS
     --CONSTANT M: integer := 8;
     CONSTANT M: integer := 9;
     --CONSTANT M: integer := 163;
-    CONSTANT logM: integer := 4;
+    --CONSTANT logM: integer := 3; --for M=8 bits
+    CONSTANT logM: integer := 4; --for M=9 bits
     --CONSTANT logM: integer := 8;
     --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
     CONSTANT F: std_logic_vector(M-1 downto 0):= "000000011"; --for M=9 bits

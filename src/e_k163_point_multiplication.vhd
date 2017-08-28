@@ -118,16 +118,7 @@ BEGIN
             a_i => yyP, 
             c_o => square_yyP
         );
-
-    -- Calculate xxp XOR yyp
-    xor_gates: FOR i IN 0 TO m-1 GENERATE 
-        xxPxoryyP(i) <= xxP(i) xor yyP(i); 
-    END GENERATE;
-
-    WITH sel_1 SELECT y1 <= yyP WHEN '0', xxPxoryyP WHEN OTHERS;
-    WITH sel_2 SELECT next_yQ <= y3 WHEN "00", yyP WHEN "01", xxPxoryyP WHEN OTHERS;
-    WITH sel_2 SELECT next_xQ <= x3 WHEN "00", xxP WHEN OTHERS;
-
+  
     register_P: PROCESS(clk_i)
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
@@ -154,14 +145,6 @@ BEGIN
         END IF;
     END PROCESS;
 
-    divide_by_2: FOR i IN 0 TO m-1 GENERATE 
-        a_div_2(i) <= a(i+1);
-    END GENERATE;
-    
-    a_div_2(m) <= a(m);
-    next_a <= (b(m-1)&b) + a_div_2 + carry;
-    next_b <= zero - (a_div_2(m-1 DOWNTO 0) + carry);
-
     register_ab: PROCESS(clk_i)
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
@@ -174,6 +157,26 @@ BEGIN
             END IF;
         END IF;
     END PROCESS;
+   
+    -- Init:
+    --  xxp=xp_i, yyp=yp_i, a=k, b=0
+      
+    -- Calculate xxp + yyp
+    xor_gates: FOR i IN 0 TO m-1 GENERATE 
+        xxPxoryyP(i) <= xxP(i) xor yyP(i); 
+    END GENERATE;
+
+    WITH sel_1 SELECT y1 <= yyP WHEN '0', xxPxoryyP WHEN OTHERS;
+    WITH sel_2 SELECT next_yQ <= y3 WHEN "00", yyP WHEN "01", xxPxoryyP WHEN OTHERS;
+    WITH sel_2 SELECT next_xQ <= x3 WHEN "00", xxP WHEN OTHERS;
+    
+    divide_by_2: FOR i IN 0 TO m-1 GENERATE 
+        a_div_2(i) <= a(i+1);
+    END GENERATE;
+    a_div_2(m) <= a(m);
+    
+    next_a <= (b(m-1)&b) + a_div_2 + carry;
+    next_b <= zero - (a_div_2(m-1 DOWNTO 0) + carry);
 
     aEqual0 <= '1' WHEN a = 0 ELSE '0';
     bEqual0 <= '1' WHEN b = 0 ELSE '0';

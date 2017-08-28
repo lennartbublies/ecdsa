@@ -401,6 +401,7 @@ void eccint_book_point_add(const eccint_point_t *p, const eccint_point_t *q, ecc
     // Section 3.1, page 81
     // For x^2 + xy = x^3 + ax^2 + b in E/F_{2^m}
     eccint_t lambda[curve->words];
+    eccint_t lambda_square[curve->words];
     eccint_t tx[curve->words];
     eccint_t ty[curve->words];
 
@@ -412,15 +413,33 @@ void eccint_book_point_add(const eccint_point_t *p, const eccint_point_t *q, ecc
     eccint_add(p->x, q->x, tx, curve->words);
     eccint_add(p->y, q->y, ty, curve->words);
 
+    //printf("## POINT ADD ##################### \n");
+    //vprintf("x1: \n");
+    //ecc_print_n(p->x, curve->words);
+    //printf("x2: \n");
+    //ecc_print_n(q->x, curve->words);
+    //printf("y1: \n");
+    //ecc_print_n(p->y, curve->words);
+    //printf("y2: \n");
+    //ecc_print_n(q->y, curve->words);
+    //printf("(x1+x2): \n");
+    //ecc_print_n(tx, curve->words);
+    //printf("(y1+y2): \n");
+    //ecc_print_n(ty, curve->words);
+
     //eccint_div_mod(ty, tx, curve->q, lambda, curve);
     eccint_t t2[curve->words];
     eccint_inv_mod(tx, curve->q, t2, curve);
     eccint_mul_mod(ty, t2, curve->q, lambda, curve);
 
+    //printf("x^-1: \n");
+    //ecc_print_n(t2, curve->words);
+    //printf("y * x^-1: \n");
+    //ecc_print_n(lambda, curve->words);
 
     // x_3 = l^2 + l + x1 + x2 + a
-    eccint_square_mod(lambda, curve->q, x3, curve);
-    eccint_add(x3, lambda, x3, curve->words);
+    eccint_square_mod(lambda, curve->q, lambda_square, curve);
+    eccint_add(lambda_square, lambda, x3, curve->words);
     eccint_add(x3, p->x, x3, curve->words);
     eccint_add(x3, q->x, x3, curve->words);
     eccint_add(x3, curve->a, x3, curve->words);
@@ -435,6 +454,15 @@ void eccint_book_point_add(const eccint_point_t *p, const eccint_point_t *q, ecc
 
     eccint_cpy(res->x, x3, curve->words);
     eccint_cpy(res->y, y3, curve->words);
+
+    //printf("square: \n");
+    //ecc_print_n(lambda_square, curve->words);
+    //printf("x3: \n");
+    //ecc_print_n(x3, curve->words);
+    //printf("y3: \n");
+    //ecc_print_n(y3, curve->words);
+    //printf("## END POINT ADD ################# \n");
+    
 }
 
 // Multiplication using the montgomery ladder

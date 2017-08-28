@@ -39,7 +39,8 @@ PACKAGE e_gf2m_divider_parameters IS
     --CONSTANT M: integer := 8;
     CONSTANT M: integer := 9;
     --CONSTANT M: integer := 163;
-    CONSTANT logM: integer := 4;--logM IS the number of bits of m plus an additional sign bit
+    --CONSTANT logM: integer := 4; --logM IS the number of bits of m plus an additional sign bit
+    CONSTANT logM: integer := 5; --for M=9 bits
     --CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
     --CONSTANT F: std_logic_vector(M downto 0):= "100011011"; --for M=8 bits
     CONSTANT F: std_logic_vector(M downto 0):= "1000000011"; --for M=9 bits
@@ -141,6 +142,11 @@ BEGIN
         END IF;
     END PROCESS register_beta;
 
+    -- Init: 
+    --  a <= F,   c <= "1000000011",  b <= "000001110",  d <= "000000011",  alpha <= "01001",  beta <= "01000"
+    -- Step 1:
+    --  ...
+    
     -- Shift and Add
     --  IF b(0)=0 THEN
     --      next_b(i) = b(i+1) 

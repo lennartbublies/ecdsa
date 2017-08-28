@@ -151,22 +151,22 @@ BEGIN
 
             WAIT FOR 2*PERIOD;
 
---            WAIT FOR PERIOD;
---            enable <= '1';
---            mode <= '1';
---            WAIT FOR PERIOD;
---            enable <= '0';
---            WAIT UNTIL done = '1';
+            WAIT FOR PERIOD;
+            enable <= '1';
+            mode <= '1';
+            WAIT FOR PERIOD;
+            enable <= '0';
+            WAIT UNTIL done = '1';
 
---            WAIT FOR 2*PERIOD;
+            WAIT FOR 2*PERIOD;
 
---            IF ( valid = '0' ) THEN 
---                write(TX_LOC,string'("ERROR!!! Signature invalid"));
---                write(TX_LOC, string'(" )"));
---                TX_STR(TX_LOC.all'range) := TX_LOC.all;
---                Deallocate(TX_LOC);
---                ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
---            END IF;  
+            IF ( valid = '0' ) THEN 
+                write(TX_LOC,string'("ERROR!!! Signature invalid"));
+                write(TX_LOC, string'(" )"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                Deallocate(TX_LOC);
+                ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+            END IF;  
         END LOOP; 
 
         WAIT FOR DELAY;

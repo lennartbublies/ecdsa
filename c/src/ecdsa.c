@@ -98,8 +98,10 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
             //eccint_mod(k, curve->n, k, curve);
 
             // Compute kP = (x_1, y_1) and convert x_1 to integer
+            //printf("## POINT MUL #################\n");
             eccint_point_mul(k, &curve->P, &point, curve);
-
+            //printf("##############################\n");
+             
             // Compute r = x_1 mod n
             eccint_mod(point.x, curve->n, signature->r, curve);
 

@@ -117,18 +117,18 @@ main(int argc, char** argv)
     // -- Sign message -------------------------------------------
     
     hash = testhash;
-    printf("################## SIGNATURE TEMP ###: \n");
+    printf("++++++++++++++++++ SIGNATURE TEMP +++: \n");
     ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
-    printf("################## SIGNATURE TEMP END ###: \n\n");
+    printf("++++++++++++++++++ SIGNATURE TEMP END +++: \n\n");
 
     if (eccint_cmp(signature.r, curve->n, curve->words) >= 0) {
         printf("FAILURE\n\n");
     }
 
     hash = testhash;
-    printf("################## VERIFIY TEMP ###: \n");
+    printf("++++++++++++++++++ VERIFIY TEMP +++: \n");
     result = ecc_verify_verbose(publickey_QA, hash, &signature, curve, 1);
-    printf("################## VERIFIY TEMP END ###: \n");
+    printf("++++++++++++++++++ VERIFIY TEMP END +++: \n");
 
     printf("-------------------------------\n");
     printf("Signature: \n");

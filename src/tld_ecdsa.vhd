@@ -40,10 +40,7 @@ ENTITY tld_ecdsa IS
         -- Clock and reset
         clk_i: IN std_logic; 
         rst_i: IN std_logic;
-        
-        -- Generate (private and) public key
-        --gen_keys_i: IN std_logic;
-        
+
         -- Enable computation
         enable_i: IN std_logic;
         
@@ -88,7 +85,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     --END COMPONENT;
 
     -- Import entity e_k163_point_multiplication
-    COMPONENT e_k163_point_multiplication IS
+    COMPONENT e_k163_montgomery_point_multiplication IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -118,8 +115,8 @@ ARCHITECTURE rtl OF tld_ecdsa IS
         );
     END COMPONENT;
     
-    -- Import entity e_gf2m_divider
-    COMPONENT e_gf2m_divider IS
+    -- Import entity e_gf2m_divider_inv
+    COMPONENT e_gf2m_divider_inv IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -172,8 +169,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL xQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qA = dA.G = (xQA, yQA)
     SIGNAL yQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qA = dA.G = (xQA, yQA)
     SIGNAL N : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- Order of generator point G
-    --SIGNAL done_gen_key: std_logic := '0';
-    
+ 
     -- Parameter to sign a message, ONLY FOR TESTING!
     SIGNAL k : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- k for point generator, should be cryptograic secure randum number!
     SIGNAL xQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qB = dB.G = (xQB, yQB)
@@ -194,8 +190,8 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     SIGNAL enable_verify_u12, done_verify_u1, done_verify_u2 : std_logic := '0'; 
     SIGNAL enable_verify_u1gu2qb, done_verify_u1g, done_verify_u2qb : std_logic := '0';
     SIGNAL enable_verify_P, done_verify_P : std_logic := '0';
-    SIGNAL xU1G, yU1G : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL xU2QB, yU2QB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL xGU1, yGU1 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL xQBU2, yQBU2 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL xP, yP : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL valid : std_logic := '0';
     
@@ -203,7 +199,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     
     -- States for state machine
-    subtype states IS natural RANGE 0 TO 15;
+    subtype states IS natural RANGE 0 TO 17;
     SIGNAL current_state: states;
 BEGIN
     -- Set parameter of sect163k1
@@ -227,7 +223,8 @@ BEGIN
     yQA <= "111011010";
     xQB <= "011000101";
     yQB <= "111011010";
-    k   <= "001101001";
+    k   <= "001101001"; --"001101001";
+--    k   <= "000000001";
 
     -- Instantiate sha256 entity to compute hashes
     --hash: sha256 PORT MAP(
@@ -242,25 +239,10 @@ BEGIN
     --    debug_port => sha256_debug_port
     --);
     
-    -- PUBLIC KEX -----------------------------------------------------------------
-   
-    -- Instantiate multiplier to generate private and public key
-    --gen_key: e_k163_point_multiplication PORT MAP(
-    --    clk_i => clk_i, 
-    --    rst_i => rst_i, 
-    --    enable_i => gen_keys_i, 
-    --    xp_i => xG, 
-    --    yp_i => yG, 
-    --    k => dA,
-    --    xq_io => xQA, 
-    --    yq_io => yQA, 
-    --    ready_o => done_gen_key 
-    --);
-    
     -- SIGN -----------------------------------------------------------------
     
     -- Instantiate multiplier to compute R = k.G = (xR, yR)
-    sign_pmul_r: e_k163_point_multiplication PORT MAP(
+    sign_pmul_r: e_k163_montgomery_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_r, 
@@ -289,7 +271,7 @@ BEGIN
     END GENERATE;
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
-    divider: e_gf2m_divider PORT MAP( 
+    sign_divide_edarx_k: e_gf2m_divider_inv PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_z2k,
@@ -337,28 +319,28 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp6 = u1.G
-    sign_pmul_u1gu2q: e_k163_point_multiplication PORT MAP(
+    sign_pmul_u1gu2q: e_k163_montgomery_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
         xp_i => xG, 
         yp_i => yG, 
         k => U1,
-        xq_io => xU1G, 
-        yq_io => yU1G, 
+        xq_io => xGU1, 
+        yq_io => yGU1, 
         ready_o => done_verify_u1g
     );
     
     -- Instantiate multiplier to compute tmp7 = u2.QB
-    sign_pmul_u1gu2qb: e_k163_point_multiplication PORT MAP(
+    sign_pmul_u1gu2qb: e_k163_montgomery_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
         xp_i => xQB, 
         yp_i => yQB, 
         k => U2,
-        xq_io => xU2QB, 
-        yq_io => yU2QB, 
+        xq_io => xQBU2, 
+        yq_io => yQBU2, 
         ready_o => done_verify_u2qb
     );
 
@@ -367,10 +349,10 @@ BEGIN
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_P,
-        x1_i => xU1G, 
-        y1_i => yU1G, 
-        x2_i => xU2QB, 
-        y2_i => yU2QB,
+        x1_i => xGU1, 
+        y1_i => yGU1, 
+        x2_i => xQBU2, 
+        y2_i => yQBU2,
         x3_io => xP, 
         y3_o => yP,
         ready_o => done_verify_P
@@ -388,21 +370,21 @@ BEGIN
         --  8,9   : VERIFY -> compute 1/S
         --  10,11 : VERIFY -> compute u1 = ew und u2 = rw
         CASE current_state IS
-            WHEN 0 TO 1 => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; 
-            WHEN 2  => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 3  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 4  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 5  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 6  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 7  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 8  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '1'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 9  => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 10 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 11 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 12 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0';
-            WHEN 13 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
-            WHEN 14 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1';
-            WHEN 15 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 0 TO 1   => enable_sign_r <= '0'; ready_o <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; 
+            WHEN 2        => enable_sign_r <= '1'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 3        => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 4        => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 5        => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 6        => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 7 TO 8   => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 9        => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '1'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 10       => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 11       => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 12       => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 13       => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0';
+            WHEN 14       => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
+            WHEN 15       => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1';
+            WHEN 16 TO 17 => enable_sign_r <= '0'; ready_o <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_verify_invs <= '0'; enable_verify_u12 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0';
         END CASE;
         
         IF rst_i = '1' THEN 
@@ -420,18 +402,18 @@ BEGIN
                     IF (enable_i = '1' and mode_i = '0') THEN 
                         current_state <= 2; 
                     ELSIF (enable_i = '1' and mode_i = '1') THEN
-                        current_state <= 8;
+                        current_state <= 9;
                     END IF;
                 WHEN 2 =>
                     current_state <= 3;
                 WHEN 3 => 
                     IF (done_sign_r = '1') THEN
                         -- Validate R: restart if R = 0
-                        IF (s = ZERO) THEN
-                            current_state <= 2;
-                        ELSE
+                        --IF (xR = ZERO) THEN            -- NECESSARY IF K IS RANDOM VALUE!
+                        --    current_state <= 2;
+                        --ELSE
                             current_state <= 4;
-                        END IF;
+                        --END IF;
 					END IF;
                 WHEN 4 =>
                     current_state <= 5;
@@ -443,43 +425,47 @@ BEGIN
                     current_state <= 7;
                 WHEN 7 => 
                     IF (done_sign_z2k = '1') THEN
-                        -- Validate S: restart if S = 0
-                        IF (s = ZERO) THEN
-                            current_state <= 2;
-                        ELSE
-                            current_state <= 0;
-                        END IF;
+                        current_state <= 8;
 					END IF;
-                -- VALIDATE
-                WHEN 8 =>
-                    current_state <= 9;
-                WHEN 9 =>
-                    IF (done_verify_invs = '1') THEN
-                        current_state <= 10;
-                    END IF;
-                WHEN 10 =>
-                    current_state <= 11;
-                WHEN 11 =>
-                    IF (done_verify_u1 = '1' and done_verify_u2 = '1') THEN
-                        current_state <= 12;
-                    END IF;
-                WHEN 12 =>
-                    current_state <= 13;   
-                WHEN 13 =>
-                    IF (done_verify_u1g = '1' and done_verify_u2qb = '1') THEN
-                        current_state <= 14;
-                    END IF;
-                WHEN 14 =>
-                    current_state <= 15;    
-                WHEN 15 =>
-                    IF (done_verify_P = '1') THEN
+                WHEN 8 => 
+                    -- Validate S: restart if S = 0
+                    --IF (s = ZERO) THEN
+                    --    current_state <= 2;
+                    --ELSE
                         current_state <= 0;
-                        IF (xP = r_i) THEN
-                            valid <= '1';
-                        ELSE    
-                            valid <= '0';
-                        END IF;
+                    --END IF;
+                -- VALIDATE
+                WHEN 9 =>
+                    current_state <= 10;
+                WHEN 10 =>
+                    IF (done_verify_invs = '1') THEN
+                        current_state <= 11;
                     END IF;
+                WHEN 11 =>
+                    current_state <= 12;
+                WHEN 12 =>
+                    IF (done_verify_u1 = '1' and done_verify_u2 = '1') THEN
+                        current_state <= 13;
+                    END IF;
+                WHEN 13 =>
+                    current_state <= 14;   
+                WHEN 14 =>
+                    IF (done_verify_u1g = '1' and done_verify_u2qb = '1') THEN
+                        current_state <= 15;
+                    END IF;
+                WHEN 15 =>
+                    current_state <= 16;    
+                WHEN 16 =>
+                    IF (done_verify_P = '1') THEN
+                        current_state <= 17;
+                    END IF;
+                WHEN 17 =>
+                    IF (xP = r_i) THEN
+                        valid <= '1';
+                    ELSE    
+                        valid <= '0';
+                    END IF;
+                    current_state <= 0;
             END CASE;
         END IF;
     END PROCESS;

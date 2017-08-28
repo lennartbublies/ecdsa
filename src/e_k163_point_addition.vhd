@@ -23,6 +23,7 @@ PACKAGE e_k163_point_addition_package IS
   --CONSTANT M: natural := 8;
   CONSTANT M: natural := 9;
   --CONSTANT M: natural := 163;
+  CONSTANT A: std_logic_vector(M-1 downto 0):= "000000001"; --for M=9 bits
 END e_k163_point_addition_package;
 
 ------------------------------------------------------------
@@ -57,7 +58,7 @@ END e_k163_point_addition;
 
 ARCHITECTURE rtl of e_k163_point_addition IS
     -- Import entity e_gf2m_divider
-    COMPONENT e_gf2m_divider_inv IS
+    COMPONENT e_gf2m_divider IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -102,7 +103,7 @@ ARCHITECTURE rtl of e_k163_point_addition IS
 BEGIN
     -- Instantiate divider entity
     --  Calculate s = (py-qy)/(px-qx)
-    divider: e_gf2m_divider_inv PORT MAP( 
+    divider: e_gf2m_divider PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_div,
@@ -145,12 +146,12 @@ BEGIN
     END GENERATE;
 
     -- Set x3(0)
-    x3_io(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
-    
+    --x3_io(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
+
     -- Set output
     --  Calculate rx = s^2 - s - (px-qx)
-    x_output: FOR i IN 1 TO M-1 GENERATE
-        x3_io(i) <= lambda_square(i) xor lambda(i) xor div_in2(i);
+    x_output: FOR i IN 0 TO M-1 GENERATE
+        x3_io(i) <= lambda_square(i) xor lambda(i) xor div_in2(i) xor a(i);
     END GENERATE;
     --  Calculate ry = s * (px - rx) - rx - py
     y_output: FOR i IN 0 TO M-1 GENERATE
