@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
---  Testbench - K163 Point Addition 
+--  Testbench - K163 Point Doubling
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 18.08.2017
@@ -14,30 +14,28 @@ USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
 
-use work.e_k163_point_addition_package.all;
+use work.e_k163_point_doubling_package.all;
 
-ENTITY tb_k163_point_addition IS
-END tb_k163_point_addition;
+ENTITY tb_k163_point_doubling IS
+END tb_k163_point_doubling;
 
-ARCHITECTURE rtl OF tb_k163_point_addition IS 
-    -- Import entity e_k163_point_addition
-    COMPONENT e_k163_point_addition IS
-        PORT (
-            clk_i: IN std_logic; 
-            rst_i: IN std_logic; 
-            enable_i: IN std_logic;
-            x1_i: IN std_logic_vector(M-1 DOWNTO 0);
-            y1_i: IN std_logic_vector(M-1 DOWNTO 0); 
-            x2_i: IN std_logic_vector(M-1 DOWNTO 0); 
-            y2_i: IN std_logic_vector(M-1 DOWNTO 0);
-            x3_io: INOUT std_logic_vector(M-1 DOWNTO 0);
-            y3_o: OUT std_logic_vector(M-1 DOWNTO 0);
-            ready_o: OUT std_logic
+ARCHITECTURE rtl OF tb_k163_point_doubling IS 
+    -- Import entity e_k163_point_doubling 
+    COMPONENT e_k163_point_doubling  IS
+        PORT(
+			clk_i: IN std_logic; 
+			rst_i: IN std_logic; 
+			enable_i: IN std_logic;
+			x1_i: IN std_logic_vector(M-1 DOWNTO 0);
+			y1_i: IN std_logic_vector(M-1 DOWNTO 0); 
+			x2_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+			y2_o: OUT std_logic_vector(M-1 DOWNTO 0);
+			ready_o: OUT std_logic
         );
     END COMPONENT;
 
   -- Internal signals
-  SIGNAL xP, yP, xQ, yQ, xR, yR:  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+  SIGNAL xP, yP, xR, yR:  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
   SIGNAL clk, rst, enable, done: std_logic := '0';
   CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
   CONSTANT ONE: std_logic_vector(M-1 DOWNTO 0) := (0 => '1', OTHERS=>'0');
@@ -47,19 +45,17 @@ ARCHITECTURE rtl OF tb_k163_point_addition IS
   CONSTANT OFFSET : time := 0 ns;
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
-    -- Instantiate point addition entity
-    uut3: e_k163_point_addition port map( 
-        clk_i => clk, 
-        rst_i => rst, 
-        enable_i => enable,
-        x1_i => xP, 
-        y1_i => yP, 
-        x2_i => xQ, 
-        y2_i => yQ,
-        x3_io => xR, 
-        y3_o => yR,
-        ready_o => done
-    );
+    -- Instantiate point doubling entity
+    doubling: e_k163_point_doubling PORT MAP(
+            clk_i => clk, 
+            rst_i => rst,
+            enable_i => enable,  
+            x1_i => xP, 
+            y1_i => yP, 
+            x2_io => xR, 
+            y2_o => yR, 
+            ready_o => done
+        );
 
     -- Clock process FOR clk
     PROCESS 
@@ -82,28 +78,9 @@ BEGIN
         WAIT FOR PERIOD;
         rst <= '0';
         WAIT FOR PERIOD;
-        
-        -- Set point P for the computation
-        --xP <= "000000010"; 
-        --yP <= "000001111";
-        --xQ <= "000001100";
-        --yQ <= "000001100";
 
-
-        xP <= "111100101"; 
-        yP <= "000010111";
-        xQ <= "011101110";
-        yQ <= "010101111";
-        
-        --xP <= "10101010"; 
-        --yP <= "10101010";
-        --xQ <= "00000000";
-        --yQ <= "00000000";
-        
-        --yP <= "00001101"; 
-        --xP <= "00101010"; 
-        --yQ <= "00000000";
-        --xQ <= "00000000";   
+        xP <= "000000010"; 
+        yP <= "000001111";
        
         -- Start computation
         enable <= '1'; 

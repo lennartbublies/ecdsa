@@ -67,6 +67,7 @@ ENTITY tld_ecdsa IS
 END tld_ecdsa;
 
 ARCHITECTURE rtl OF tld_ecdsa IS 
+
     -- Components -----------------------------------------
     
     -- Import entity sha256
@@ -85,7 +86,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     --END COMPONENT;
 
     -- Import entity e_k163_point_multiplication
-    COMPONENT e_k163_montgomery_point_multiplication IS
+    COMPONENT e_k163_point_multiplication IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -223,7 +224,7 @@ BEGIN
     yQA <= "111011010";
     xQB <= "011000101";
     yQB <= "111011010";
-    k   <= "001101001"; --"001101001";
+    k   <= "001101001";
 --    k   <= "000000001";
 
     -- Instantiate sha256 entity to compute hashes
@@ -242,7 +243,7 @@ BEGIN
     -- SIGN -----------------------------------------------------------------
     
     -- Instantiate multiplier to compute R = k.G = (xR, yR)
-    sign_pmul_r: e_k163_montgomery_point_multiplication PORT MAP (
+    sign_pmul_r: e_k163_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_r, 
@@ -319,7 +320,7 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp6 = u1.G
-    sign_pmul_u1gu2q: e_k163_montgomery_point_multiplication PORT MAP (
+    sign_pmul_u1gu2q: e_k163_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
@@ -332,7 +333,7 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp7 = u2.QB
-    sign_pmul_u1gu2qb: e_k163_montgomery_point_multiplication PORT MAP (
+    sign_pmul_u1gu2qb: e_k163_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 

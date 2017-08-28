@@ -67,7 +67,7 @@ ARCHITECTURE rtl OF tb_k163_point_multupliation IS
   CONSTANT OFFSET : time := 0 ns;
   CONSTANT NUMBER_TESTS: natural := 5;
   --CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "100" & x"000000000000000000020108a2e0cc0d99f8a5ee";
-  CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "111111111";
+  CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "000000110";
 BEGIN
     -- Instantiate first point multiplier entity
     uut1: e_k163_montgomery_point_multiplication PORT MAP( --e_k163_point_multiplication PORT MAP(

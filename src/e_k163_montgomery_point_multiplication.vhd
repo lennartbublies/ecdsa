@@ -39,7 +39,7 @@ USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 USE work.e_k163_montgomery_point_multiplication_parameters.all;
 
-ENTITY Montgomery_projective_data_path IS
+ENTITY e_k163_montgomery_point_multiplication_data_path IS
     PORT(
         xP, yP: IN std_logic_vector(M-1 DOWNTO 0);
         clk, rst, start_mult, start_div,load, en_XA, en_XB, en_ZA, en_ZB, en_T1, en_T2: IN std_logic;
@@ -48,9 +48,9 @@ ENTITY Montgomery_projective_data_path IS
         xQ, yQ: OUT std_logic_vector(M-1 DOWNTO 0);
         mult_done, div_done, infinity: OUT std_logic
     );
-END Montgomery_projective_data_path;
+END e_k163_montgomery_point_multiplication_data_path;
 
-ARCHITECTURE rtl OF Montgomery_projective_data_path IS
+ARCHITECTURE rtl OF e_k163_montgomery_point_multiplication_data_path IS
     -- Import entity e_gf2m_divider
     COMPONENT e_gf2m_divider IS
         PORT(
