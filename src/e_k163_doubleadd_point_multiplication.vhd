@@ -14,12 +14,12 @@ USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 
-PACKAGE e_k163_point_multiplication_package IS
+PACKAGE e_k163_doubleadd_point_multiplication_package IS
   --CONSTANT M: natural := 8;
   CONSTANT M: natural := 9;
   --CONSTANT M: natural := 163;
   CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
-END e_k163_point_multiplication_package;
+END e_k163_doubleadd_point_multiplication_package;
 
 ------------------------------------------------------------
 -- K163 point multiplication
@@ -28,9 +28,9 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-USE work.e_k163_point_multiplication_package.all;
+USE work.e_k163_doubleadd_point_multiplication_package.all;
 
-ENTITY e_k163_point_multiplication IS
+ENTITY e_k163_doubleadd_point_multiplication IS
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -45,9 +45,9 @@ ENTITY e_k163_point_multiplication IS
         yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
-END e_k163_point_multiplication;
+END e_k163_doubleadd_point_multiplication;
 
-ARCHITECTURE rtl of e_k163_point_multiplication IS
+ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
     -- Import entity e_k163_point_doubling 
     COMPONENT e_k163_point_doubling  IS
         PORT(
@@ -80,7 +80,7 @@ ARCHITECTURE rtl of e_k163_point_multiplication IS
 
     -- Internal signals
     SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
-    SIGNAL ch_q, ch_ab, q_infinity, a_equal_0: std_logic;
+    SIGNAL ch_q, ch_a, q_infinity, a_equal_0, load: std_logic;
     SIGNAL next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
     SIGNAL x_double, y_double, x_doubleadd, y_doubleadd: std_logic_vector(M-1 DOWNTO 0);
 	SIGNAL a, next_a: std_logic_vector(M DOWNTO 0); 
@@ -108,8 +108,8 @@ BEGIN
             enable_i => start_addition,  
             x1_i => x_double, 
             y1_i => y_double, 
-            x2_i => x1_i,  
-            y2_i => y1_i, 
+            x2_i => xp_i,  
+            y2_i => yp_i, 
             x3_io => x_doubleadd,   --> Result if k(i)=1
             y3_o => y_doubleadd,    --> Result if k(i)=1
             ready_o => addition_done
@@ -125,7 +125,7 @@ BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
                 q_infinity <= '1';
-            ELSIF ce_q = '1' THEN 
+            ELSIF ch_q = '1' THEN 
                 xq_io <= next_xq; 
                 yq_io <= next_yq; 
                 q_infinity <= '0'; 
@@ -138,7 +138,7 @@ BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
                 a <= ('0'&k); 
-            ELSIF ce_ab = '1' THEN 
+            ELSIF ch_a = '1' THEN 
                 a <= next_a; 
             END IF;
         END IF;
