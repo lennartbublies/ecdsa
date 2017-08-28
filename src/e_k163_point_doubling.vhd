@@ -1,8 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 --  ENTITY - Elliptic Curve Point Doubling IN K163
 --
---  Ports:
--- 
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 27.06.2017
 ----------------------------------------------------------------------------------------------------
@@ -149,11 +147,7 @@ BEGIN
     y2_output: FOR i IN 0 TO M-1 GENERATE
         y2_o(i) <= x1_square(i) xor mult_lx2(i) xor x2_io(i);
     END GENERATE;	
-	
-	-- lambda = x1 + (y1/x1)            check
-	-- x3 = lambda^2 + lambda + a		check
-	-- y3 = x1^2 + lambda*x2 + x2 
-	
+
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN

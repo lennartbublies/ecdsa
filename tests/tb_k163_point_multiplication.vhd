@@ -26,7 +26,7 @@ END tb_k163_point_multupliation;
 
 ARCHITECTURE rtl OF tb_k163_point_multupliation IS 
     -- Import entity e_k163_point_multiplication
-    COMPONENT e_k163_montgomery_point_multiplication IS -- e_k163_point_multiplication IS
+    COMPONENT e_k163_point_multiplication IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -70,7 +70,7 @@ ARCHITECTURE rtl OF tb_k163_point_multupliation IS
   CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "000000110";
 BEGIN
     -- Instantiate first point multiplier entity
-    uut1: e_k163_montgomery_point_multiplication PORT MAP( --e_k163_point_multiplication PORT MAP(
+    uut1: e_k163_point_multiplication PORT MAP(
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable, 
@@ -83,7 +83,7 @@ BEGIN
     );
 
     -- Instantiate seccond point multiplier entity
-    uut2: e_k163_montgomery_point_multiplication PORT MAP( --e_k163_point_multiplication PORT MAP(
+    uut2: e_k163_point_multiplication PORT MAP(
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable, 

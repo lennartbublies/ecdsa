@@ -82,6 +82,10 @@ BEGIN
         xP <= "000000010"; 
         yP <= "000001111";
        
+        -- Expected results
+        --xR <= "010010101";
+        --yR <= "100011000";
+
         -- Start computation
         enable <= '1'; 
         WAIT FOR PERIOD;

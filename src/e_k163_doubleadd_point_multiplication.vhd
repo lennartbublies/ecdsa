@@ -79,8 +79,12 @@ ARCHITECTURE rtl of e_k163_point_multiplication IS
     END COMPONENT;
 
     -- Internal signals
-	SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
-
+    SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
+    SIGNAL ch_q, ch_ab, q_infinity, a_equal_0: std_logic;
+    SIGNAL next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
+    SIGNAL x_double, y_double, x_doubleadd, y_doubleadd: std_logic_vector(M-1 DOWNTO 0);
+	SIGNAL a, next_a: std_logic_vector(M DOWNTO 0); 
+    
     -- Define all available states
     subtype states IS natural RANGE 0 TO 2;
     SIGNAL current_state: states;
@@ -90,10 +94,10 @@ BEGIN
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_doubling,  
-            x1_i => , 
-            y1_i => , 
-            x2_io => , 
-            y2_o => , 
+            x1_i => next_xq, 
+            y1_i => next_yq, 
+            x2_io => x_double,   --> Result if k(i)=0
+            y2_o => y_double,    --> Result if k(i)=0
             ready_o => doubling_done
         );
 
@@ -102,16 +106,60 @@ BEGIN
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_addition,  
-            x1_i => , 
-            y1_i => , 
-            x2_i => ,  
-            y2_i => , 
-            x3_io => , 
-            y3_o => , 
+            x1_i => x_double, 
+            y1_i => y_double, 
+            x2_i => x1_i,  
+            y2_i => y1_i, 
+            x3_io => x_doubleadd,   --> Result if k(i)=1
+            y3_o => y_doubleadd,    --> Result if k(i)=1
             ready_o => addition_done
         );
 
+    -- Select entity output from point addition or point doubling entity in dependence of k
+    WITH a_equal_0 SELECT next_yq <= y_double WHEN '0', x_doubleadd WHEN '1';
+    WITH a_equal_0 SELECT next_xq <= x_double WHEN '0', y_doubleadd WHEN '1';
+
+    -- Output register
+    register_q: PROCESS(clk_i)
+    BEGIN
+        IF clk_i' event and clk_i = '1' THEN 
+            IF load = '1' THEN 
+                q_infinity <= '1';
+            ELSIF ce_q = '1' THEN 
+                xq_io <= next_xq; 
+                yq_io <= next_yq; 
+                q_infinity <= '0'; 
+            END IF;
+        END IF;
+    END PROCESS;
+
+    register_a: PROCESS(clk_i)
+    BEGIN
+        IF clk_i' event and clk_i = '1' THEN 
+            IF load = '1' THEN 
+                a <= ('0'&k); 
+            ELSIF ce_ab = '1' THEN 
+                a <= next_a; 
+            END IF;
+        END IF;
+    END PROCESS;
+
+    shift_a: FOR i IN 0 TO m-1 GENERATE 
+        next_a(i) <= a(i+1);
+    END GENERATE;
+    next_a(m) <= a(m);
+    
+    a_equal_0 <= '1' WHEN a = 0 ELSE '0';
+
 	-- TODO ...
+    
+    -- ro = INFINITY
+    -- for (i=0; i>k-1; i++) {
+    --      ro = point_double(ro)
+    --      if k(i) == 1 {
+    --          ro = point_add(ro, p)
+    --      }
+    --}
 	
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state)

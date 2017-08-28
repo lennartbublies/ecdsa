@@ -157,8 +157,8 @@ BEGIN
     divide_by_2: FOR i IN 0 TO m-1 GENERATE 
         a_div_2(i) <= a(i+1);
     END GENERATE;
-    
     a_div_2(m) <= a(m);
+    
     next_a <= (b(m-1)&b) + a_div_2 + carry;
     next_b <= zero - (a_div_2(m-1 DOWNTO 0) + carry);
 
