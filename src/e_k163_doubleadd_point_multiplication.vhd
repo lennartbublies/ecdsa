@@ -2,6 +2,15 @@
 --  ENTITY - Elliptic Curve Point Multiplication IN K163
 --  Implementation with Double-And-Add algorithm
 --
+--  Code:
+--      ro = INFINITY
+--      for (i=0; i>k-1; i++) {
+--          ro = point_double(ro)
+--          if k(i) == 1 {
+--              ro = point_add(ro, p)
+--          }
+--      }
+--
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 29.06.2017
 ----------------------------------------------------------------------------------------------------
@@ -86,7 +95,7 @@ ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
 	SIGNAL a, next_a: std_logic_vector(M DOWNTO 0); 
     
     -- Define all available states
-    subtype states IS natural RANGE 0 TO 2;
+    subtype states IS natural RANGE 0 TO 11;
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate point doubling entity
@@ -94,8 +103,8 @@ BEGIN
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_doubling,  
-            x1_i => next_xq, 
-            y1_i => next_yq, 
+            x1_i => xq_io, 
+            y1_i => yq_io, 
             x2_io => x_double,   --> Result if k(i)=0
             y2_o => y_double,    --> Result if k(i)=0
             ready_o => doubling_done
@@ -116,23 +125,24 @@ BEGIN
         );
 
     -- Select entity output from point addition or point doubling entity in dependence of k
-    WITH a_equal_0 SELECT next_yq <= y_double WHEN '0', x_doubleadd WHEN '1';
-    WITH a_equal_0 SELECT next_xq <= x_double WHEN '0', y_doubleadd WHEN '1';
+    WITH a_equal_0 SELECT next_yq <= y_double WHEN '0', y_doubleadd WHEN OTHERS;
+    WITH a_equal_0 SELECT next_xq <= x_double WHEN '0', x_doubleadd WHEN OTHERS;
 
     -- Output register
     register_q: PROCESS(clk_i)
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                q_infinity <= '1';
+                xq_io <= xp_i;
+                yq_io <= yp_i;
             ELSIF ch_q = '1' THEN 
                 xq_io <= next_xq; 
                 yq_io <= next_yq; 
-                q_infinity <= '0'; 
             END IF;
         END IF;
     END PROCESS;
 
+    -- Register for k
     register_a: PROCESS(clk_i)
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
@@ -144,33 +154,35 @@ BEGIN
         END IF;
     END PROCESS;
 
+    -- Shift k
     shift_a: FOR i IN 0 TO m-1 GENERATE 
         next_a(i) <= a(i+1);
     END GENERATE;
     next_a(m) <= a(m);
     
+    -- If '1' enable point addition, otherwise only doubling
     a_equal_0 <= '1' WHEN a = 0 ELSE '0';
-
-	-- TODO ...
-    
-    -- ro = INFINITY
-    -- for (i=0; i>k-1; i++) {
-    --      ro = point_double(ro)
-    --      if k(i) == 1 {
-    --          ro = point_add(ro, p)
-    --      }
-    --}
 	
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state)
     BEGIN
         -- Handle current state
-		--  ...
+        --  0,1   : Default state
+        --  2,3   : Intialize registers
+        --  4,5   :
         CASE current_state IS
-            WHEN 0 TO 1 => ready_o <= '1';
-            WHEN 2 => ready_o <= '0';
-			-- TODO ...
-            END CASE;
+            WHEN 0 TO 1 => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '1';
+            WHEN 2      => load <= '1';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 3      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 4      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
+            WHEN 5      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 6      => load <= '0';  ch_q <= '1';  ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 7      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
+            WHEN 8      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 9      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='1'; ready_o <= '0';
+            WHEN 10     => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 11     => load <= '0';  ch_q <= '1';  ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+        END CASE;
       
         IF rst_i = '1' THEN 
             -- Reset state if reset is high
@@ -187,8 +199,41 @@ BEGIN
                         current_state <= 2; 
                     END IF;
                 WHEN 2 => 
-                    current_state <= 0;
-				-- TODO ...
+                    current_state <= 3;
+                WHEN 3 =>
+                    -- k is completely processed --> finish
+                    IF a_equal_0 = '1' THEN
+                        current_state <= 0;
+                    -- Skip addition
+                    ELSIF a(0) = '0' THEN
+                        current_state <= 4;
+                    ELSE
+                        current_state <= 7;
+                    END IF;
+                -- Case: Only doubling
+                WHEN 4 =>
+                    current_state <= 5; --> Double
+                WHEN 5 =>
+                    IF doubling_done = '1' THEN
+                        current_state <= 6;
+                    END IF;
+                WHEN 6 =>
+                    current_state <= 3;
+                -- Case: Double and add
+                WHEN 7 =>
+                    current_state <= 8; --> Double
+                WHEN 8 =>
+                    IF doubling_done = '1' THEN
+                        current_state <= 9;
+                    END IF;
+                WHEN 9 =>
+                    current_state <= 10; --> Add
+                WHEN 10 =>
+                    IF addition_done = '1' THEN
+                        current_state <= 11;
+                    END IF;
+                WHEN 11 =>
+                    current_state <= 3;
             END CASE;
         END IF;
     END PROCESS;

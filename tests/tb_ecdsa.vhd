@@ -20,8 +20,8 @@ ENTITY tb_k163_ecdsa IS
 END tb_k163_ecdsa;
 
 ARCHITECTURE rtl OF tb_k163_ecdsa IS 
-    -- Import entity tld_ecdsa
-    COMPONENT tld_ecdsa IS
+    -- Import entity e_ecdsa
+    COMPONENT e_ecdsa IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic;
@@ -50,7 +50,7 @@ ARCHITECTURE rtl OF tb_k163_ecdsa IS
     CONSTANT NUMBER_TESTS: natural := 1;
 BEGIN
     -- Instantiate ecdsa entity
-    uut1: tld_ecdsa PORT MAP(
+    uut1: e_ecdsa PORT MAP(
         clk_i => clk, 
         rst_i => rst,
         enable_i => enable, 
