@@ -13,7 +13,7 @@
 #include "eccmath.h"
 
 
-// --- ecsda funcs ---
+// --- ecsda static k ---
 
 /*static eccint_t KK[21] = {
           //0x03,0x35,0x5B,0xF8,0x3C,0x49,0x7F,0x92,0x2F,0xFA,0xEC,0x53,0xC7,0x31,0x5B,0x34,0x8F,0xAF,0xB4,0xDA,0x2F
@@ -21,11 +21,13 @@
           //0x2F,0xDA,0xB4,0xAF,0x8F,0x34,0x5B,0x31,0xC7,0x53,0xEC,0xFA,0x2F,0x92,0x7F,0x49,0x3C,0xF8,0x5B,0x35,0x03 // swapped
           //0x88,0x9D,0xD4,0x2E,0x1E,0x7D,0x3E,0x73,0x29,0xBD,0x51,0x93,0x54,0xE9,0xEE,0x60,0x32,0x20,0x06,0xCD,0x00 // swapped
           0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 // swapped
-};*/
+};*/ // K=163
 
 static eccint_t KK[2] = {
           0b01101001, 0b00000000
-};
+}; // K=9
+
+// --- ecsda funcs ---
 
 // Generate random bytes into dst
 void eccint_urand(void *dst, const ssize_t size) {
@@ -91,16 +93,14 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
     do {
         do {
             // Select k \in [1, n - 1]
+			// -- ENABLE THIS CODE FOR RANDOM K --
             //do {
             //    eccint_urand(k, curve->words);
             //} while (eccint_testzero(k, curve->words));
-
             //eccint_mod(k, curve->n, k, curve);
 
             // Compute kP = (x_1, y_1) and convert x_1 to integer
-            //printf("## POINT MUL #################\n");
             eccint_point_mul(k, &curve->P, &point, curve);
-            //printf("##############################\n");
              
             // Compute r = x_1 mod n
             eccint_mod(point.x, curve->n, signature->r, curve);
@@ -118,16 +118,18 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
         eccint_add(hash, t1, t1, curve->words); // t1 = e + d * r
         eccint_div_mod(t1, k, curve->n, signature->s, curve);
 
-        printf("# k = \n    ");
-        ecc_print_n(k, curve->words);
-        printf("# kP = \n");
-        ecc_print_point_n(&point, curve->words);
-        printf("# r =  (kPx)\n    ");
-        ecc_print_n(signature->r, curve->words);
-        printf("# e + d * kPx  = \n    ");
-        ecc_print_n(t1, curve->words);
-        printf("# s =  ((e + d * kPx)/k)\n    ");
-        ecc_print_n(signature->s, curve->words);
+		if (verbose) {
+			printf("# SIGN: k = \n    ");
+			ecc_print_n(k, curve->words);
+			printf("# SIGN: kP = \n");
+			ecc_print_point_n(&point, curve->words);
+			printf("# SIGN: r =  (kPx)\n    ");
+			ecc_print_n(signature->r, curve->words);
+			printf("# SIGN: e + d * kPx  = \n    ");
+			ecc_print_n(t1, curve->words);
+			printf("# SIGN: s =  ((e + d * kPx)/k)\n    ");
+			ecc_print_n(signature->s, curve->words);
+		}
 
         // If s=0 then goto step 1.
     } while (eccint_testzero(signature->s, curve->words));
@@ -183,18 +185,20 @@ int ecc_verify_verbose(const eccint_point_t *publickey, const eccint_t *hash, co
     // Compute v = x_1 mod n
     eccint_mod(X.x, curve->n, v, curve);
 
-    printf("# w = \n    ");
-    ecc_print_n(w, curve->words);
-    printf("# u_1 = \n    ");
-    ecc_print_n(u1, curve->words);
-    printf("# u_2 = \n    ");
-    ecc_print_n(u2, curve->words);
-    printf("# x_1 =  (u_1 * P)\n");
-    ecc_print_point_n(&X1, curve->words);
-    printf("# x_2 =  (u_2 * Q)\n");
-    ecc_print_point_n(&X2, curve->words);
-    printf("# x =  (u_1 * P + u_2 * Q)\n");
-    ecc_print_point_n(&X, curve->words);
+	if (verbose) {
+		printf("# VERIFY: w = \n    ");
+		ecc_print_n(w, curve->words);
+		printf("# VERIFY: u_1 = \n    ");
+		ecc_print_n(u1, curve->words);
+		printf("# VERIFY: u_2 = \n    ");
+		ecc_print_n(u2, curve->words);
+		printf("# VERIFY: x_1 =  (u_1 * P)\n");
+		ecc_print_point_n(&X1, curve->words);
+		printf("# VERIFY: x_2 =  (u_2 * Q)\n");
+		ecc_print_point_n(&X2, curve->words);
+		printf("# VERIFY: x =  (u_1 * P + u_2 * Q)\n");
+		ecc_print_point_n(&X, curve->words);
+	}
 
     // If v = r then accept
     return (eccint_cmp(v, r, curve->words) != 0);
