@@ -1,3 +1,4 @@
 *.bak
 vhdl/db/
 vhdl/output_files
+vhdl/incremental_db
