@@ -30,7 +30,7 @@ BEGIN
     BEGIN
         IF rst_i = '1' THEN 
             temp <= (OTHERS => '0');
-        ELSIF(clk_i'event and clk_i='1') THEN
+        ELSIF(clk_i'event and clk_i='1' and enable_i='1') THEN
             temp(N-1 DOWNTO 1) <= temp(N-2 DOWNTO 0);
             temp(0) <= data_i;
         END IF;
