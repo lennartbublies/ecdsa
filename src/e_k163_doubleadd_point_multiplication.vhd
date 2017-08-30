@@ -89,7 +89,7 @@ ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
 
     -- Internal signals
     SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
-    SIGNAL ch_q, ch_a, q_infinity, a_equal_0, load: std_logic;
+    SIGNAL sel, ch_q, ch_a, q_infinity, a_equal_0, a_equal_1, load: std_logic;
     SIGNAL next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
     SIGNAL x_double, y_double, x_doubleadd, y_doubleadd: std_logic_vector(M-1 DOWNTO 0);
 	SIGNAL a, next_a: std_logic_vector(M DOWNTO 0); 
@@ -125,8 +125,8 @@ BEGIN
         );
 
     -- Select entity output from point addition or point doubling entity in dependence of k
-    WITH a_equal_0 SELECT next_yq <= y_double WHEN '0', y_doubleadd WHEN OTHERS;
-    WITH a_equal_0 SELECT next_xq <= x_double WHEN '0', x_doubleadd WHEN OTHERS;
+    WITH sel SELECT next_yq <= y_double WHEN '0', y_doubleadd WHEN OTHERS;
+    WITH sel SELECT next_xq <= x_double WHEN '0', x_doubleadd WHEN OTHERS;
 
     -- Output register
     register_q: PROCESS(clk_i)
@@ -135,9 +135,11 @@ BEGIN
             IF load = '1' THEN 
                 xq_io <= xp_i;
                 yq_io <= yp_i;
+                q_infinity <= '1';
             ELSIF ch_q = '1' THEN 
                 xq_io <= next_xq; 
                 yq_io <= next_yq; 
+                q_infinity <= '0';
             END IF;
         END IF;
     END PROCESS;
@@ -162,26 +164,27 @@ BEGIN
     
     -- If '1' enable point addition, otherwise only doubling
     a_equal_0 <= '1' WHEN a = 0 ELSE '0';
+    a_equal_1 <= '1' WHEN a = 1 ELSE '0';
 	
     -- State machine
-    control_unit: PROCESS(clk_i, rst_i, current_state)
+    control_unit: PROCESS(clk_i, rst_i, current_state, a_equal_0, a_equal_1, a(0), q_infinity)
     BEGIN
         -- Handle current state
         --  0,1   : Default state
         --  2,3   : Intialize registers
         --  4,5   :
         CASE current_state IS
-            WHEN 0 TO 1 => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '1';
-            WHEN 2      => load <= '1';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 3      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 4      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
-            WHEN 5      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 6      => load <= '0';  ch_q <= '1';  ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 7      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
-            WHEN 8      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 9      => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='1'; ready_o <= '0';
-            WHEN 10     => load <= '0';  ch_q <= '0';  ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 11     => load <= '0';  ch_q <= '1';  ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 0 TO 1 => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '1';
+            WHEN 2      => load <= '1'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 3      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 4      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
+            WHEN 5      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 6      => load <= '0'; sel <= '0'; ch_q <= '1'; ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 7      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
+            WHEN 8      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 9      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='1'; ready_o <= '0';
+            WHEN 10     => load <= '0'; sel <= '1'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 11     => load <= '0'; sel <= '1'; ch_q <= '1'; ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
         END CASE;
       
         IF rst_i = '1' THEN 
@@ -204,9 +207,12 @@ BEGIN
                     -- k is completely processed --> finish
                     IF a_equal_0 = '1' THEN
                         current_state <= 0;
-                    -- Skip addition
+                    ELSIF (a_equal_1 = '1') and (q_infinity = '1') THEN
+                        current_state <= 0;
+                    -- Double but skip addition
                     ELSIF a(0) = '0' THEN
                         current_state <= 4;
+                    -- Double and add
                     ELSE
                         current_state <= 7;
                     END IF;

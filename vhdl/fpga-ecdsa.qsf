@@ -51,9 +51,8 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VHDL_FILE ../src/e_nm_sipo_register.vhd
 set_global_assignment -name VHDL_FILE ../src/e_ecdsa.vhd
-set_global_assignment -name VHDL_FILE ../tests/tb_sipo_register.vhd
-set_global_assignment -name VHDL_FILE ../src/e_sipo_register.vhd
 set_global_assignment -name VHDL_FILE ../src/e_k163_doubleadd_point_multiplication.vhd
 set_global_assignment -name VHDL_FILE ../tests/tb_k163_point_doubling.vhd
 set_global_assignment -name VHDL_FILE ../src/e_k163_point_doubling.vhd

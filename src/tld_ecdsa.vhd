@@ -105,18 +105,4 @@ BEGIN
         sign_r_o => ecdsa_r_out,
         sign_s_o => ecdsa_s_out
     );
-
-    -- Instantiate sha256 entity to compute hashes
-    hash: sha256 PORT MAP(
-        clk => clk_i,
-        reset => rst_i,
-        enable => sha256_enable, 
-        ready => sha256_ready,
-        update => sha256_update,
-        word_address => sha256_word_address,
-        word_input => sha256_word_input,
-        hash_output => sha256_hash_output, -- ONLY 163 BIT ARE USED!
-        debug_port => sha256_debug_port
-    );
-
 END;
