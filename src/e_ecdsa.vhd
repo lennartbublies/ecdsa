@@ -101,8 +101,8 @@ ARCHITECTURE rtl OF e_ecdsa IS
         );
     END COMPONENT;
     
-    -- Import entity e_gf2m_divider_inv
-    COMPONENT e_gf2m_divider_inv IS
+    -- Import entity e_gf2m_divider
+    COMPONENT e_gf2m_divider IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -237,7 +237,7 @@ BEGIN
     END GENERATE;
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
-    sign_divide_edarx_k: e_gf2m_divider_inv PORT MAP( 
+    sign_divide_edarx_k: e_gf2m_divider PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_z2k,
