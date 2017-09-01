@@ -21,8 +21,8 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 
 ENTITY e_uart_receive_data IS
-	GENERIC ( baud_rate : IN NATURAL RANGE 1200 TO 115200);
-	PORT MAP (
+	GENERIC ( baud_rate : IN NATURAL RANGE 1200 TO 500000);
+	PORT (
 		clk_i    : IN	std_logic;
 		rst_i    : IN	std_logic;
 	 	rx_i		: IN	std_logic;
@@ -34,9 +34,64 @@ ENTITY e_uart_receive_data IS
 END ENTITY e_uart_receive_data;
 
 ARCHITECTURE e_uart_receive_data_arch OF e_uart_receive_data IS
---	Signal declaration
-
+--	signal declaration
+	TYPE uart_state_type IS (idle, start, data0, data1, data2, data3, data4, data5, data6, data7, parity, stop);
+	SIGNAL s_uart_state, s_uart_next : uart_state_type;
+	
+	SIGNAL scan_clk, rst_internal : std_logic;
+	SIGNAL scan_cnt, wait_cnt, symbol_cycles, wait_rate, bit_cnt : INTEGER;
+	
 BEGIN
+
+	-- UART Receive State Machine
+	p_uart_state : PROCESS(clk_i,rst_i,rx_i)
+	BEGIN
+		IF rst_i = '0' THEN
+			-- reset everything
+			s_uart_state <= idle;
+			s_uart_next  <= idle;
+		ELSIF rising_edge(clk_i) THEN
+			s_uart_state <= idle;
+			
+			
+		END IF;
+	
+	END PROCESS p_uart_state;
+	
+	--- process to generate the clock signal 'scan_clk' to determine when to read rx_i
+    p_scan_clk : PROCESS(clk_i,rst_i,rx_i) --(ALL)
+    BEGIN
+        IF rst_i = '0' THEN
+            scan_clk <= '0';
+            scan_cnt <= 0;
+            wait_cnt <= 0;
+        ELSIF rising_edge(clk_i) THEN
+            IF rst_internal = '0' THEN          -- internal reset when start bit detected                    
+                    scan_clk <= '0';
+                    scan_cnt <= 0;
+                    wait_cnt <= 0;
+            ELSIF wait_cnt < wait_rate THEN            -- warte Halbe Baud-Rate
+                wait_cnt <= wait_cnt + 1;
+            ELSE
+                IF bit_cnt = 9 THEN          -- internal reset when start bit detected                    
+                    scan_clk <= '0';
+                    scan_cnt <= 0;
+                    wait_cnt <= 0;
+                ELSIF scan_cnt = 0 THEN                -- generiere scan_clk
+                    scan_clk <= '1';
+                    scan_cnt <= scan_cnt + 1;
+                ELSE
+                    scan_clk <= '0';
+                    IF scan_cnt < symbol_cycles THEN
+                        scan_cnt <= scan_cnt + 1;
+                    ELSIF scan_cnt = symbol_cycles THEN
+                        scan_cnt <= 0;
+                    END IF;
+                END IF;
+            END IF;
+        END IF;
+    END PROCESS p_scan_clk;
+
 
 
 END ARCHITECTURE e_uart_receive_data_arch;
