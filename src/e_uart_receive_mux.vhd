@@ -64,6 +64,20 @@ ARCHITECTURE rtl OF e_uart_receive_mux IS
             debug_port : OUT std_logic_vector(31 DOWNTO 0)
         );
     END COMPONENT;
+	
+	--COMPONENT e_uart_receive_data IS
+	--	GENERIC ( baud_rate : IN NATURAL RANGE 1200 TO 500000);
+	--	PORT (
+	--		clk_i : IN	std_logic;
+	--		rst_i : IN	std_logic;
+	--		rx_i : IN	std_logic;
+	--		mode_i : IN	std_logic;
+	--		wrreq_o	: OUT std_logic;
+	--		fifo_o : OUT std_logic_vector (7 DOWNTO 0);
+	--		sig_o : OUT	std_logic_vector (163 DOWNTO 0);
+	--		rdy_o : OUT	std_logic
+	--	);
+	--END COMPONENT e_uart_receive_data;
     
     -- TODO IMPORT UART COMPONENT
     
@@ -127,12 +141,32 @@ BEGIN
         debug_port => sha256_debug_port                        -- NOT NEEDED
     );
      
+	--e_uart_receive_data_inst : e_uart_receive_data 
+	--GENERIC MAP (
+	--	baud_rate => 500000 
+	--)
+    --PORT MAP ( 
+	--	clk_i => clk_i,
+	--	rst_i => rst_i,
+	--	rx_i => uart_i,
+	--	mode_i => mode_o,	--> INPUT? OUTPUT!
+	--	wrreq_o	=> uart_data, 		
+	--	fifo_o => ,			--> NOT USED
+	--	sig_o => ,			--> NOT USED
+	--	rdy_o => ready_o 
+    --);
+	
     -- TODO INSTANTIATE UART ENTITY
     --  -> Read UART from FPGA and write byte to: UART_DATA
-    --  -> Switch between register using flags: ENABLE_S_REGISTER, ENABLE_R_REGISTER, ENABLE_M_REGISTER 
+    --  -> Switch between register using flags: ENABLE_S_REGISTER, ENABLE_R_REGISTER, ENABLE_M_REGISTER
+	--		--> Fill the right register!
     --  -> Set READY_O flag to active ECDSA entity (after reading all necessary input data)
+	--		--> After all registers are full, activate ECDSA entity
     --  -> Set MODE_O flag
-    --  -> Create hashes
+	--		--> Set mode flag to activate SIGN/VERFIY feature
+	--
+    --  OPTIONAL: 
+	--		-> Create hashes
     --      --> Change M_REGISTER to 32 output
     --      --> Change 
 END rtl;
