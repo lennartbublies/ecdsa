@@ -79,4 +79,13 @@ BEGIN
         data_i => s_i, 
         data_o => uart_data
     );
+	
+	-- TODO VERIFY FLAG TO UART 
+	--v_i -> uart_data
+	
+	-- TODO INSTANTIATE UART ENTITY
+	--	-> Write to UART from FPGA. Read from POSI registers
+	--	-> Swtich between the right input register: ENABLE_S_REGISTER, ENABLE_R_REGISTER and VERIFY FLAG
+	--		--> Input register are automatically loaded when ECDSA entity is ready (load_i => enable_i)
+	--		--> Ready from register entity when ENABLE_I is set
 END rtl;
