@@ -48,7 +48,7 @@ ARCHITECTURE e_uart_receive_data_tb_arch OF e_uart_receive_data_tb IS
     SIGNAL s_clk        : std_logic;
     SIGNAL s_rx         : std_logic := '1';
     SIGNAL s_rst        : std_logic;
-    SIGNAL s_mode       : std_logic;
+    SIGNAL s_mode       : std_logic := '1';
     SIGNAL s_data       : std_logic_vector(7 DOWNTO 0);
 	SIGNAL s_ena_r_o      : std_logic;
 	SIGNAL s_ena_s_o      : std_logic;
