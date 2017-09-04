@@ -63,9 +63,9 @@ BEGIN
    	 
 	uart_receiver: e_uart_receive_data
 	GENERIC MAP ( 
-		baud_rate => 9600,
-		N => 8,	    -- length of message
-		M => 8)     -- length of key
+		baud_rate => 500000,
+		N => 1,	    -- length of message
+		M => 9)     -- length of key
 	PORT MAP (
 		clk_i    => s_clk,
 		rst_i    => s_rst,

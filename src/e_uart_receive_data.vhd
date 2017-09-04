@@ -9,6 +9,8 @@
 --
 -- Generic:
 --		baud_rate : baud rate of UART
+--      N 
+--      M - Key length in Bits
 -- Ports:
 --		clk_i	: IN std_logic;
 --		rst_i	: IN std_logic;
@@ -31,7 +33,7 @@ ENTITY e_uart_receive_data IS
     GENERIC (   
         baud_rate : IN NATURAL RANGE 1200 TO 500000;
         N : IN NATURAL RANGE 1 TO 256;
-        M : IN NATURAL RANGE 1 TO 256);
+        M : IN NATURAL RANGE 1 TO 256); 
     PORT (
 		clk_i	: IN std_logic;
 		rst_i	: IN std_logic;
@@ -71,12 +73,27 @@ ARCHITECTURE e_uart_receive_data_arch OF e_uart_receive_data IS
     SIGNAL  bit_cnt : t_byte := 0;
 -- #################
 
-    SIGNAL s_data : std_logic_vector (0 TO 7);
+-- p_calc_bytes
+    CONSTANT  param_bytes_a : NATURAL RANGE 1 TO 128 := M / 8;
+    CONSTANT  param_bytes_b : NATURAL RANGE 0 TO 7 := M MOD 8; -- for check if M is byte aligned
+    SIGNAL    param_bytes   : NATURAL RANGE 1 TO 128;
+
+-- p_cnt_bytes
+    TYPE phase_state_type IS (idle, phase1, phase2, phase3, stop);
+	SIGNAL s_phase, s_phase_next : phase_state_type;
+    
+    SIGNAL s_cnt_phas1 : NATURAL RANGE 0 TO 128;
+    SIGNAL s_cnt_phas2 : NATURAL RANGE 0 TO 128;
+    SIGNAL s_cnt_phas3 : NATURAL RANGE 0 TO 256 := N;
+
+    SIGNAL s_rdy    : std_logic;
+    SIGNAL s_data   : std_logic_vector (0 TO 7);
+    SIGNAL s_data_o : std_logic_vector (0 TO 7);
 	
 BEGIN
 
 	-- UART Receive State Machine
-    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk) --ALL)
+    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk,bit_cnt) --ALL) p_byte_fsm : PROCESS(ALL)
     BEGIN
         s_uart_next <= s_uart_state;
         rst_internal <= '1';
@@ -103,7 +120,7 @@ BEGIN
     END PROCESS p_byte_fsm;
     
     --- save the rx signal via shifting into s_data:
-    p_shift : PROCESS(clk_i, rst_internal, rx_i)
+    p_shift : PROCESS(clk_i,rst_i,rst_internal,rx_i,s_data,scan_clk,bit_cnt) --ALL)
     BEGIN
         IF rst_i = '0' THEN
             s_data <= (others => '0');
@@ -117,7 +134,7 @@ BEGIN
         END IF;
     END PROCESS p_shift;
         
-    p_scan_symbol : PROCESS(rx_i,scan_clk,rst_i)
+    p_scan_symbol : PROCESS(clk_i,rx_i,scan_clk,rst_i,bit_cnt,rst_internal)
     BEGIN
         IF rst_i = '0' THEN
             bit_cnt <= 0;
@@ -131,7 +148,8 @@ BEGIN
     END PROCESS p_scan_symbol;
 	
 	--- process to generate the clock signal 'scan_clk' to determine when to read rx_i
-    p_scan_clk : PROCESS(clk_i,rst_i,rx_i) --(ALL)
+    -- p_scan_clk : PROCESS(ALL)
+    p_scan_clk : PROCESS(clk_i,rst_i,rx_i,rst_internal,wait_cnt,bit_cnt,scan_cnt) 
     BEGIN
         IF rst_i = '0' THEN
             scan_clk <= '0';
@@ -174,19 +192,123 @@ BEGIN
     END PROCESS p_byte_store;
 
     -- push to output 
-    p_scan_out : PROCESS(clk_i,bit_cnt,rst_i,s_uart_state,s_uart_next)
+    p_scan_out : PROCESS(clk_i,rst_i,s_uart_state,s_uart_next)
     BEGIN 
         IF rst_i = '0' THEN
-            data_o <= "00000000";
-            rdy_o <= '0';
+            s_data_o <= "00000000";
+            s_rdy <= '0';
         ELSIF rising_edge(clk_i) THEN
             IF s_uart_state = data AND s_uart_next = stop THEN
-                data_o <= s_data;
-                rdy_o <= '1'; 
+                s_data_o <= s_data;
+                s_rdy <= '1'; 
             ELSE
-                rdy_o <= '0'; -- eventually catch throwing of multiple events
+                s_rdy <= '0'; -- eventually catch throwing of multiple events
             END IF;
         END IF;        
     END PROCESS p_scan_out;
-
+    
+    -- calculate bytes to read
+    p_calc_bytes : PROCESS(param_bytes)
+    BEGIN
+        IF (param_bytes_b = 0) THEN
+            param_bytes <= param_bytes_a;
+        ELSE
+            param_bytes <= param_bytes_a+1;
+        END IF;
+    END PROCESS p_calc_bytes;    
+    
+    -- state machine 
+    p_cnt_bytes : PROCESS(rst_i,rst_internal,s_rdy)--,s_cnt_phas1,s_cnt_phas2,s_cnt_phas3,s_phase)
+    BEGIN
+        s_phase_next <= s_phase;
+        CASE s_phase IS
+            WHEN idle =>
+                s_cnt_phas1 <= param_bytes;
+                s_cnt_phas2 <= param_bytes;
+                s_cnt_phas3 <= N;
+                IF rst_internal = '0' THEN
+                    s_phase_next <= phase1;
+                END IF;
+            WHEN phase1 =>
+                IF s_rdy = '1' THEN
+                    s_cnt_phas1 <= s_cnt_phas1 - 1;
+                END IF;
+                IF s_cnt_phas1 = 0 THEN
+                    s_phase_next <= phase2;
+                END IF;
+            WHEN phase2 => 
+                IF s_rdy = '1' THEN
+                    s_cnt_phas2 <= s_cnt_phas2 - 1;
+                END IF;
+                IF s_cnt_phas2 = 0 THEN
+                    s_phase_next <= phase3;
+                END IF;
+            WHEN phase3 => 
+                IF s_rdy = '1' THEN
+                    s_cnt_phas3 <= s_cnt_phas3 - 1;
+                END IF;
+                IF s_cnt_phas3 = 0 THEN
+                    s_phase_next <= stop;
+                END IF;
+            WHEN stop => 
+                --IF rx_i = '0' THEN
+                    s_phase_next <= idle;
+                --END IF;
+        END CASE;
+    END PROCESS p_cnt_bytes;
+    
+    p_cnt_bytes_store : PROCESS(rst_i,clk_i) --ALL)
+    BEGIN
+        IF rst_i = '0' THEN
+            s_phase <= idle;
+        ELSIF rising_edge(clk_i) THEN
+            s_phase <= s_phase_next;
+        END IF;
+    END PROCESS p_cnt_bytes_store;
+    
+        -- push to output 
+    p_bytes_out : PROCESS(clk_i,rst_i,s_phase,s_phase_next)
+    BEGIN 
+        IF rst_i = '0' THEN
+            data_o  <= "00000000";
+            rdy_o   <= '0';
+            ena_r_o <= '0';
+            ena_s_o <= '0';
+            ena_m_o <= '0';
+        ELSIF rising_edge(clk_i) THEN
+            IF s_rdy = '1' THEN
+                IF s_phase = idle THEN
+                    data_o  <= "00000000";
+                    rdy_o   <= '0';
+                    ena_r_o <= '0';
+                    ena_s_o <= '0';
+                    ena_m_o <= '0';
+                ELSIF s_phase = phase1 THEN
+                    data_o  <= s_data_o;
+                    ena_r_o <= '1';
+                    ena_s_o <= '0';
+                    ena_m_o <= '0';
+                ELSIF s_phase = phase2 THEN
+                    data_o  <= s_data_o;
+                    ena_r_o <= '0';
+                    ena_s_o <= '1';
+                    ena_m_o <= '0';
+                ELSIF s_phase = phase3 THEN
+                    data_o  <= s_data_o;
+                    ena_r_o <= '0';
+                    ena_s_o <= '0';
+                    ena_m_o <= '1';
+                ELSIF s_phase = stop THEN
+                    rdy_o <= '1';
+                END IF;               
+            ELSE
+                data_o  <= "00000000";
+                rdy_o   <= '0';
+                ena_r_o <= '0';
+                ena_s_o <= '0';
+                ena_m_o <= '0';
+            END IF;
+        END IF;        
+    END PROCESS p_bytes_out;
+        
 END ARCHITECTURE e_uart_receive_data_arch;
