@@ -230,6 +230,95 @@ BEGIN
         s_rx <= '1';        -- stop Bit
         WAIT FOR 2000 ns;
         s_rx <= '1';        -- idle
+        WAIT FOR 5000 ns;
+        
+        
+        -- change mode to sign
+        s_mode <= '0';
+        s_rst  <= '0';
+        WAIT FOR 20 ns;
+        s_rst <= '1';
+        WAIT FOR 80 ns;
+        
+        -- Message Byte 2
+        -- "01111101":
+        ASSERT FALSE REPORT "M Byte 0" SEVERITY NOTE;
+        s_rx <= '0';        -- Start Bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- LSB (Bit 0)
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 1
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 2
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 3
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 4
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 5
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 6
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- MSB (Bit 7)
+                            -- no parity bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- stop Bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- idle
+        WAIT FOR 3000 ns;
+        
+        -- Message Byte 1
+        -- "10011001":
+        ASSERT FALSE REPORT "M Byte 0" SEVERITY NOTE;
+        s_rx <= '0';        -- Start Bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- LSB (Bit 0)
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 1
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 2
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 3
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 4
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 5
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 6
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- MSB (Bit 7)
+                            -- no parity bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- stop Bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- idle
+        WAIT FOR 3000 ns;
+        
+        -- Message Byte 0
+        -- "10101010":
+        ASSERT FALSE REPORT "M Byte 0" SEVERITY NOTE;
+        s_rx <= '0';        -- Start Bit
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- LSB (Bit 0)
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 1
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 2
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 3
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 4
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- Bit 5
+        WAIT FOR 2000 ns;
+        s_rx <= '0';        -- Bit 6
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- MSB (Bit 7)
+                            -- no parity bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- stop Bit
+        WAIT FOR 2000 ns;
+        s_rx <= '1';        -- idle
         WAIT FOR 3000 ns;
 		
         WAIT;

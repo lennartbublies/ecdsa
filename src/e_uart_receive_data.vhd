@@ -12,15 +12,15 @@
 --      N 
 --      M - Key length in Bits
 -- Ports:
---		clk_i	: IN std_logic;
---		rst_i	: IN std_logic;
---	 	rx_i	: IN std_logic;
---		mode_i	: IN std_logic;
---		data_o	: OUT std_logic_vector (M-1 DOWNTO 0);
---		ena_r_o	: OUT std_logic;
---		ena_s_o	: OUT std_logic;
---		ena_m_o	: OUT std_logic;
---		rdy_o	: OUT std_logic);
+--		clk_i	- global clock signal
+--		rst_i	- global reset signal
+--	 	rx_i	- uart rx input (receive data)
+--		mode_i	- Mode of ECDSA: 0 = Sign (receive message), 1 = Verify (receive R, S and message)
+--		data_o	- byte wise output of data
+--		ena_r_o	- enable write to R register
+--		ena_s_o	- enable write to S register
+--		ena_m_o	- enable write to R register
+--		rdy_o	- ready at end of incoming data 
 --    
 --  Author: Leander Schulz (inf102143@fh-wedel.de)
 --  Date: 10.07.2017
@@ -226,8 +226,10 @@ BEGIN
                 s_cnt_phas1 <= param_bytes;
                 s_cnt_phas2 <= param_bytes;
                 s_cnt_phas3 <= N;
-                IF rst_internal = '0' THEN
+                IF rst_internal = '0'  AND mode_i = '1' THEN
                     s_phase_next <= phase1;
+                ELSIF rst_internal = '0'  AND mode_i = '0' THEN
+                    s_phase_next <= phase3;
                 END IF;
             WHEN phase1 =>
                 IF s_rdy = '1' THEN
