@@ -12,6 +12,7 @@
 --  start_i   - starts the transmission of ascii char
 --  data_i    - data byte to send
 --  tx_o      - sequential transmission signal
+--  reg_o     - switch between registers
 --
 -- Author:       Leander Schulz (inf102143@fh-wedel.de)
 -- Date:         01.09.2017
@@ -34,7 +35,8 @@ ENTITY e_uart_transmit IS
         start_i   : IN std_logic;
         data_i    : IN std_logic_vector (7 DOWNTO 0);
         tx_o      : OUT std_logic; 
-        reg_o     : OUT std_logic);
+        reg_o     : OUT std_logic;
+        reg_ena_o : OUT std_logic);
 END ENTITY e_uart_transmit;
 
 ARCHITECTURE td_arch OF e_uart_transmit IS
@@ -55,8 +57,7 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
     SIGNAL s_baud_clk : std_logic;
     SIGNAL s_baud_rst : std_logic := '1';
     
-BEGIN -- ARCHITECTURE----------------------------------------------------------
-   
+BEGIN 
 
     p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter)
     BEGIN
@@ -83,7 +84,6 @@ BEGIN -- ARCHITECTURE----------------------------------------------------------
         
         END IF;
     END PROCESS p_transmit_byte;
-
 
     p_fsm_transition : PROCESS(s_curr,start_i,s_baud_clk,s_iter)
     BEGIN
@@ -117,7 +117,6 @@ BEGIN -- ARCHITECTURE----------------------------------------------------------
             s_curr <= s_next;
         END IF;
     END PROCESS p_fsm_store;
-    
             
     baud_clock_inst : e_baud_clock 
         GENERIC MAP(baud_rate => baud_rate)

@@ -20,10 +20,10 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 
-ENTITY e_uart_receive_data_tb IS
-END ENTITY e_uart_receive_data_tb;
+ENTITY tb_uart_receive_data IS
+END ENTITY tb_uart_receive_data;
 
-ARCHITECTURE e_uart_receive_data_tb_arch OF e_uart_receive_data_tb IS
+ARCHITECTURE e_uart_receive_data_tb_arch OF tb_uart_receive_data IS
 
     -- IMPORT UART COMPONENT
 	COMPONENT e_uart_receive_data IS

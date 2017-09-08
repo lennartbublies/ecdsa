@@ -65,7 +65,8 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
             start_i   : IN std_logic;
             data_i    : IN std_logic_vector (7 DOWNTO 0);
             tx_o      : OUT std_logic;
-            reg_o     : OUT std_logic );
+            reg_o     : OUT std_logic;
+            reg_ena_o : OUT std_logic );
     END COMPONENT e_uart_transmit;
     
     -- Internal signals
@@ -75,6 +76,7 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     
     SIGNAL s_start_transmit : std_logic;
     SIGNAL s_reg_ctrl       : std_logic;
+    SIGNAL s_reg_ena        : std_logic;
     SIGNAL s_uart_data      : std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     
 BEGIN
@@ -117,10 +119,11 @@ BEGIN
             start_i => s_start_transmit,
             data_i  => s_uart_data,
             tx_o    => uart_o,
-            reg_o   => s_reg_ctrl
+            reg_o   => s_reg_ctrl,
+            reg_ena_o => s_reg_ena
         );
         
     -- multiplexer to control register inputs
     s_uart_data <= s_uart_data_r WHEN (s_reg_ctrl = '0') ELSE s_uart_data_s;
-
+    s_reg_ena <= enable_r_register WHEN (s_reg_ctrl = '0') ELSE enable_s_register;
 END rtl;
