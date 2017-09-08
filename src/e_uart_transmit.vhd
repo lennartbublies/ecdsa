@@ -1,32 +1,50 @@
 -------------------------------------------------------------------------------
--- Module:       transmit_data 
--- Purpose:      Transmits one Ascii Character via Tx of UART Connection.
+-- Module:       e_uart_transmit 
+-- Purpose:      Transmits Key when a message will be signed or
+--               1 Byte True/False when a message will be verified
 --               
--- Author:       Leander Schulz
--- Date:         07.09.2016
--- Last change:  07.09.2016
+-- GENERIC:
+--  baud_rate - baud rate of uart transmission
+-- PORT:
+--  clk_i     - global clock signal
+--  rst_i     - global low active async reset
+--  mode_i    - ecdsa mode (sign/verify)
+--  start_i   - starts the transmission of ascii char
+--  data_i    - data byte to send
+--  tx_o      - sequential transmission signal
+--
+-- Author:       Leander Schulz (inf102143@fh-wedel.de)
+-- Date:         01.09.2017
+-- Last change:  01.09.2017
 -------------------------------------------------------------------------------
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 
-ENTITY transmit_data IS
-    GENERIC(baud_rate : IN NATURAL RANGE 1200 TO 115200);
-    PORT( clk       : IN std_logic;
-          rst       : IN std_logic;   -- global low active async reset
-          start_bit : IN std_logic;   -- starts the transmission of ascii char
-          char_data : IN std_logic_vector (7 DOWNTO 0); -- ascii char to send
-          out_tx    : OUT std_logic );  -- sequential transmission signal
-END ENTITY transmit_data;
+ENTITY e_uart_transmit IS
+    GENERIC(
+        baud_rate : IN NATURAL RANGE 1200 TO 500000;
+        N         : integer;
+        M         : integer 
+    );
+    PORT( 
+        clk_i     : IN std_logic;
+        rst_i     : IN std_logic;
+        mode_i    : IN std_logic;
+        start_i   : IN std_logic;
+        data_i    : IN std_logic_vector (7 DOWNTO 0);
+        tx_o      : OUT std_logic );
+END ENTITY e_uart_transmit;
 
-ARCHITECTURE td_arch OF transmit_data IS
+ARCHITECTURE td_arch OF e_uart_transmit IS
+    -- import e_baud_clock
     -- clock signal from baud rate used to transmit data
-    COMPONENT baud_clock IS
-        GENERIC(baud_rate : IN NATURAL RANGE 1200 TO 115200);
-        PORT(   clk       : IN std_logic;     
-                rst       : IN std_logic;     
-                baud_clk  : OUT std_logic);   
-    END COMPONENT baud_clock;
+    COMPONENT e_baud_clock IS
+        GENERIC(baud_rate : IN NATURAL RANGE 1200 TO 500000);
+        PORT(   clk_i       : IN std_logic;     
+                rst_i       : IN std_logic;     
+                baud_clk_o  : OUT std_logic);   
+    END COMPONENT e_baud_clock;
     
     TYPE state_type IS (idle, start, transmit, stop); -- wait_edge
     SIGNAL s_curr, s_next : state_type := idle;
@@ -39,26 +57,26 @@ ARCHITECTURE td_arch OF transmit_data IS
 BEGIN -- ARCHITECTURE----------------------------------------------------------
    
 
-    p_transmit_byte : PROCESS(ALL)
+    p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter)
     BEGIN
-        IF rst = '0' THEN 
-            out_tx <= '1';
+        IF rst_i = '0' THEN 
+            tx_o <= '1';
             s_iter <= 0;
-        ELSIF rising_edge(clk) THEN
+        ELSIF rising_edge(clk_i) THEN
         
             IF s_curr = idle THEN
-                out_tx <= '1';
+                tx_o <= '1';
             ELSIF s_curr = start THEN
-                out_tx <= '0';
+                tx_o <= '0';
             ELSIF s_curr = transmit THEN
                 IF s_baud_clk = '1' THEN
                     IF s_iter < 8 THEN
-                        out_tx <= char_data(s_iter);
+                        tx_o <= data_i(s_iter);
                     END IF;
                     s_iter <= s_iter + 1;
                 END IF;
             ELSIF s_curr = stop THEN
-                out_tx <= '1';
+                tx_o <= '1';
                 s_iter <= 0;
             END IF;
         
@@ -66,13 +84,13 @@ BEGIN -- ARCHITECTURE----------------------------------------------------------
     END PROCESS p_transmit_byte;
 
 
-    p_fsm_transition : PROCESS(ALL) 
+    p_fsm_transition : PROCESS(s_curr,start_i,s_baud_clk,s_iter)
     BEGIN
         s_next <= s_curr;
         s_baud_rst <= '1';
         CASE s_curr IS
             WHEN idle => 
-                IF start_bit = '1' THEN
+                IF start_i = '1' THEN
                     s_baud_rst <= '0';
                     s_next <= start;
                 END IF;
@@ -90,21 +108,21 @@ BEGIN -- ARCHITECTURE----------------------------------------------------------
         END CASE;
     END PROCESS p_fsm_transition;
     
-    p_fsm_store : PROCESS(clk,rst,s_next)
+    p_fsm_store : PROCESS(clk_i,rst_i,s_next)
     BEGIN
-        IF rst = '0' THEN
+        IF rst_i = '0' THEN
             s_curr <= idle;
-        ELSIF rising_edge(clk) THEN
+        ELSIF rising_edge(clk_i) THEN
             s_curr <= s_next;
         END IF;
     END PROCESS p_fsm_store;
     
             
-    baud_clock_inst : baud_clock 
+    baud_clock_inst : e_baud_clock 
         GENERIC MAP(baud_rate => baud_rate)
-        PORT MAP( clk       => clk, 
-                  rst       => s_baud_rst, 
-                  baud_clk  => s_baud_clk
+        PORT MAP( clk_i       => clk_i, 
+                  rst_i       => s_baud_rst, 
+                  baud_clk_o  => s_baud_clk
         );  
 
 END ARCHITECTURE td_arch; -----------------------------------------------------

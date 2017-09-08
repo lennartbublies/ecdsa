@@ -22,8 +22,9 @@
 --		ena_m_o	- enable write to R register
 --		rdy_o	- ready at end of incoming data 
 --    
---  Author: Leander Schulz (inf102143@fh-wedel.de)
---  Date: 10.07.2017
+--  Author:         Leander Schulz (inf102143@fh-wedel.de)
+--  Date:           10.07.2017
+--  Last change:    05.09.2017
 ----------------------------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;

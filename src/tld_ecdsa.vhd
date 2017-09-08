@@ -87,6 +87,7 @@ ARCHITECTURE rtl OF tld_ecdsa IS
         PORT ( 
             clk_i : IN std_logic;
             rst_i : IN std_logic;
+            mode_i : IN std_logic;
             enable_i : IN std_logic;
             r_i : IN std_logic_vector(M-1 DOWNTO 0);
             s_i : IN std_logic_vector(M-1 DOWNTO 0);
@@ -132,6 +133,7 @@ BEGIN
     uart_transmit: e_uart_transmit_mux PORT MAP(
         clk_i => clk_i,
         rst_i => rst_i,
+        mode_i => ecdsa_mode,
         enable_i => ecdsa_done,
         r_i => ecdsa_r_out,
         s_i => ecdsa_s_out,

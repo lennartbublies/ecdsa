@@ -18,6 +18,9 @@ ENTITY e_uart_transmit_mux IS
         clk_i : IN std_logic;
         rst_i : IN std_logic;
         
+        -- ECDSA Mode (sign/verify)
+        mode_i : IN std_logic;
+        
         -- Enable flag
         enable_i : IN std_logic;
         
@@ -48,11 +51,29 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
         );
     END COMPONENT;
 
-    -- TODO IMPORT UART COMPONENT
+    -- IMPORT UART COMPONENT
+    COMPONENT e_uart_transmit IS
+        GENERIC(
+            baud_rate : IN NATURAL RANGE 1200 TO 500000;
+            N : integer;
+            M : integer 
+        );
+        PORT( 
+            clk_i     : IN std_logic;
+            rst_i     : IN std_logic;
+            mode_i    : IN std_logic;
+            start_i   : IN std_logic;
+            data_i    : IN std_logic_vector (7 DOWNTO 0);
+            tx_o      : OUT std_logic );
+    END COMPONENT e_uart_transmit;
     
     -- Internal signals
     SIGNAL uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL enable_r_register, enable_s_register: std_logic := '0';
+    
+    SIGNAL s_start_transmit : std_logic;
+    SIGNAL s_uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    
 BEGIN
     -- Instantiate sipo register entity for r register
     r_register: e_nm_posi_register GENERIC MAP (
@@ -79,4 +100,20 @@ BEGIN
         data_i => s_i, 
         data_o => uart_data
     );
+    
+    -- Instantiate uart transmitter
+    transmit_instance : e_uart_transmit
+        GENERIC MAP (
+            baud_rate   => 9600,
+            N           => 1,
+            M           => M
+        ) PORT MAP ( 
+            clk_i   => clk_i,
+            rst_i   => rst_i,
+            mode_i  => mode_i,
+            start_i => s_start_transmit,
+            data_i  => s_uart_data,
+            tx_o    => uart_o
+        );
+
 END rtl;
