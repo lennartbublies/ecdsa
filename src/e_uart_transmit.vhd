@@ -33,7 +33,8 @@ ENTITY e_uart_transmit IS
         mode_i    : IN std_logic;
         start_i   : IN std_logic;
         data_i    : IN std_logic_vector (7 DOWNTO 0);
-        tx_o      : OUT std_logic );
+        tx_o      : OUT std_logic; 
+        reg_o     : OUT std_logic);
 END ENTITY e_uart_transmit;
 
 ARCHITECTURE td_arch OF e_uart_transmit IS

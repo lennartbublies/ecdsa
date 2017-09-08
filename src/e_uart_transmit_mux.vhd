@@ -64,15 +64,18 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
             mode_i    : IN std_logic;
             start_i   : IN std_logic;
             data_i    : IN std_logic_vector (7 DOWNTO 0);
-            tx_o      : OUT std_logic );
+            tx_o      : OUT std_logic;
+            reg_o     : OUT std_logic );
     END COMPONENT e_uart_transmit;
     
     -- Internal signals
-    SIGNAL uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL s_uart_data_r: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL s_uart_data_s: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL enable_r_register, enable_s_register: std_logic := '0';
     
     SIGNAL s_start_transmit : std_logic;
-    SIGNAL s_uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL s_reg_ctrl       : std_logic;
+    SIGNAL s_uart_data      : std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     
 BEGIN
     -- Instantiate sipo register entity for r register
@@ -85,7 +88,7 @@ BEGIN
         enable_i => enable_r_register, 
         load_i => enable_i,         
         data_i => r_i, 
-        data_o => uart_data
+        data_o => s_uart_data_r
     );
         
     -- Instantiate sipo register entity for r register
@@ -98,7 +101,7 @@ BEGIN
         enable_i => enable_s_register, 
         load_i => enable_i,         
         data_i => s_i, 
-        data_o => uart_data
+        data_o => s_uart_data_s
     );
     
     -- Instantiate uart transmitter
@@ -113,7 +116,11 @@ BEGIN
             mode_i  => mode_i,
             start_i => s_start_transmit,
             data_i  => s_uart_data,
-            tx_o    => uart_o
+            tx_o    => uart_o,
+            reg_o   => s_reg_ctrl
         );
+        
+    -- multiplexer to control register inputs
+    s_uart_data <= s_uart_data_r WHEN (s_reg_ctrl = '0') ELSE s_uart_data_s;
 
 END rtl;
