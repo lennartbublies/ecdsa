@@ -5,6 +5,8 @@
 --               
 -- GENERIC:
 --  baud_rate - baud rate of uart transmission
+--  N         - Message length in Byte
+--  M         - Key length in Bit
 -- PORT:
 --  clk_i     - global clock signal
 --  rst_i     - global low active async reset
@@ -56,6 +58,18 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
     
     SIGNAL s_baud_clk : std_logic;
     SIGNAL s_baud_rst : std_logic := '1';
+    
+    -- reg_o, reg_ena_o
+    -- p_calc_bytes
+    CONSTANT  param_bytes_a : NATURAL RANGE 1 TO 128 := M / 8;
+    CONSTANT  param_bytes_b : NATURAL RANGE 0 TO 7 := M MOD 8; -- for check if M is byte aligned
+    SIGNAL    param_bytes   : NATURAL RANGE 1 TO 128;
+    
+    TYPE phase_state_type IS (idle, phase1, phase2, stop);
+	SIGNAL s_phase, s_phase_next : phase_state_type;
+    
+    SIGNAL s_cnt_phas1 : NATURAL RANGE 0 TO 128;
+    SIGNAL s_cnt_phas2 : NATURAL RANGE 0 TO 128;
     
 BEGIN 
 
@@ -124,5 +138,84 @@ BEGIN
                   rst_i       => s_baud_rst, 
                   baud_clk_o  => s_baud_clk
         );  
+        
+    -- calculate bytes to read
+    p_calc_bytes : PROCESS(param_bytes)
+    BEGIN
+        IF (param_bytes_b = 0) THEN
+            param_bytes <= param_bytes_a;
+        ELSE
+            param_bytes <= param_bytes_a+1;
+        END IF;
+    END PROCESS p_calc_bytes; 
+    
+    -- register control -----------------------------------------
+    -- fsm
+    p_reg_fsm : PROCESS(s_phase,start_i,mode_i,s_curr)
+    BEGIN
+        s_phase_next <= s_phase;
+        CASE s_phase IS
+            WHEN idle =>
+                s_cnt_phas1 <= param_bytes;
+                s_cnt_phas2 <= param_bytes;
+                IF start_i = '1'  AND mode_i = '1' THEN
+                    s_phase_next <= phase1;
+                END IF;
+            WHEN phase1 =>
+                IF s_curr = stop THEN
+                    s_cnt_phas1 <= s_cnt_phas1 - 1;
+                END IF;
+                IF s_cnt_phas1 = 0 THEN
+                    s_phase_next <= phase2;
+                END IF;
+            WHEN phase2 => 
+                IF s_curr = stop THEN
+                    s_cnt_phas2 <= s_cnt_phas2 - 1;
+                END IF;
+                IF s_cnt_phas2 = 0 THEN
+                    s_phase_next <= stop;
+                END IF;
+            WHEN stop => 
+                s_phase_next <= idle;
+        END CASE;    
+    
+    END PROCESS p_reg_fsm;
 
+    p_reg_store : PROCESS(rst_i,clk_i) --ALL)
+    BEGIN
+        IF rst_i = '0' THEN
+            s_phase <= idle;
+        ELSIF rising_edge(clk_i) THEN
+            s_phase <= s_phase_next;
+        END IF;
+    END PROCESS p_reg_store;
+    
+    p_reg_output : PROCESS(clk_i,rst_i,s_phase)
+    BEGIN
+        IF rst_i = '0' THEN
+            reg_o   <= '0';
+            reg_ena_o <= '0';
+        ELSIF rising_edge(clk_i) THEN
+            --IF s_rdy = '1' THEN
+                IF s_phase = idle THEN
+                    reg_o   <= '0';
+                    reg_ena_o <= '0';
+                ELSIF s_phase = phase1 THEN
+                    reg_o   <= '0';
+                    reg_ena_o <= '0';
+                ELSIF s_phase = phase2 THEN
+                    reg_o   <= '1';
+                    reg_ena_o <= '0';
+                ELSIF s_phase = stop THEN
+                    reg_o   <= '0';
+                    reg_ena_o <= '0';
+                END IF;               
+            --ELSE
+            --    reg_o   <= '0';
+            --    reg_ena_o <= '0';
+            --END IF;
+        END IF;  
+    END PROCESS p_reg_output;
+    
+    
 END ARCHITECTURE td_arch; -----------------------------------------------------

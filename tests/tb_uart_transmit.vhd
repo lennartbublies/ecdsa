@@ -67,18 +67,21 @@ BEGIN
 
     tx_gen : PROCESS
     BEGIN
-        s_uart_data <= "10011001"
+        s_uart_data <= "10011001";
         
         WAIT FOR 80 ns;
         s_rst <= '0';
         WAIT FOR 20 ns;
-        s_rst <= '0';
+        s_rst <= '1';
         WAIT FOR 200 ns;
         
         s_start_bit <= '1';
         WAIT FOR 20 ns;
         s_start_bit <= '0';
         
+        
+        WAIT FOR 20 us;
+        s_uart_data <= "01011010";
         
         WAIT;
         
