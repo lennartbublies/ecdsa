@@ -73,7 +73,7 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
     SIGNAL s_cnt_phas2 : NATURAL RANGE 0 TO 128;
     
 BEGIN 
-
+    -- tx output
     p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter)
     BEGIN
         IF rst_i = '0' THEN 
@@ -197,24 +197,19 @@ BEGIN
             reg_o   <= '0';
             reg_ena_o <= '0';
         ELSIF rising_edge(clk_i) THEN
-            --IF s_rdy = '1' THEN
-                IF s_phase = idle THEN
-                    reg_o   <= '0';
-                    reg_ena_o <= '0';
-                ELSIF s_phase = phase1 THEN
-                    reg_o   <= '0';
-                    reg_ena_o <= '0';
-                ELSIF s_phase = phase2 THEN
-                    reg_o   <= '1';
-                    reg_ena_o <= '0';
-                ELSIF s_phase = stop THEN
-                    reg_o   <= '0';
-                    reg_ena_o <= '0';
-                END IF;               
-            --ELSE
-            --    reg_o   <= '0';
-            --    reg_ena_o <= '0';
-            --END IF;
+            IF s_phase = idle THEN
+                reg_o   <= '0';
+                reg_ena_o <= '0';
+            ELSIF s_phase = phase1 THEN
+                reg_o   <= '0';
+                reg_ena_o <= '0';
+            ELSIF s_phase = phase2 THEN
+                reg_o   <= '1';
+                reg_ena_o <= '0';
+            ELSIF s_phase = stop THEN
+                reg_o   <= '0';
+                reg_ena_o <= '0';
+            END IF;               
         END IF;  
     END PROCESS p_reg_output;
     
