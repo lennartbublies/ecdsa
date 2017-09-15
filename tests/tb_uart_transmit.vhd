@@ -26,6 +26,7 @@ ARCHITECTURE tb_arch OF tb_uart_transmit IS
             clk_i     : IN std_logic;
             rst_i     : IN std_logic;
             mode_i    : IN std_logic;
+            verify_i  : IN std_logic;
             start_i   : IN std_logic;
             data_i    : IN std_logic_vector (7 DOWNTO 0);
             tx_o      : OUT std_logic;
@@ -34,9 +35,10 @@ ARCHITECTURE tb_arch OF tb_uart_transmit IS
 
     SIGNAL s_clk        : std_logic;
     SIGNAL s_rst        : std_logic := '1'; 
+    SIGNAL s_mode       : std_logic := '0';
+    SIGNAL s_verify     : std_logic := '0';
     SIGNAL s_start_bit  : std_logic := '0';
     SIGNAL s_uart_data  : std_logic_vector (7 DOWNTO 0) := "00000000";
-    SIGNAL s_mode       : std_logic := '0';
     
     SIGNAL s_tx         : std_logic;
     SIGNAL s_reg_ctrl   : std_logic;
@@ -49,13 +51,14 @@ BEGIN
             N           => 3, -- message length [byte]
             M           => 8  -- key length [bit]
         ) PORT MAP ( 
-            clk_i   => s_clk,
-            rst_i   => s_rst,
-            mode_i  => s_mode,
-            start_i => s_start_bit,
-            data_i  => s_uart_data,
-            tx_o    => s_tx,
-            reg_o   => s_reg_ctrl
+            clk_i    => s_clk,
+            rst_i    => s_rst,
+            mode_i   => s_mode,
+            verify_i => s_verify,
+            start_i  => s_start_bit,
+            data_i   => s_uart_data,
+            tx_o     => s_tx,
+            reg_o    => s_reg_ctrl
         );
     
     p_clk : PROCESS BEGIN

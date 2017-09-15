@@ -62,6 +62,7 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
             clk_i     : IN std_logic;
             rst_i     : IN std_logic;
             mode_i    : IN std_logic;
+            verify_i  : IN std_logic;
             start_i   : IN std_logic;
             data_i    : IN std_logic_vector (7 DOWNTO 0);
             tx_o      : OUT std_logic;
@@ -113,13 +114,14 @@ BEGIN
             N           => 1,
             M           => M
         ) PORT MAP ( 
-            clk_i   => clk_i,
-            rst_i   => rst_i,
-            mode_i  => mode_i,
-            start_i => s_start_transmit,
-            data_i  => s_uart_data,
-            tx_o    => uart_o,
-            reg_o   => s_reg_ctrl,
+            clk_i     => clk_i,
+            rst_i     => rst_i,
+            mode_i    => mode_i,
+            verify_i  => v_i,
+            start_i   => s_start_transmit,
+            data_i    => s_uart_data,
+            tx_o      => uart_o,
+            reg_o     => s_reg_ctrl,
             reg_ena_o => s_reg_ena
         );
         

@@ -34,6 +34,7 @@ ENTITY e_uart_transmit IS
         clk_i     : IN std_logic;
         rst_i     : IN std_logic;
         mode_i    : IN std_logic;
+        verify_i  : IN std_logic;
         start_i   : IN std_logic;
         data_i    : IN std_logic_vector (7 DOWNTO 0);
         tx_o      : OUT std_logic; 
