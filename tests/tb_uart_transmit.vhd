@@ -83,6 +83,12 @@ BEGIN
         WAIT FOR 20 us;
         s_uart_data <= "01011010";
         
+        WAIT FOR 20 us;
+        s_uart_data <= "01100110";
+        
+        WAIT FOR 20 us;
+        s_uart_data <= "01010101";
+        
         WAIT;
         
     END PROCESS tx_gen;

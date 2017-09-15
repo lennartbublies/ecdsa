@@ -99,13 +99,13 @@ BEGIN
         END IF;
     END PROCESS p_transmit_byte;
 
-    p_fsm_transition : PROCESS(s_curr,start_i,s_baud_clk,s_iter)
+    p_fsm_transition : PROCESS(s_curr,start_i,s_baud_clk,s_iter,s_phase,s_cnt_phas2)
     BEGIN
         s_next <= s_curr;
         s_baud_rst <= '1';
         CASE s_curr IS
             WHEN idle => 
-                IF start_i = '1' THEN
+                IF start_i = '1' OR s_phase = phase1 OR (s_phase = phase2 AND s_cnt_phas2 /= 0) THEN
                     s_baud_rst <= '0';
                     s_next <= start;
                 END IF;
@@ -143,37 +143,37 @@ BEGIN
     p_calc_bytes : PROCESS(param_bytes)
     BEGIN
         IF (param_bytes_b = 0) THEN
-            param_bytes <= param_bytes_a;
-        ELSE
             param_bytes <= param_bytes_a+1;
+        ELSE
+            param_bytes <= param_bytes_a+2;
         END IF;
     END PROCESS p_calc_bytes; 
     
     -- register control -----------------------------------------
     -- fsm
-    p_reg_fsm : PROCESS(s_phase,start_i,mode_i,s_curr)
+    p_reg_fsm : PROCESS(s_phase,start_i,mode_i,s_curr,s_next,param_bytes,s_cnt_phas1,s_cnt_phas2)
     BEGIN
         s_phase_next <= s_phase;
         CASE s_phase IS
             WHEN idle =>
                 s_cnt_phas1 <= param_bytes;
                 s_cnt_phas2 <= param_bytes;
-                IF start_i = '1'  AND mode_i = '1' THEN
+                IF start_i = '1'  AND mode_i = '0' THEN
                     s_phase_next <= phase1;
                 END IF;
             WHEN phase1 =>
-                IF s_curr = stop THEN
-                    s_cnt_phas1 <= s_cnt_phas1 - 1;
-                END IF;
                 IF s_cnt_phas1 = 0 THEN
                     s_phase_next <= phase2;
                 END IF;
-            WHEN phase2 => 
-                IF s_curr = stop THEN
-                    s_cnt_phas2 <= s_cnt_phas2 - 1;
+                IF s_curr = stop AND s_next = idle THEN
+                    s_cnt_phas1 <= s_cnt_phas1 - 1;
                 END IF;
+            WHEN phase2 => 
                 IF s_cnt_phas2 = 0 THEN
                     s_phase_next <= stop;
+                END IF;
+                IF s_curr = stop AND s_next = idle THEN
+                    s_cnt_phas2 <= s_cnt_phas2 - 1;
                 END IF;
             WHEN stop => 
                 s_phase_next <= idle;
