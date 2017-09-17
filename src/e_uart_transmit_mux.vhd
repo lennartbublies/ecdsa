@@ -1,8 +1,9 @@
 ----------------------------------------------------------------------------------------------------
 --  ENTITY - Multiplexer for UART
 --
---  Autor: Lennart Bublies (inf100434)
+--  Autor: Lennart Bublies (inf100434), Leander Schulz (inf102143)
 --  Date: 29.06.2017
+--  Modified: 17.09.2017
 ----------------------------------------------------------------------------------------------------
 
 LIBRARY IEEE;
@@ -17,6 +18,9 @@ ENTITY e_uart_transmit_mux IS
         -- Clock and reset
         clk_i : IN std_logic;
         rst_i : IN std_logic;
+        
+        -- ECDSA Mode (sign/verify)
+        mode_i : IN std_logic;
         
         -- Enable flag
         enable_i : IN std_logic;
@@ -48,11 +52,35 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
         );
     END COMPONENT;
 
-    -- TODO IMPORT UART COMPONENT
+    -- IMPORT UART COMPONENT
+    COMPONENT e_uart_transmit IS
+        GENERIC(
+            baud_rate : IN NATURAL RANGE 1200 TO 500000;
+            N : integer;
+            M : integer 
+        );
+        PORT( 
+            clk_i     : IN std_logic;
+            rst_i     : IN std_logic;
+            mode_i    : IN std_logic;
+            verify_i  : IN std_logic;
+            start_i   : IN std_logic;
+            data_i    : IN std_logic_vector (7 DOWNTO 0);
+            tx_o      : OUT std_logic;
+            reg_o     : OUT std_logic;
+            reg_ena_o : OUT std_logic );
+    END COMPONENT e_uart_transmit;
     
     -- Internal signals
-    SIGNAL uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL s_uart_data_r: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    SIGNAL s_uart_data_s: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL enable_r_register, enable_s_register: std_logic := '0';
+    
+    SIGNAL s_start_transmit : std_logic;
+    SIGNAL s_reg_ctrl       : std_logic;
+    SIGNAL s_reg_ena        : std_logic;
+    SIGNAL s_uart_data      : std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+    
 BEGIN
     -- Instantiate sipo register entity for r register
     r_register: e_nm_posi_register GENERIC MAP (
@@ -64,7 +92,7 @@ BEGIN
         enable_i => enable_r_register, 
         load_i => enable_i,         
         data_i => r_i, 
-        data_o => uart_data
+        data_o => s_uart_data_r
     );
         
     -- Instantiate sipo register entity for r register
@@ -77,15 +105,28 @@ BEGIN
         enable_i => enable_s_register, 
         load_i => enable_i,         
         data_i => s_i, 
-        data_o => uart_data
+        data_o => s_uart_data_s
     );
-	
-	-- TODO VERIFY FLAG TO UART 
-	--v_i -> uart_data
-	
-	-- TODO INSTANTIATE UART ENTITY
-	--	-> Write to UART from FPGA. Read from POSI registers
-	--	-> Swtich between the right input register: ENABLE_S_REGISTER, ENABLE_R_REGISTER and VERIFY FLAG
-	--		--> Input register are automatically loaded when ECDSA entity is ready (load_i => enable_i)
-	--		--> Ready from register entity when ENABLE_I is set
+    
+    -- Instantiate uart transmitter
+    transmit_instance : e_uart_transmit
+        GENERIC MAP (
+            baud_rate   => 9600,
+            N           => 1,
+            M           => M
+        ) PORT MAP ( 
+            clk_i     => clk_i,
+            rst_i     => rst_i,
+            mode_i    => mode_i,
+            verify_i  => v_i,
+            start_i   => s_start_transmit,
+            data_i    => s_uart_data,
+            tx_o      => uart_o,
+            reg_o     => s_reg_ctrl,
+            reg_ena_o => s_reg_ena
+        );
+        
+    -- multiplexer to control register inputs
+    s_uart_data <= s_uart_data_r WHEN (s_reg_ctrl = '0') ELSE s_uart_data_s;
+    s_reg_ena <= enable_r_register WHEN (s_reg_ctrl = '0') ELSE enable_s_register;
 END rtl;

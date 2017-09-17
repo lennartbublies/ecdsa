@@ -79,13 +79,13 @@ BEGIN
 
         enable <= '1'; 
         WAIT FOR PERIOD;
-        data <= x"0A";
+        data <= x"9A";
         WAIT FOR PERIOD;
-        data <= x"0B";
+        data <= x"8B";
         WAIT FOR PERIOD;
-        data <= x"0C";
+        data <= x"7C";
         WAIT FOR PERIOD;
-        data <= x"0D";
+        data <= x"6D";
         WAIT FOR PERIOD;
         enable <= '0'; 
         

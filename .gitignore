@@ -1,7 +1,8 @@
 *.bak
+vhdl/
 vhdl/db/*
 vhdl/output_files/*
 vhdl/incremental_db/*
 ecdsa-tex/*.pdf
 *.gz
-
+*.tmp
