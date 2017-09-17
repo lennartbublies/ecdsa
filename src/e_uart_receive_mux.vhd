@@ -157,7 +157,7 @@ BEGIN
     --      --> Change 
 	uart_receiver: e_uart_receive_data
 	GENERIC MAP ( 
-		baud_rate => 9600,
+		baud_rate => 500000, -- 9600 in production
 		N => 8,	-- length of message
 		M => M)  -- length of key
 	PORT MAP (
