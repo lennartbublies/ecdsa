@@ -1,6 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <errno.h>
+#include <fcntl.h> 
+#include <string.h>
+#include <termios.h>
+#include <unistd.h>
+
 #include "ecctypes.h"
 #include "eccprint.h"
 #include "eccmemory.h"
@@ -55,6 +61,63 @@ static eccint_t testhash[2] = {
 };
 
 int
+set_uart_interface_attribs (int fd, int speed, int parity)
+{
+    struct termios tty;
+    memset (&tty, 0, sizeof tty);
+    if (tcgetattr (fd, &tty) != 0) {
+        error_message ("uart error %d from tcgetattr", errno);
+        return -1;
+    }
+
+    cfsetospeed (&tty, speed);
+    cfsetispeed (&tty, speed);
+
+    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
+    // disable IGNBRK for mismatched speed tests; otherwise receive break
+    // as \000 chars
+    tty.c_iflag &= ~IGNBRK;         // disable break processing
+    tty.c_lflag = 0;                // no signaling chars, no echo,
+                                    // no canonical processing
+    tty.c_oflag = 0;                // no remapping, no delays
+    tty.c_cc[VMIN]  = 0;            // read doesn't block
+    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
+
+    tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls,
+                                    // enable reading
+    tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
+    tty.c_cflag |= parity;
+    tty.c_cflag &= ~CSTOPB;
+    tty.c_cflag &= ~CRTSCTS;
+
+    if (tcsetattr (fd, TCSANOW, &tty) != 0) {
+        error_message ("uart error %d from tcsetattr", errno);
+        return -1;
+    }
+    return 0;
+}
+
+void
+set_uart_blocking (int fd, int should_block)
+{
+    struct termios tty;
+    memset (&tty, 0, sizeof tty);
+    if (tcgetattr (fd, &tty) != 0) {
+        error_message ("error %d from tggetattr", errno);
+        return;
+    }
+
+    tty.c_cc[VMIN]  = should_block ? 1 : 0;
+    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
+
+    if (tcsetattr (fd, TCSANOW, &tty) != 0) {
+        error_message ("uart error %d setting term attributes", errno);
+    }
+}
+
+int
 main(int argc, char** argv)
 {
     //const curve_t *curve = &sect163k1;
@@ -65,6 +128,7 @@ main(int argc, char** argv)
     eccint_point_t *publickey_QB = &QB;
     eccint_signature_t signature;
     eccint_t *hash;
+    char *portname = "/dev/ttyUSB1"
     int result = 0;
     
     // -- Vars -------------------------------------------
@@ -104,6 +168,19 @@ main(int argc, char** argv)
     ecc_print_point(publickey_QB, curve->words);
     printf("\n\n");
     
+    // -- UART ---------------------------------------------------
+    
+    // Try to open uart connection
+    int ser = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
+    if (ser < 0){
+        error_message ("error %d opening %s: %s", errno, portname, strerror (errno));
+        return;
+    }
+    
+    // Setting interface attributes like baut rate
+    set_uart_interface_attribs(ser, B9600, 0);  // set speed to 9600 bps, 8n1 (no parity)
+    set_uart_blocking(ser, 1);                  // set blocking (read will block)
+    
     // -- Sign message -------------------------------------------
     
     hash = testhash;
@@ -127,4 +204,10 @@ main(int argc, char** argv)
     if (!result) {
         printf("SIGNATURE VERIFICATION FAILED\n\n");
     }
+
+    // write (ser, "hello!\n", 7);           // send 7 character greeting
+    // usleep ((7 + 25) * 100);              // sleep enough to transmit the 7 plus
+                                             // receive 25:  approx 100 uS per char transmit
+    // char buf [100];
+    // int n = read (ser, buf, sizeof buf);  // read up to 100 characters if ready to read
 }
