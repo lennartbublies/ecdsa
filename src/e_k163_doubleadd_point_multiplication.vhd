@@ -89,15 +89,20 @@ ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
 
     -- Internal signals
     SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
-    SIGNAL sel, ch_q, ch_a, q_infinity, a_equal_0, a_equal_1, load: std_logic;
+    SIGNAL sel, ch_q, ch_a, ch_aa, q_infinity, a_equal_0, a_equal_1, load, k_ready: std_logic;
     SIGNAL next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
     SIGNAL x_double, y_double, x_doubleadd, y_doubleadd: std_logic_vector(M-1 DOWNTO 0);
 	SIGNAL a, next_a: std_logic_vector(M DOWNTO 0); 
+    SIGNAL kk: std_logic_vector(0 TO M-1); 
     
     -- Define all available states
-    subtype states IS natural RANGE 0 TO 11;
+    subtype states IS natural RANGE 0 TO 13;
     SIGNAL current_state: states;
 BEGIN
+    reverse_k: FOR i IN 0 TO M-1 GENERATE 
+        kk(i) <= k(i);
+    END GENERATE;
+    
     -- Instantiate point doubling entity
     doubling: e_k163_point_doubling PORT MAP(
             clk_i => clk_i, 
@@ -133,8 +138,8 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                xq_io <= xp_i;
-                yq_io <= yp_i;
+                xq_io <= (OTHERS=>'1'); --xp_i;
+                yq_io <= (OTHERS=>'1'); --yp_i;
                 q_infinity <= '1';
             ELSIF ch_q = '1' THEN 
                 xq_io <= next_xq; 
@@ -149,9 +154,13 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                a <= ('0'&k); 
+                a <= ('0'&kk); -- k); 
+                k_ready <= '0';
+            ELSIF ch_aa = '1' THEN 
+                a <= next_a; 
             ELSIF ch_a = '1' THEN 
                 a <= next_a; 
+                k_ready <= '1';
             END IF;
         END IF;
     END PROCESS;
@@ -174,17 +183,19 @@ BEGIN
         --  2,3   : Intialize registers
         --  4,5   :
         CASE current_state IS
-            WHEN 0 TO 1 => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '1';
-            WHEN 2      => load <= '1'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 3      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 4      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
-            WHEN 5      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 6      => load <= '0'; sel <= '0'; ch_q <= '1'; ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 7      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
-            WHEN 8      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 9      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='1'; ready_o <= '0';
-            WHEN 10     => load <= '0'; sel <= '1'; ch_q <= '0'; ch_a <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
-            WHEN 11     => load <= '0'; sel <= '1'; ch_q <= '1'; ch_a <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 0 TO 1 => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '1';
+            WHEN 2      => load <= '1'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 3      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 4      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
+            WHEN 5      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 6      => load <= '0'; sel <= '0'; ch_q <= '1'; ch_a <= '1'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 7      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '1'; start_addition <='0'; ready_o <= '0';
+            WHEN 8      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 9      => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='1'; ready_o <= '0';
+            WHEN 10     => load <= '0'; sel <= '1'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 11     => load <= '0'; sel <= '1'; ch_q <= '1'; ch_a <= '1'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 12     => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '0'; ch_aa <= '1'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
+            WHEN 13     => load <= '0'; sel <= '0'; ch_q <= '0'; ch_a <= '1'; ch_aa <= '0'; start_doubling <= '0'; start_addition <='0'; ready_o <= '0';
         END CASE;
       
         IF rst_i = '1' THEN 
@@ -204,8 +215,13 @@ BEGIN
                 WHEN 2 => 
                     current_state <= 3;
                 WHEN 3 =>
+                    -- Shift beginning zero bits (result of inversion of k)
+                    IF (a(0) = '0') and (k_ready = '0') THEN
+                        current_state <= 12;
+                    ELSIF (a(0) = '1') and (k_ready = '0') THEN
+                        current_state <= 13;
                     -- k is completely processed --> finish
-                    IF a_equal_0 = '1' THEN
+                    ELSIF a_equal_0 = '1' THEN
                         current_state <= 0;
                     ELSIF (a_equal_1 = '1') and (q_infinity = '1') THEN
                         current_state <= 0;
@@ -239,6 +255,10 @@ BEGIN
                         current_state <= 11;
                     END IF;
                 WHEN 11 =>
+                    current_state <= 3;
+                WHEN 12 =>
+                    current_state <= 3;
+                WHEN 13 =>
                     current_state <= 3;
             END CASE;
         END IF;

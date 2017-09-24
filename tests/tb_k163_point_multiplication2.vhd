@@ -82,9 +82,13 @@ BEGIN
         WAIT FOR PERIOD;
         
         -- Set point P for the computation
-        xP <= "000000010"; 
-        yP <= "000001111"; 
-        k  <= "000000010";
+        --xP <= "000000010"; 
+        --yP <= "000001111"; 
+        --k  <= "000000010";
+
+        xP <= "011101110"; 
+        yP <= "010101111"; 
+        k  <= "001101001";
        
         -- Start computation
         enable <= '1'; 

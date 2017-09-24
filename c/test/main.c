@@ -182,13 +182,20 @@ main(int argc, char** argv)
     set_uart_blocking(ser, 1);                  // set blocking (read will block)
     
     // -- Sign message -------------------------------------------
-    
+
+    // char buf [100];
+    // int n = read (ser, buf, sizeof buf);  // read up to 100 characters if ready to read
+
     hash = testhash;
     ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
 
     if (eccint_cmp(signature.r, curve->n, curve->words) >= 0) {
         printf("SIGNATURE CREATION FAILED\n\n");
     }
+
+    // write (ser, "hello!\n", 7);           // send 7 character greeting
+    // usleep ((7 + 25) * 100);              // sleep enough to transmit the 7 plus
+                                             // receive 25:  approx 100 uS per char transmit
 
     // -- Verifiy message -------------------------------------------
     
@@ -204,10 +211,4 @@ main(int argc, char** argv)
     if (!result) {
         printf("SIGNATURE VERIFICATION FAILED\n\n");
     }
-
-    // write (ser, "hello!\n", 7);           // send 7 character greeting
-    // usleep ((7 + 25) * 100);              // sleep enough to transmit the 7 plus
-                                             // receive 25:  approx 100 uS per char transmit
-    // char buf [100];
-    // int n = read (ser, buf, sizeof buf);  // read up to 100 characters if ready to read
 }

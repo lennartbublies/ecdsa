@@ -24,6 +24,7 @@ PACKAGE e_k163_point_addition_package IS
   CONSTANT M: natural := 9;
   --CONSTANT M: natural := 163;
   CONSTANT A: std_logic_vector(M-1 downto 0):= "000000001"; --for M=9 bits
+  CONSTANT ONES: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'1');
 END e_k163_point_addition_package;
 
 ------------------------------------------------------------
@@ -93,14 +94,31 @@ ARCHITECTURE rtl of e_k163_point_addition IS
     
     -- Temporary signals for divider and multiplier
     SIGNAL div_in1, div_in2, lambda, lambda_square, mult_in2, mult_out: std_logic_vector(M-1 DOWNTO 0);
+    SIGNAL x3_tmp, y3_tmp, next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
     
     -- Signals to switch between multiplier and divider
     SIGNAL start_div, div_done, start_mult, mult_done: std_logic;
+    SIGNAL load, ch_q: std_logic;
+    SIGNAL sel: std_logic_vector(1 DOWNTO 0);
     
     -- Define all available states
-    subtype states IS natural RANGE 0 TO 6;
+    subtype states IS natural RANGE 0 TO 10;
     SIGNAL current_state: states;
 BEGIN
+    -- Output register
+    register_q: PROCESS(clk_i)
+    BEGIN
+        IF clk_i' event and clk_i = '1' THEN 
+            IF load = '1' THEN 
+                x3_io <= (OTHERS=>'1');
+                y3_o <= (OTHERS=>'1');
+            ELSIF ch_q = '1' THEN 
+                x3_io <= next_xq; 
+                y3_o <= next_yq;
+            END IF;
+        END IF;
+    END PROCESS;
+
     -- Instantiate divider entity
     --  Calculate s = (py-qy)/(px-qx)
     divider: e_gf2m_divider PORT MAP( 
@@ -142,21 +160,24 @@ BEGIN
     -- Set multiplier input from entity input 
     --  Calculate (px - rx)
     multiplier_inputs: FOR i IN 0 TO M-1 GENERATE
-        mult_in2(i) <= x1_i(i) xor x3_io(i);
+        mult_in2(i) <= x1_i(i) xor x3_tmp(i);
     END GENERATE;
 
     -- Set x3(0)
-    --x3_io(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
+    --x3_tmp(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
 
     -- Set output
     --  Calculate rx = s^2 - s - (px-qx)
     x_output: FOR i IN 0 TO M-1 GENERATE
-        x3_io(i) <= lambda_square(i) xor lambda(i) xor div_in2(i) xor a(i);
+        x3_tmp(i) <= lambda_square(i) xor lambda(i) xor div_in2(i) xor a(i);
     END GENERATE;
     --  Calculate ry = s * (px - rx) - rx - py
     y_output: FOR i IN 0 TO M-1 GENERATE
-        y3_o(i) <= mult_out(i) xor x3_io(i) xor y1_i(i);
+        y3_tmp(i) <= mult_out(i) xor x3_tmp(i) xor y1_i(i);
     END GENERATE;
+
+    WITH sel SELECT next_yq <= y3_tmp WHEN "00", y1_i WHEN "01", y2_i WHEN OTHERS;
+    WITH sel SELECT next_xq <= x3_tmp WHEN "00", x1_i WHEN "01", x2_i WHEN OTHERS;
 
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state)
@@ -166,11 +187,16 @@ BEGIN
         --  2,3   : Calculate s = (py-qy)/(px-qx), s^2
         --  4,5,6 : Calculate rx/ry 
         CASE current_state IS
-            WHEN 0 TO 1 => start_div <= '0'; start_mult <= '0'; ready_o <= '1';
-            WHEN 2 => start_div <= '1'; start_mult <= '0'; ready_o <= '0';
-            WHEN 3 => start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 4 => start_div <= '0'; start_mult <= '1'; ready_o <= '0';
-            WHEN 5 TO 6 => start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 0 TO 1 => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '1';
+            WHEN 2      => load <= '1'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 3      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 4      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '1'; start_mult <= '0'; ready_o <= '0';
+            WHEN 5      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 6      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '1'; ready_o <= '0';
+            WHEN 7      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 8      => load <= '0'; sel <= "00"; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 9      => load <= '0'; sel <= "11"; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 10     => load <= '0'; sel <= "01"; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
         END CASE;
 
         IF rst_i = '1' THEN 
@@ -189,17 +215,31 @@ BEGIN
                     END IF; 
                 WHEN 2 => 
                     current_state <= 3;
-                WHEN 3 => 
-                    IF div_done = '1' THEN 
-                        current_state <= 4; 
+                WHEN 3 =>
+                    IF (x1_i = ONES) OR (y1_i = ONES) THEN
+                        current_state <= 9;
+                    ELSIF (x2_i = ONES) OR (y2_i = ONES) THEN
+                        current_state <= 10;                    
+                    ELSE 
+                        current_state <= 4;
                     END IF;
-                WHEN 4 => 
+                WHEN 4 =>
                     current_state <= 5;
                 WHEN 5 => 
-                    IF mult_done = '1' THEN 
+                    IF div_done = '1' THEN 
                         current_state <= 6; 
                     END IF;
                 WHEN 6 => 
+                    current_state <= 7;
+                WHEN 7 => 
+                    IF mult_done = '1' THEN 
+                        current_state <= 8; 
+                    END IF;
+                WHEN 8 => 
+                    current_state <= 0;
+                WHEN 9 =>
+                    current_state <= 0;
+                WHEN 10 =>
                     current_state <= 0;
             END CASE;
         END IF;

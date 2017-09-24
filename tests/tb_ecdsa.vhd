@@ -14,7 +14,7 @@ USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
 
-use work.tld_k163_ecdsa_package.all;
+use work.e_k163_ecdsa_package.all;
 
 ENTITY tb_k163_ecdsa IS
 END tb_k163_ecdsa;

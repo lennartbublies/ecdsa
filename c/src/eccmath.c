@@ -497,17 +497,26 @@ void eccint_binary_doublenadd_mul(const eccint_t *scalar, const eccint_point_t *
     // Q <- \infty
     eccint_point_set(&r0, ECCINT_MAX, curve->words);
 
+    //printf("\n## k: "); ecc_print_n(scalar, curve->words);
+    //printf("## p: "); ecc_print_point_n(p, curve->words);
+
     // For i from t - 1 downto 0 do
     for (ssize_t i = eccint_degree(scalar, curve->words) - 1; i >= 0; i--) {
         // Q <- 2Q
+        //printf("**  r: "); ecc_print_point_n(&r0, curve->words);
         eccint_point_double(&r0, &r0, curve);
+        //printf("** 2r: "); ecc_print_point_n(&r0, curve->words);
 
         // if k_i = 1 then
         if (eccint_testbit(scalar, i)) {
             // Q <- Q + P
+            //printf("+++++  r: "); ecc_print_point_n(&r0, curve->words);
+            //printf("+++++  p: "); ecc_print_point_n(p, curve->words);
             eccint_point_add(&r0, p, &r0, curve);
+            //printf("+++++ rp: "); ecc_print_point_n(&r0, curve->words);
         }
     }
+    //printf("\n");
 
     eccint_point_cpy(res, &r0, curve->words);
 }

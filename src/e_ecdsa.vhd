@@ -70,8 +70,8 @@ ARCHITECTURE rtl OF e_ecdsa IS
 
     -- Components -----------------------------------------
 
-    -- Import entity e_k163_point_multiplication
-    COMPONENT e_k163_point_multiplication IS
+    -- Import entity e_k163_doubleadd_point_multiplication
+    COMPONENT e_k163_doubleadd_point_multiplication IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -208,7 +208,7 @@ BEGIN
     -- SIGN -----------------------------------------------------------------
     
     -- Instantiate multiplier to compute R = k.G = (xR, yR)
-    sign_pmul_r: e_k163_point_multiplication PORT MAP (
+    sign_pmul_r: e_k163_doubleadd_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_r, 
@@ -285,7 +285,7 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp6 = u1.G
-    sign_pmul_u1gu2q: e_k163_point_multiplication PORT MAP (
+    sign_pmul_u1gu2q: e_k163_doubleadd_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
@@ -298,7 +298,7 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp7 = u2.QB
-    sign_pmul_u1gu2qb: e_k163_point_multiplication PORT MAP (
+    sign_pmul_u1gu2qb: e_k163_doubleadd_point_multiplication PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
