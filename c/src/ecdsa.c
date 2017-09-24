@@ -88,6 +88,7 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
     //eccint_t k[curve->words];
     eccint_t * k = KK;
     eccint_t t1[curve->words];
+    eccint_t t2[curve->words];
     eccint_point_t point;
 
     do {
@@ -113,23 +114,26 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
         //         s =         ((e +  t1  ) / k) mod n
 
         // t1 = d * r
-        eccint_mul_mod(privatekey, signature->r, curve->n, t1, curve);
+        eccint_mul_mod(privatekey, signature->r, curve->n, t2, curve);
 
-        eccint_add(hash, t1, t1, curve->words); // t1 = e + d * r
+        eccint_add(hash, t2, t1, curve->words); // t1 = e + d * r
         eccint_div_mod(t1, k, curve->n, signature->s, curve);
 
-		if (verbose) {
-			printf("# SIGN: k = \n    ");
-			ecc_print_n(k, curve->words);
-			printf("# SIGN: kP = \n");
-			ecc_print_point_n(&point, curve->words);
-			printf("# SIGN: r =  (kPx)\n    ");
-			ecc_print_n(signature->r, curve->words);
-			printf("# SIGN: e + d * kPx  = \n    ");
-			ecc_print_n(t1, curve->words);
-			printf("# SIGN: s =  ((e + d * kPx)/k)\n    ");
-			ecc_print_n(signature->s, curve->words);
-		}
+        if (verbose) {
+            printf("# SIGN: k = \n    ");
+            ecc_print_n(k, curve->words);
+            printf("# SIGN: kP = \n");
+            ecc_print_point_n(&point, curve->words);
+            printf("# SIGN: r =  (kPx)\n    ");
+            ecc_print_n(signature->r, curve->words);
+            printf("# SIGN: d * kPx  = \n    ");
+            ecc_print_n(t2, curve->words);
+            printf("# SIGN: e + d * kPx  = \n    ");
+            ecc_print_n(t1, curve->words);
+            printf("# SIGN: s =  ((e + d * kPx)/k)\n    ");
+            ecc_print_n(signature->s, curve->words);
+            printf("\n");
+        }
 
         // If s=0 then goto step 1.
     } while (eccint_testzero(signature->s, curve->words));
@@ -185,20 +189,21 @@ int ecc_verify_verbose(const eccint_point_t *publickey, const eccint_t *hash, co
     // Compute v = x_1 mod n
     eccint_mod(X.x, curve->n, v, curve);
 
-	if (verbose) {
-		printf("# VERIFY: w = \n    ");
-		ecc_print_n(w, curve->words);
-		printf("# VERIFY: u_1 = \n    ");
-		ecc_print_n(u1, curve->words);
-		printf("# VERIFY: u_2 = \n    ");
-		ecc_print_n(u2, curve->words);
-		printf("# VERIFY: x_1 =  (u_1 * P)\n");
-		ecc_print_point_n(&X1, curve->words);
-		printf("# VERIFY: x_2 =  (u_2 * Q)\n");
-		ecc_print_point_n(&X2, curve->words);
-		printf("# VERIFY: x =  (u_1 * P + u_2 * Q)\n");
-		ecc_print_point_n(&X, curve->words);
-	}
+    if (verbose) {
+        printf("# VERIFY: w = \n    ");
+        ecc_print_n(w, curve->words);
+        printf("# VERIFY: u_1 = \n    ");
+        ecc_print_n(u1, curve->words);
+        printf("# VERIFY: u_2 = \n    ");
+        ecc_print_n(u2, curve->words);
+        printf("# VERIFY: x_1 =  (u_1 * P)\n");
+        ecc_print_point_n(&X1, curve->words);
+        printf("# VERIFY: x_2 =  (u_2 * Q)\n");
+        ecc_print_point_n(&X2, curve->words);
+        printf("# VERIFY: x =  (u_1 * P + u_2 * Q)\n");
+        ecc_print_point_n(&X, curve->words);
+        printf("\n");
+    }
 
     // If v = r then accept
     return (eccint_cmp(v, r, curve->words) != 0);

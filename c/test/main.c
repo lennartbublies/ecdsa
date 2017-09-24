@@ -66,7 +66,7 @@ set_uart_interface_attribs (int fd, int speed, int parity)
     struct termios tty;
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {
-        error_message ("uart error %d from tcgetattr", errno);
+        printf("uart error %d from tcgetattr", errno);
         return -1;
     }
 
@@ -93,7 +93,7 @@ set_uart_interface_attribs (int fd, int speed, int parity)
     tty.c_cflag &= ~CRTSCTS;
 
     if (tcsetattr (fd, TCSANOW, &tty) != 0) {
-        error_message ("uart error %d from tcsetattr", errno);
+        printf("uart error %d from tcsetattr", errno);
         return -1;
     }
     return 0;
@@ -105,7 +105,7 @@ set_uart_blocking (int fd, int should_block)
     struct termios tty;
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {
-        error_message ("error %d from tggetattr", errno);
+        printf("error %d from tggetattr", errno);
         return;
     }
 
@@ -113,7 +113,7 @@ set_uart_blocking (int fd, int should_block)
     tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
 
     if (tcsetattr (fd, TCSANOW, &tty) != 0) {
-        error_message ("uart error %d setting term attributes", errno);
+        printf("uart error %d setting term attributes", errno);
     }
 }
 
@@ -128,7 +128,7 @@ main(int argc, char** argv)
     eccint_point_t *publickey_QB = &QB;
     eccint_signature_t signature;
     eccint_t *hash;
-    char *portname = "/dev/ttyUSB1"
+    //char *portname = "/dev/ttyUSB1";
     int result = 0;
     
     // -- Vars -------------------------------------------
@@ -171,15 +171,15 @@ main(int argc, char** argv)
     // -- UART ---------------------------------------------------
     
     // Try to open uart connection
-    int ser = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
-    if (ser < 0){
-        error_message ("error %d opening %s: %s", errno, portname, strerror (errno));
-        return;
-    }
+    //int ser = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
+    //if (ser < 0){
+    //    printf("error %d opening %s: %s", errno, portname, strerror (errno));
+    //    return 1;
+    //}
     
     // Setting interface attributes like baut rate
-    set_uart_interface_attribs(ser, B9600, 0);  // set speed to 9600 bps, 8n1 (no parity)
-    set_uart_blocking(ser, 1);                  // set blocking (read will block)
+    //set_uart_interface_attribs(ser, B9600, 0);  // set speed to 9600 bps, 8n1 (no parity)
+    //set_uart_blocking(ser, 1);                  // set blocking (read will block)
     
     // -- Sign message -------------------------------------------
 
