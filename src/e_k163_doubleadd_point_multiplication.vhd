@@ -89,10 +89,10 @@ ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
 
     -- Internal signals
     SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
-    SIGNAL sel, ch_q, ch_a, ch_aa, q_infinity, a_equal_0, a_equal_1, load, k_ready: std_logic;
+    SIGNAL sel, ch_q, ch_a, ch_aa, q_infinity, a_equal_0, a_equal_1, a_equal_aa, load, k_ready: std_logic;
     SIGNAL next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
     SIGNAL x_double, y_double, x_doubleadd, y_doubleadd: std_logic_vector(M-1 DOWNTO 0);
-	SIGNAL a, next_a: std_logic_vector(M DOWNTO 0); 
+	SIGNAL a, aa, next_a, next_aa: std_logic_vector(M DOWNTO 0); 
     SIGNAL kk: std_logic_vector(0 TO M-1); 
     
     -- Define all available states
@@ -154,12 +154,15 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                a <= ('0'&kk); -- k); 
+                a  <= ('0'&kk); 
+                aa <= ('0'&k); 
                 k_ready <= '0';
             ELSIF ch_aa = '1' THEN 
-                a <= next_a; 
+                a  <= next_a; 
+                aa <= next_aa; 
             ELSIF ch_a = '1' THEN 
-                a <= next_a; 
+                a  <= next_a; 
+                aa <= next_aa; 
                 k_ready <= '1';
             END IF;
         END IF;
@@ -168,12 +171,15 @@ BEGIN
     -- Shift k
     shift_a: FOR i IN 0 TO m-1 GENERATE 
         next_a(i) <= a(i+1);
+        next_aa(i) <= aa(i+1);
     END GENERATE;
     next_a(m) <= a(m);
+    next_aa(m) <= aa(m);
     
     -- If '1' enable point addition, otherwise only doubling
-    a_equal_0 <= '1' WHEN a = 0 ELSE '0';
-    a_equal_1 <= '1' WHEN a = 1 ELSE '0';
+    a_equal_0  <= '1' WHEN a = 0 ELSE '0';
+    a_equal_1  <= '1' WHEN a = 1 ELSE '0';
+    a_equal_aa <= '1' WHEN a = aa ELSE '0';
 	
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state, a_equal_0, a_equal_1, a(0), q_infinity)
@@ -221,8 +227,10 @@ BEGIN
                     ELSIF (a(0) = '1') and (k_ready = '0') THEN
                         current_state <= 13;
                     -- k is completely processed --> finish
-                    ELSIF a_equal_0 = '1' THEN
+                    ELSIF (a_equal_0 = '1') and (a = aa) THEN
                         current_state <= 0;
+                    ELSIF a_equal_0 = '1' THEN
+                        current_state <= 4;
                     ELSIF (a_equal_1 = '1') and (q_infinity = '1') THEN
                         current_state <= 0;
                     -- Double but skip addition
