@@ -120,6 +120,10 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
         eccint_div_mod(t1, k, curve->n, signature->s, curve);
 
         if (verbose) {
+            printf("# SIGN: da = \n    ");
+            ecc_print_n(privatekey, curve->words);
+            printf("# SIGN: hash = \n    ");
+            ecc_print_n(hash, curve->words);
             printf("# SIGN: k = \n    ");
             ecc_print_n(k, curve->words);
             printf("# SIGN: kP = \n");
@@ -190,6 +194,12 @@ int ecc_verify_verbose(const eccint_point_t *publickey, const eccint_t *hash, co
     eccint_mod(X.x, curve->n, v, curve);
 
     if (verbose) {
+        printf("# VERIFY: Q = \n    ");
+        ecc_print_n(w, curve->words);
+        printf("# VERIFY: hash = \n    ");
+        ecc_print_n(hash, curve->words);
+        printf("# VERIFY: signature\n");
+        ecc_print_signature_n(signature, curve->words);
         printf("# VERIFY: w = \n    ");
         ecc_print_n(w, curve->words);
         printf("# VERIFY: u_1 = \n    ");

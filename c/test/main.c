@@ -57,7 +57,7 @@ static eccint_point_t QB =  {
 };
 
 static eccint_t testhash[2] = {
-    0b01000111, 0b00000010 
+    0b01000111, 0b00000001
 };
 
 int
@@ -186,6 +186,10 @@ main(int argc, char** argv)
     // char buf [100];
     // int n = read (ser, buf, sizeof buf);  // read up to 100 characters if ready to read
 
+    printf("-------------------------------\n");
+    printf("Sign/Verify: \n");
+    printf("-------------------------------\n");
+    
     hash = testhash;
     ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
 
@@ -202,13 +206,8 @@ main(int argc, char** argv)
     hash = testhash;
     result = ecc_verify_verbose(publickey_QA, hash, &signature, curve, 1);
 
-    printf("-------------------------------\n");
-    printf("Signature: \n");
-    printf("-------------------------------\n");
-    ecc_print_signature(&signature, curve->words);
-    printf("\n\n");
-
     if (!result) {
         printf("SIGNATURE VERIFICATION FAILED\n\n");
     }
+    printf("finish...\n");
 }
