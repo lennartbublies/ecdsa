@@ -3,6 +3,13 @@
 --  Computes the polynomial multiplication x.y.r^-1 mod f IN GF(2**m)
 --
 --  Ports:
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   a_i      - First input value
+--   b_i      - Seccond input value
+--   z_o      - Output value
+--   ready_o  - Ready flag after computation
 -- 
 --  Example:
 --   (x^2+x+1)*(x^2+1) = x^4+x^3+x+1
@@ -20,26 +27,12 @@
 --        1011
 --         110
 --
---  Source:
+--  Based on:
 --   http://www.arithmetic-circuits.org/finite-field/vhdl_Models/chapter7_codes/VHDL/montgomery_mult.vhd
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 22.06.2017
 ----------------------------------------------------------------------------------------------------
-
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-
-PACKAGE e_gf2m_montgomery_mult_package IS
-    CONSTANT M: integer := 8;
-    --CONSTANT M: integer := 9;
-    --CONSTANT M: integer := 163;
-    CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "00011011"; --for M=8 bits
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000000011"; --for M=9 bits
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
-END e_gf2m_montgomery_mult_package;
 
 -----------------------------------
 --  GF(2^M) Montgomery multiplier data path
@@ -48,7 +41,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
-USE work.e_gf2m_montgomery_mult_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_montgomery_data_path IS
     PORT (
@@ -65,7 +58,7 @@ BEGIN
     prev_c0 <= c_i(0) xor (a_i and b_i(0));
 
     datapath: for i IN 1 TO M-1 generate
-        c_o(i-1) <= c_i(i) xor (a_i and b_i(i)) xor (F(i) and prev_c0);
+        c_o(i-1) <= c_i(i) xor (a_i and b_i(i)) xor (F2(i) and prev_c0);
     END generate;
     c_o(M-1) <= prev_c0;
 END rtl;
@@ -77,7 +70,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-USE work.e_gf2m_montgomery_mult_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_montgomery_mult IS
     PORT (

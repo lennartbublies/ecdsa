@@ -1,8 +1,19 @@
 ----------------------------------------------------------------------------------------------------
---  ENTITY - Elliptic Curve Point Multiplication IN K163
+--  ENTITY - Elliptic Curve Point Multiplication
 --  Implementation with Double-And-Add algorithm
 --
---  Code:
+--  Ports:
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   xp_i     - X part of input point
+--   yp_i     - Y part of input point
+--   k        - Multiplier k
+--   xq_io    - X part of output point
+--   yq_io    - Y part of output point
+--   ready_o  - Ready flag
+--
+--  Algorithm:
 --      ro = INFINITY
 --      for (i=0; i>k-1; i++) {
 --          ro = point_double(ro)
@@ -14,32 +25,17 @@
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 29.06.2017
 ----------------------------------------------------------------------------------------------------
- 
+
 ------------------------------------------------------------
--- K163 point multiplication package
+-- GF(2^M) point multiplication
 ------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
+USE work.tld_ecdsa_package.all;
 
-PACKAGE e_k163_doubleadd_point_multiplication_package IS
-  --CONSTANT M: natural := 8;
-  CONSTANT M: natural := 9;
-  --CONSTANT M: natural := 163;
-  CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
-END e_k163_doubleadd_point_multiplication_package;
-
-------------------------------------------------------------
--- K163 point multiplication
-------------------------------------------------------------
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-USE work.e_k163_doubleadd_point_multiplication_package.all;
-
-ENTITY e_k163_doubleadd_point_multiplication IS
+ENTITY e_gf2m_doubleadd_point_multiplication IS
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -54,11 +50,11 @@ ENTITY e_k163_doubleadd_point_multiplication IS
         yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
-END e_k163_doubleadd_point_multiplication;
+END e_gf2m_doubleadd_point_multiplication;
 
-ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
+ARCHITECTURE rtl of e_gf2m_doubleadd_point_multiplication IS
     -- Import entity e_k163_point_doubling 
-    COMPONENT e_k163_point_doubling  IS
+    COMPONENT e_gf2m_point_doubling  IS
         PORT(
 			clk_i: IN std_logic; 
 			rst_i: IN std_logic; 
@@ -71,8 +67,8 @@ ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
         );
     END COMPONENT;
 
-    -- Import entity e_k163_point_addition
-    COMPONENT e_k163_point_addition IS
+    -- Import entity e_gf2m_point_addition
+    COMPONENT e_gf2m_point_addition IS
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -89,7 +85,7 @@ ARCHITECTURE rtl of e_k163_doubleadd_point_multiplication IS
 
     -- Internal signals
     SIGNAL start_doubling, doubling_done, start_addition, addition_done: std_logic;
-    SIGNAL sel, ch_q, ch_a, ch_aa, q_infinity, a_equal_0, a_equal_1, a_equal_aa, load, k_ready: std_logic;
+    SIGNAL sel, ch_q, ch_a, ch_aa, q_infinity, a_equal_0, a_equal_1, load, k_ready: std_logic;
     SIGNAL next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
     SIGNAL x_double, y_double, x_doubleadd, y_doubleadd: std_logic_vector(M-1 DOWNTO 0);
 	SIGNAL a, aa, next_a, next_aa: std_logic_vector(M DOWNTO 0); 
@@ -104,7 +100,7 @@ BEGIN
     END GENERATE;
     
     -- Instantiate point doubling entity
-    doubling: e_k163_point_doubling PORT MAP(
+    doubling: e_gf2m_point_doubling PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_doubling,  
@@ -116,7 +112,7 @@ BEGIN
         );
 
     -- Instantiate point addition entity
-	addition: e_k163_point_addition PORT MAP(
+	addition: e_gf2m_point_addition PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_addition,  
@@ -138,8 +134,8 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                xq_io <= (OTHERS=>'1'); --xp_i;
-                yq_io <= (OTHERS=>'1'); --yp_i;
+                xq_io <= (OTHERS=>'1');
+                yq_io <= (OTHERS=>'1');
                 q_infinity <= '1';
             ELSIF ch_q = '1' THEN 
                 xq_io <= next_xq; 
@@ -179,7 +175,6 @@ BEGIN
     -- If '1' enable point addition, otherwise only doubling
     a_equal_0  <= '1' WHEN a = 0 ELSE '0';
     a_equal_1  <= '1' WHEN a = 1 ELSE '0';
-    a_equal_aa <= '1' WHEN a = aa ELSE '0';
 	
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state, a_equal_0, a_equal_1, a(0), q_infinity)

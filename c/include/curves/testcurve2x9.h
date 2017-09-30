@@ -19,15 +19,14 @@ static curve_t testcurve9 = {
     .b = { 0b00000001, 0b00000000 },
     .h = 0x02,
 
-
     // This is a random point on the curve, does not necessesarily generate all
     // points. (238,175) = (0b11101110, 0b10101111) = (0xEE, 0xAF)
     .P = {{ 0xEE, 0x00 }, { 0xAF, 0x00 }},
 
     // This value of n is not necessarily correct for the curve, don't use it
     // for signing.
-    // .n = { 0b00000110, 0b00000100 }, !!WRONG!! It is used for signing! 
-    .n = { 0b00000011, 0b00000010 },
+    .n = { 0b00000110, 0b00000100 }, // !!WRONG!! It is used for signing! 
+    //.n = { 0b00000011, 0b00000010 },
 
     .words = 2,
     .m = 9,

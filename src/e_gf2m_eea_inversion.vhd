@@ -3,33 +3,16 @@
 --  Computes the 1/x mod F IN GF(2**M)
 --
 --  Ports:
--- 
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   a_i      - Input value
+--   z_o      - Inversion of input value
+--   ready_o  - Ready flag 
+--
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 26.06.2017
 ----------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------
--- GF(2^M) eea inversion package
-------------------------------------------------------------
-
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-
-PACKAGE p_gf2m_eea_inversion_package IS
-    -- Constants
-    --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 9;
-    --CONSTANT M: integer := 163;
-    --CONSTANT logM: integer := 3; --for M=8 bits
-    CONSTANT logM: integer := 4; --for M=9 bits
-    --CONSTANT logM: integer := 8;
-    --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
-    CONSTANT F: std_logic_vector(M-1 downto 0):= "000000011"; --for M=9 bits
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
-END p_gf2m_eea_inversion_package;
-
 
 ------------------------------------------------------------
 -- GF(2^M) eea inversion data path
@@ -39,7 +22,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
-USE work.p_gf2m_eea_inversion_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_eea_inversion_data_path IS
     PORT (
@@ -102,7 +85,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-USE work.p_gf2m_eea_inversion_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_eea_inversion IS
 PORT (
@@ -158,11 +141,11 @@ BEGIN
 
     z_o <= u(M-1 DOWNTO 0);
 
-    PROCESS(clk_i, rst_i)
+    PROCESS(clk_i, rst_i, a_i, first_step)
     BEGIN
         -- Reset entity on reset
         IF rst_i = '1' or first_step = '1' THEN 
-            r <= ('0' & a_i); s <= ('1' & F);
+            r <= ('0' & a_i); s <= ('1' & F2);
             u <= (0 => '1', OTHERS => '0'); v <= (OTHERS => '0');
             d <= (OTHERS => '0');
         ELSIF clk_i'event and clk_i = '1' THEN

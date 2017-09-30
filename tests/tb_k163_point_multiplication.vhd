@@ -19,14 +19,14 @@ USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
 
-use work.e_k163_doubleadd_point_multiplication_package.all;
+use work.e_k163_point_multiplication_package.all;
 
 ENTITY tb_k163_point_multupliation IS
 END tb_k163_point_multupliation;
 
 ARCHITECTURE rtl OF tb_k163_point_multupliation IS 
-    -- Import entity e_k163_doubleadd_point_multiplication
-    COMPONENT e_k163_doubleadd_point_multiplication IS
+    -- Import entity e_k163_point_multiplication
+    COMPONENT e_k163_point_multiplication IS
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -66,11 +66,11 @@ ARCHITECTURE rtl OF tb_k163_point_multupliation IS
   CONSTANT DUTY_CYCLE : real := 0.5;
   CONSTANT OFFSET : time := 0 ns;
   CONSTANT NUMBER_TESTS: natural := 5;
-  --CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "100" & x"000000000000000000020108a2e0cc0d99f8a5ee";
-  CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "000000110";
+  CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "100" & x"000000000000000000020108a2e0cc0d99f8a5ee";
+  --CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "000000110";
 BEGIN
     -- Instantiate first point multiplier entity
-    uut1: e_k163_doubleadd_point_multiplication PORT MAP(
+    uut1: e_k163_point_multiplication PORT MAP(
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable, 
@@ -83,7 +83,7 @@ BEGIN
     );
 
     -- Instantiate seccond point multiplier entity
-    uut2: e_k163_doubleadd_point_multiplication PORT MAP(
+    uut2: e_k163_point_multiplication PORT MAP(
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable, 
@@ -111,10 +111,10 @@ BEGIN
 
     -- Set point P for the computation
     k_minus_1 <= k - '1';
-    --xP <= "010" & x"fe13c0537bbc11acaa07d793de4e6d5e5c94eee8";
-    --yP <= "010" & x"89070fb05d38ff58321f2e800536d538ccdaa3d9";
-    xP <= "011101110";
-    yP <= "010101111";
+    xP <= "010" & x"fe13c0537bbc11acaa07d793de4e6d5e5c94eee8";
+    yP <= "010" & x"89070fb05d38ff58321f2e800536d538ccdaa3d9";
+    --xP <= "011101110";
+    --yP <= "010101111";
     xP_plus_yP <= xP xor yP;
 
     -- clock process FOR clk

@@ -35,7 +35,7 @@ static eccint_point_t QB =  {
 
 static eccint_t testhash[21] = {
           0xA3,0x38,0xC1,0x9A,0x62,0x30,0xAE,0x5,0x02,0xD4,0x1E,0xAB,0x3F,0x6B,0x83,0xFC,0xB2,0x14,0xB3,0x47,0x08
-};*/ 
+};*/
 
 // K=9
 static eccint_t dA[2] = {
@@ -133,14 +133,14 @@ main(int argc, char** argv)
     
     // -- Vars -------------------------------------------
     
-	// -- ENABLE THIS CODE FOR NEW PRIVATE AND PUBLIC KEY --
-    /*eccint_point_t publickey;
-    eccint_t privatekey[curve->words];
-    ecc_keygen(&publickey, privatekey, curve);
-    ecc_print_n(privatekey, curve->words);
-    ecc_print_point_n(&publickey, curve->words);*/
+    // -- ENABLE THIS CODE FOR NEW PRIVATE AND PUBLIC KEY --
+    //eccint_point_t publickey;
+    //eccint_t privatekey[curve->words];
+    //ecc_keygen(&publickey, privatekey, curve);
+    //ecc_print_n(privatekey, curve->words);
+    //ecc_print_point_n(&publickey, curve->words);
     
-	// -- ENABLE THIS CODE FOR NEW HASH --
+    // -- ENABLE THIS CODE FOR NEW HASH --
     /*eccint_t hash2[curve->words];
     eccint_urand(hash2, curve->words);
     eccint_mod(hash2, curve->n, hash2, curve);
@@ -192,6 +192,7 @@ main(int argc, char** argv)
     
     hash = testhash;
     ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
+    //ecc_sign_verbose(privatekey, hash, &signature, curve, 1);
 
     if (eccint_cmp(signature.r, curve->n, curve->words) >= 0) {
         printf("SIGNATURE CREATION FAILED\n\n");
@@ -205,6 +206,7 @@ main(int argc, char** argv)
     
     hash = testhash;
     result = ecc_verify_verbose(publickey_QA, hash, &signature, curve, 1);
+    //result = ecc_verify_verbose(&publickey, hash, &signature, curve, 1);
 
     if (!result) {
         printf("SIGNATURE VERIFICATION FAILED\n\n");

@@ -1,32 +1,14 @@
 ----------------------------------------------------------------------------------------------------
---  ENTITY - GF(2^M) Binary polynomial divider
---  Computes the g/h mod f IN GF(2**m)
+--  ENTITY - GF(2^M) Binary Polynomial Modulus
+--  Computes g mod n where n is a global constant
 --
 --  Ports:
 --   clk_i    - Clock
 --   rst_i    - Reset flag
 --   enable_i - Enable computation
---   g_i      - First input value
---   h_i      - Seccond input value
+--   g_i      - Input value
 --   z_o      - Output value
 --   ready_o  - Ready flag after computation
---
---  Example:
---   1100101 / 1101 = 1001
---                 
---   BIT-SHIFT and XOR:        
---    1100101 / 1101 = 1001  
---    1101
---     0011
---     0000
---      0110
---      0000
---       1101
---       1101
---          0 Remainder
---
---  Based on:
---   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/binary_algorithm_polynomials.vhd
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 22.06.2017
@@ -42,7 +24,7 @@ USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
-ENTITY e_gf2m_divider IS
+ENTITY e_gf2m_modulo IS
     PORT(
         -- Clock, reset and enable
         clk_i: IN std_logic;  
@@ -50,21 +32,21 @@ ENTITY e_gf2m_divider IS
         enable_i: IN std_logic; 
         
         -- Input signals
-        g_i: IN std_logic_vector(M-1 DOWNTO 0);  
-        h_i: IN std_logic_vector(M-1 DOWNTO 0); 
+        g_i: IN std_logic_vector(M-1 DOWNTO 0);
 
         -- Output signals  
         z_o: OUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
-END e_gf2m_divider;
+END e_gf2m_modulo;
 
-ARCHITECTURE rtl of e_gf2m_divider IS
+ARCHITECTURE rtl of e_gf2m_modulo IS
     -- Internal signals
     SIGNAL a : std_logic_vector(M DOWNTO 0);
     SIGNAL b, c, d, next_b, next_d: std_logic_vector(M-1 DOWNTO 0);
     SIGNAL alpha, beta, next_beta, dec_input: std_logic_vector(logM-1 DOWNTO 0);
-    SIGNAL ce_ac, ce_bd, load, beta_non_negative, alpha_gt_beta, b_zero: std_logic;
+    SIGNAL ce_ac, ce_bd, load, beta_non_negative, alpha_gt_beta, b_zero: std_logic; 
+    CONSTANT h_i: std_logic_vector(M-1 DOWNTO 0) := (0 => '1', OTHERS=>'0');
     
     -- Define all available states
     type states IS RANGE 0 TO 4;
@@ -76,7 +58,7 @@ BEGIN
         IF clk_i'event and clk_i = '1' THEN
             -- First computation  (global arguments)
             IF load = '1' THEN 
-                a <= F1; 
+                a <= N; 
                 c <= (OTHERS => '0');
             -- Seccond computation
             ELSIF ce_ac = '1' THEN 
@@ -140,12 +122,12 @@ BEGIN
 
     -- Shift and Add
     --  IF b(0)=0 THEN
-    --      next_d(i) = (F1(i+1)&next_d(M-1)) + d(i+1)              ????? (F1(i+1)&next_d(M-1)) ?????
+    --      next_d(i) = (N(i+1)&next_d(M-1)) + d(i+1)              ????? (N(i+1)&next_d(M-1)) ?????
     --  ELSIF b(0)=1 THEN 
-    --      next_d(i) = (F1(i+1)&next_d(M-1)) + d(i+1) + c(i+1)     ????? (F1(i+1)&next_d(M-1)) ?????
+    --      next_d(i) = (N(i+1)&next_d(M-1)) + d(i+1) + c(i+1)     ????? (N(i+1)&next_d(M-1)) ?????
     --  ENDIF
     second_iteration: FOR i IN 0 TO M-2 GENERATE
-        next_d(i) <= (F1(i+1) and next_d(M-1)) xor ((b(0) and (d(i+1) xor c(i+1))) or (not(b(0)) and d(i+1)));
+        next_d(i) <= (N(i+1) and next_d(M-1)) xor ((b(0) and (d(i+1) xor c(i+1))) or (not(b(0)) and d(i+1)));
     END GENERATE;
     next_d(M-1) <= (b(0) and (d(0) xor c(0))) or (not(b(0)) and d(0));
 

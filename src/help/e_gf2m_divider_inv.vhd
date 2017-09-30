@@ -1,28 +1,19 @@
 ----------------------------------------------------------------------------------------------------
---  ENTITY - GF(2^M) Polynom Division with Inversio+Multiplication
---  Computes the x/y mod f IN GF(2**m)
+--  ENTITY - GF(2^M) Polynom Division with Inversion+Multiplication
+--  Computes the g/h mod f IN GF(2**m)
 --
 --  Ports:
--- 
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   g_i      - First input value
+--   h_i      - Seccond input value
+--   z_o      - Output value
+--   ready_o  - Ready flag after computation
+--
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 22.06.2017
 ----------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------
--- GF(2^M) divider with inversion package
-------------------------------------------------------------
-
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-
-PACKAGE e_gf2m_divider_inv_parameters IS
-    -- Constants
-    --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 9;
-    --CONSTANT M: integer := 163;
-END e_gf2m_divider_inv_parameters;
 
 ------------------------------------------------------------
 -- GF(2^M) divider with inversion
@@ -32,7 +23,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-USE work.e_gf2m_divider_inv_parameters.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_divider_inv IS
     PORT(

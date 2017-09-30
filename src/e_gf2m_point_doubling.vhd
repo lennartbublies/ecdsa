@@ -1,43 +1,36 @@
 ----------------------------------------------------------------------------------------------------
---  ENTITY - Elliptic Curve Point Addition IN K163
+--  ENTITY - Elliptic Curve Point Doubling
 --
 --  Ports:
--- 
---  Source:
---   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/K163_addition.vhd
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   x1_i     - X part of input point
+--   y1_i     - Y part of input point
+--   x2_io    - X part of output point
+--   y2_o     - Y part of putput point
+--   ready_o  - Ready flag
+--
+--  Math:
+--   s = x1 + y1/x1
+--   x2 = s^2 + s + a
+--   y2 = x1^2 + s*x2 + x2
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 27.06.2017
 ----------------------------------------------------------------------------------------------------
 
 ------------------------------------------------------------
--- K163 elliptic curve point addition package
+-- K163 elliptic curve point doubling
 ------------------------------------------------------------
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
+USE work.tld_ecdsa_package.all;
 
-PACKAGE e_k163_point_addition_package IS
-  --CONSTANT M: natural := 8;
-  CONSTANT M: natural := 9;
-  --CONSTANT M: natural := 163;
-  CONSTANT A: std_logic_vector(M-1 downto 0):= "000000001"; --for M=9 bits
-  CONSTANT ONES: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'1');
-END e_k163_point_addition_package;
-
-------------------------------------------------------------
--- K163 elliptic curve point addition
-------------------------------------------------------------
-
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-USE work.e_k163_point_addition_package.all;
-
-ENTITY e_k163_point_addition IS
+ENTITY e_gf2m_point_doubling IS
     PORT(
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -47,17 +40,15 @@ ENTITY e_k163_point_addition IS
         -- Input signals
         x1_i: IN std_logic_vector(M-1 DOWNTO 0);
         y1_i: IN std_logic_vector(M-1 DOWNTO 0); 
-        x2_i: IN std_logic_vector(M-1 DOWNTO 0); 
-        y2_i: IN std_logic_vector(M-1 DOWNTO 0);
         
         -- Output signals
-        x3_io: INOUT std_logic_vector(M-1 DOWNTO 0);
-        y3_o: OUT std_logic_vector(M-1 DOWNTO 0);
+        x2_io: INOUT std_logic_vector(M-1 DOWNTO 0);
+        y2_o: OUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
-END e_k163_point_addition;
+END e_gf2m_point_doubling;
 
-ARCHITECTURE rtl of e_k163_point_addition IS
+ARCHITECTURE rtl of e_gf2m_point_doubling IS
     -- Import entity e_gf2m_divider
     COMPONENT e_gf2m_divider IS
         PORT(
@@ -91,18 +82,16 @@ ARCHITECTURE rtl of e_k163_point_addition IS
             ready_o: OUT std_logic
         );
     end COMPONENT;
-    
+
     -- Temporary signals for divider and multiplier
-    SIGNAL div_in1, div_in2, lambda, lambda_square, mult_in2, mult_out: std_logic_vector(M-1 DOWNTO 0);
-    SIGNAL x3_tmp, y3_tmp, next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
-    
+    SIGNAL div_xy, mult_lx2, lambda, lambda_square, x1_square: std_logic_vector(M-1 DOWNTO 0);
+    SIGNAL x2_tmp, y2_tmp, next_xq, next_yq: std_logic_vector(M-1 DOWNTO 0);
+
     -- Signals to switch between multiplier and divider
-    SIGNAL start_div, div_done, start_mult, mult_done: std_logic;
-    SIGNAL load, ch_q: std_logic;
-    SIGNAL sel: std_logic_vector(1 DOWNTO 0);
+    SIGNAL start_div, div_done, start_mult, mult_done, sel, load, ch_q: std_logic;
     
     -- Define all available states
-    subtype states IS natural RANGE 0 TO 10;
+    subtype states IS natural RANGE 0 TO 9;
     SIGNAL current_state: states;
 BEGIN
     -- Output register
@@ -110,74 +99,71 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                x3_io <= (OTHERS=>'1');
-                y3_o <= (OTHERS=>'1');
+                x2_io <= (OTHERS=>'1');
+                y2_o <= (OTHERS=>'1');
             ELSIF ch_q = '1' THEN 
-                x3_io <= next_xq; 
-                y3_o <= next_yq;
+                x2_io <= next_xq; 
+                y2_o <= next_yq;
             END IF;
         END IF;
     END PROCESS;
 
     -- Instantiate divider entity
-    --  Calculate s = (py-qy)/(px-qx)
+    --  Calculate div_xy = y1 / x1
     divider: e_gf2m_divider PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_div,
-        g_i => div_in1, 
-        h_i => div_in2,  
-        z_o => lambda, 
+        g_i => y1_i, 
+        h_i => x1_i,  
+        z_o => div_xy, 
         ready_o => div_done
     );
-    
+
+    -- Compute lambda 
+    --  Calculate lambda = x1 + y1/x1
+    multiplier_inputs: FOR i IN 0 TO M-1 GENERATE
+        lambda(i) <= x1_i(i) xor div_xy(i);
+    END GENERATE;
+	
     -- Instantiate squarer 
-    --  Calculate s^2
+    --  Calculate lambda^2 and x1^2
     lambda_square_computation: e_gf2m_classic_squarer PORT MAP( 
         a_i => lambda, 
         c_o => lambda_square
     );
-  
+
+    x1_square_computation: e_gf2m_classic_squarer PORT MAP( 
+        a_i => x1_i, 
+        c_o => x1_square
+    );
+    
+    -- Compute x2_tmp 
+    --  Calculate x2 = lambda^2 + lambda + a
+    x2_output: FOR i IN 0 TO M-1 GENERATE
+        x2_tmp(i) <= lambda_square(i) xor lambda(i) xor A(i);
+    END GENERATE;
+	
     -- Instantiate multiplier entity
-    --  Calculate s * (px - rx)
+    --  Calculate mult_lx2 = lambda * x2_tmp 
     multiplier: e_gf2m_interleaved_multiplier PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => start_mult, 
         a_i => lambda, 
-        b_i => mult_in2, 
-        z_o => mult_out, 
+        b_i => x2_tmp, 
+        z_o => mult_lx2, 
         ready_o => mult_done
-    );
+    );	
+	
+    -- Compute y2_tmp 
+    --  Calculate y2 = x1^2 + lambda*x2 + x2
+    y2_output: FOR i IN 0 TO M-1 GENERATE
+        y2_tmp(i) <= x1_square(i) xor mult_lx2(i) xor x2_tmp(i);
+    END GENERATE;	
 
-    -- Set divider input from entity input
-    --  Calculate (py-qy) and (px-qx)
-    divider_inputs: FOR i IN 0 TO M-1 GENERATE 
-        div_in1(i) <= y1_i(i) xor y2_i(i);
-        div_in2(i) <= x1_i(i) xor x2_i(i);
-    END GENERATE;
-
-    -- Set multiplier input from entity input 
-    --  Calculate (px - rx)
-    multiplier_inputs: FOR i IN 0 TO M-1 GENERATE
-        mult_in2(i) <= x1_i(i) xor x3_tmp(i);
-    END GENERATE;
-
-    -- Set x3(0)
-    --x3_tmp(0) <= not(lambda_square(0) xor lambda(0) xor div_in2(0));
-
-    -- Set output
-    --  Calculate rx = s^2 - s - (px-qx)
-    x_output: FOR i IN 0 TO M-1 GENERATE
-        x3_tmp(i) <= lambda_square(i) xor lambda(i) xor div_in2(i) xor a(i);
-    END GENERATE;
-    --  Calculate ry = s * (px - rx) - rx - py
-    y_output: FOR i IN 0 TO M-1 GENERATE
-        y3_tmp(i) <= mult_out(i) xor x3_tmp(i) xor y1_i(i);
-    END GENERATE;
-
-    WITH sel SELECT next_yq <= y3_tmp WHEN "00", y1_i WHEN "01", y2_i WHEN OTHERS;
-    WITH sel SELECT next_xq <= x3_tmp WHEN "00", x1_i WHEN "01", x2_i WHEN OTHERS;
+    WITH sel SELECT next_yq <= y2_tmp WHEN '0', ONES WHEN OTHERS;
+    WITH sel SELECT next_xq <= x2_tmp WHEN '0', ONES WHEN OTHERS;
 
     -- State machine
     control_unit: PROCESS(clk_i, rst_i, current_state)
@@ -187,16 +173,15 @@ BEGIN
         --  2,3   : Calculate s = (py-qy)/(px-qx), s^2
         --  4,5,6 : Calculate rx/ry 
         CASE current_state IS
-            WHEN 0 TO 1 => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '1';
-            WHEN 2      => load <= '1'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 3      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 4      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '1'; start_mult <= '0'; ready_o <= '0';
-            WHEN 5      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 6      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '1'; ready_o <= '0';
-            WHEN 7      => load <= '0'; sel <= "00"; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 8      => load <= '0'; sel <= "00"; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 9      => load <= '0'; sel <= "11"; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
-            WHEN 10     => load <= '0'; sel <= "01"; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 0 TO 1 => load <= '0'; sel <= '0'; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '1';
+            WHEN 2 		=> load <= '1'; sel <= '0'; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 3 		=> load <= '0'; sel <= '0'; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 4 		=> load <= '0'; sel <= '0'; ch_q <= '0'; start_div <= '1'; start_mult <= '0'; ready_o <= '0';
+            WHEN 5 		=> load <= '0'; sel <= '0'; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 6 		=> load <= '0'; sel <= '0'; ch_q <= '0'; start_div <= '0'; start_mult <= '1'; ready_o <= '0';
+            WHEN 7      => load <= '0'; sel <= '0'; ch_q <= '0'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 8      => load <= '0'; sel <= '0'; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
+            WHEN 9      => load <= '0'; sel <= '1'; ch_q <= '1'; start_div <= '0'; start_mult <= '0'; ready_o <= '0';
         END CASE;
 
         IF rst_i = '1' THEN 
@@ -217,13 +202,11 @@ BEGIN
                     current_state <= 3;
                 WHEN 3 =>
                     IF (x1_i = ONES) OR (y1_i = ONES) THEN
-                        current_state <= 9;
-                    ELSIF (x2_i = ONES) OR (y2_i = ONES) THEN
-                        current_state <= 10;                    
-                    ELSE 
+                        current_state <= 9;                        
+                    ELSE
                         current_state <= 4;
                     END IF;
-                WHEN 4 =>
+                WHEN 4 => 
                     current_state <= 5;
                 WHEN 5 => 
                     IF div_done = '1' THEN 
@@ -238,8 +221,6 @@ BEGIN
                 WHEN 8 => 
                     current_state <= 0;
                 WHEN 9 =>
-                    current_state <= 0;
-                WHEN 10 =>
                     current_state <= 0;
             END CASE;
         END IF;

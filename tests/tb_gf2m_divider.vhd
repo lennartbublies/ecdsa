@@ -30,7 +30,7 @@ ARCHITECTURE behavior OF tb_k163_divider IS
     END COMPONENT;
     
     -- Import entity e_gf2m_divider
-    COMPONENT e_gf2m_divider_inv IS
+    COMPONENT e_gf2m_divider IS
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -53,7 +53,7 @@ ARCHITECTURE behavior OF tb_k163_divider IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate divider entity to compute z=x/y
-    uut1:  e_gf2m_divider_inv PORT MAP(
+    uut1:  e_gf2m_divider PORT MAP(
         clk_i => clk, 
         rst_i => reset, 
         enable_i => start,

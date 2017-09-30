@@ -14,12 +14,12 @@ USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
 
-use work.e_k163_ecdsa_package.all;
+use work.tld_ecdsa_package.all;
 
-ENTITY tb_k163_ecdsa IS
-END tb_k163_ecdsa;
+ENTITY tb_ecdsa IS
+END tb_ecdsa;
 
-ARCHITECTURE rtl OF tb_k163_ecdsa IS 
+ARCHITECTURE rtl OF tb_ecdsa IS 
     -- Import entity e_ecdsa
     COMPONENT e_ecdsa IS
         PORT (

@@ -9,22 +9,6 @@
 ----------------------------------------------------------------------------------------------------
 
 ------------------------------------------------------------
--- GF(2^M) ecdsa package
-------------------------------------------------------------
-
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-USE IEEE.numeric_std.ALL;
-
-PACKAGE tld_k163_ecdsa_package IS
-  --CONSTANT M: natural := 8;
-  CONSTANT M: natural := 9;
-  --CONSTANT M: natural := 163;
-END tld_k163_ecdsa_package;
-
-------------------------------------------------------------
 -- GF(2^M) ecdsa top level entity
 ------------------------------------------------------------
 
@@ -33,7 +17,7 @@ USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
 USE IEEE.numeric_std.ALL;
-USE work.tld_k163_ecdsa_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY tld_ecdsa IS
     PORT (

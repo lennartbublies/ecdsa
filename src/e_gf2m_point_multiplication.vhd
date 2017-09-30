@@ -1,41 +1,34 @@
 ----------------------------------------------------------------------------------------------------
---  ENTITY - Elliptic Curve Point Multiplication IN K163
---  Implementation with Double-And-Add algorithm
+--  ENTITY - Elliptic Curve Point Multiplication
 --
 --  Ports:
--- 
---  Source:
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   xp_i     - X part of input point
+--   yp_i     - Y part of input point
+--   k        - Multiplier k
+--   xq_io    - X part of output point
+--   yq_io    - Y part of output point
+--   ready_o  - Ready flag
+--
+--  Based on:
 --   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/K163_point_multiplication.vhd
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 29.06.2017
 ----------------------------------------------------------------------------------------------------
- 
+
 ------------------------------------------------------------
--- K163 point multiplication package
+-- GF(2^M) point multiplication
 ------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
+USE work.tld_ecdsa_package.all;
 
-PACKAGE e_k163_point_multiplication_package IS
-  --CONSTANT M: natural := 8;
-  CONSTANT M: natural := 9;
-  --CONSTANT M: natural := 163;
-  CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
-END e_k163_point_multiplication_package;
-
-------------------------------------------------------------
--- K163 point multiplication
-------------------------------------------------------------
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-USE work.e_k163_point_multiplication_package.all;
-
-ENTITY e_k163_point_multiplication IS
+ENTITY e_gf2m_point_multiplication IS
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -50,11 +43,11 @@ ENTITY e_k163_point_multiplication IS
         yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
         ready_o: OUT std_logic
     );
-END e_k163_point_multiplication;
+END e_gf2m_point_multiplication;
 
-ARCHITECTURE rtl of e_k163_point_multiplication IS
-    -- Import entity e_k163_point_addition
-    COMPONENT e_k163_point_addition IS
+ARCHITECTURE rtl of e_gf2m_point_multiplication IS
+    -- Import entity e_gf2m_point_addition
+    COMPONENT e_gf2m_point_addition IS
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -92,7 +85,7 @@ ARCHITECTURE rtl of e_k163_point_multiplication IS
 BEGIN
     -- Instantiate point addition entity
     --  Calculate (x3, y3) = (xxp, y1) + (xq, yq)
-    first_component: e_k163_point_addition PORT MAP(
+    first_component: e_gf2m_point_addition PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_addition,  

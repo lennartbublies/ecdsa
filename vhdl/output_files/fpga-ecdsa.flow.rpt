@@ -1,5 +1,5 @@
 Flow report for fpga-ecdsa
-Thu Aug 31 20:21:46 2017
+Sun Oct 01 00:56:33 2017
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -40,17 +40,17 @@ applicable agreement for further details.
 +--------------------------------------------------------------------------------------+
 ; Flow Summary                                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Flow Status                        ; Successful - Thu Aug 31 20:21:45 2017           ;
+; Flow Status                        ; Successful - Sun Oct 01 00:56:31 2017           ;
 ; Quartus II 64-Bit Version          ; 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition ;
 ; Revision Name                      ; fpga-ecdsa                                      ;
 ; Top-level Entity Name              ; tld_ecdsa                                       ;
 ; Family                             ; Cyclone II                                      ;
 ; Device                             ; EP2C35F672C6                                    ;
 ; Timing Models                      ; Final                                           ;
-; Total logic elements               ; 0 / 33,216 ( 0 % )                              ;
-;     Total combinational functions  ; 0 / 33,216 ( 0 % )                              ;
-;     Dedicated logic registers      ; 0 / 33,216 ( 0 % )                              ;
-; Total registers                    ; 0                                               ;
+; Total logic elements               ; 51 / 33,216 ( < 1 % )                           ;
+;     Total combinational functions  ; 49 / 33,216 ( < 1 % )                           ;
+;     Dedicated logic registers      ; 36 / 33,216 ( < 1 % )                           ;
+; Total registers                    ; 36                                              ;
 ; Total pins                         ; 4 / 475 ( < 1 % )                               ;
 ; Total virtual pins                 ; 0                                               ;
 ; Total memory bits                  ; 0 / 483,840 ( 0 % )                             ;
@@ -64,7 +64,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 08/31/2017 20:21:31 ;
+; Start date & time ; 10/01/2017 00:56:15 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; fpga-ecdsa          ;
 +-------------------+---------------------+
@@ -75,7 +75,7 @@ applicable agreement for further details.
 +-------------------------------------+---------------------------------------+---------------+-------------+------------+
 ; Assignment Name                     ; Value                                 ; Default Value ; Entity Name ; Section Id ;
 +-------------------------------------+---------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 88491850109464.150420369101432        ; --            ; --          ; --         ;
+; COMPILER_SIGNATURE_ID               ; 88491850109464.150681217515840        ; --            ; --          ; --         ;
 ; MAX_CORE_JUNCTION_TEMP              ; 85                                    ; --            ; --          ; --         ;
 ; MIN_CORE_JUNCTION_TEMP              ; 0                                     ; --            ; --          ; --         ;
 ; PARTITION_COLOR                     ; 16764057                              ; --            ; tld_ecdsa   ; Top        ;
@@ -93,11 +93,11 @@ applicable agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:00:03     ; 1.0                     ; 532 MB              ; 00:00:02                           ;
-; Fitter                    ; 00:00:06     ; 1.0                     ; 764 MB              ; 00:00:06                           ;
-; Assembler                 ; 00:00:03     ; 1.0                     ; 450 MB              ; 00:00:02                           ;
-; TimeQuest Timing Analyzer ; 00:00:01     ; 1.0                     ; 430 MB              ; 00:00:01                           ;
-; Total                     ; 00:00:13     ; --                      ; --                  ; 00:00:11                           ;
+; Analysis & Synthesis      ; 00:00:04     ; 1.0                     ; 536 MB              ; 00:00:03                           ;
+; Fitter                    ; 00:00:08     ; 1.0                     ; 770 MB              ; 00:00:07                           ;
+; Assembler                 ; 00:00:03     ; 1.0                     ; 458 MB              ; 00:00:03                           ;
+; TimeQuest Timing Analyzer ; 00:00:01     ; 1.0                     ; 445 MB              ; 00:00:01                           ;
+; Total                     ; 00:00:16     ; --                      ; --                  ; 00:00:14                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

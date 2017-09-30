@@ -11,7 +11,7 @@ USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-USE work.e_k163_ecdsa_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_uart_receive_mux IS
     PORT ( 

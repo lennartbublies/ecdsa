@@ -25,44 +25,46 @@ y = 00000000 11100100
 Sign/Verify: 
 -------------------------------
 # SIGN: da = 
-    00000000 00111110                   check!
+    00000000 00111110                   check
 # SIGN: hash = 
-    00000001 01000111                   check!
+    00000001 01000111                   check
 # SIGN: k = 
-    00000000 01101001                   check!
+    00000000 01101001                   check
 # SIGN: kP = 
-x = 00000000 10000110                   check!
+x = 00000000 10000110                   check
 y = 00000001 10101111
 # SIGN: r =  (kPx)
-    00000000 10000110                   check!
+    00000000 10000110                   check
 # SIGN: d * kPx  = 
-    00000001 10010101                   check!
+    00000001 10010101                   check
 # SIGN: e + d * kPx  = 
-    00000000 11010010                   check!
+    00000000 11010010                   check
 # SIGN: s =  ((e + d * kPx)/k)
-    00000000 00000010                   check!
+    00000000 00000010                   check
 
-# VERIFY: Q = 
-    00000001 00000001                   ?????? printf on wrong line..
 # VERIFY: hash = 
-    00000001 01000111                   check!
+    00000001 01000111                   check
 # VERIFY: signature
-r = 00000000 10000110                   check!
-s = 00000000 00000010   
+r = 00000000 10000110                   check
+s = 00000000 00000010                   check
 # VERIFY: w = 
-    00000001 00000001                   check!
+    00000001 00000001                   check
 # VERIFY: u_1 = 
-    00000001 10100010                   check!
+    00000001 10100010                   check
 # VERIFY: u_2 = 
-    00000000 01000011                   check!
+    00000000 01000011                   check
 # VERIFY: x_1 =  (u_1 * P)
-x = 00000000 00000011                   check!
-y = 00000001 10011011                   check!           
+x = 00000000 00000011                   check
+y = 00000001 10011011                   check
 # VERIFY: x_2 =  (u_2 * Q)
-x = 00000001 10000011                   check!
-y = 00000001 10100110                   check!
+x = 00000001 10000011                   check
+y = 00000001 10100110                   check
 # VERIFY: x =  (u_1 * P + u_2 * Q)
-x = 00000000 00111111                   check!
-y = 00000001 11010010                   check!
+x = 00000000 00111111                   check
+y = 00000001 11010010                   check
+
+SIGNATURE VERIFICATION FAILED
 
 finish...
+
+

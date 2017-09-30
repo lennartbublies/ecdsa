@@ -1,9 +1,16 @@
 ----------------------------------------------------------------------------------------------------
 --  ENTITY - GF(2^M) Interleaved Multiplier
---  Computes the polynomial multiplication mod F IN GF(2**M) (LSB first)
+--  Computes the polynomial multiplication a*b mod F IN GF(2**M) (LSB first)
 --
 --  Ports:
--- 
+--   clk_i    - Clock
+--   rst_i    - Reset flag
+--   enable_i - Enable computation
+--   a_i      - First input value
+--   b_i      - Seccond input value
+--   z_o      - Output value
+--   ready_o  - Ready flag after computation
+--
 --  Example:
 --   (x^2+x+1)*(x^2+1) = x^4+x^3+x+1
 --    1 1 1   * 1 0 1  = 11011 (bit-shift and XOR, shifts 2*M-2 bits)
@@ -20,30 +27,12 @@
 --        1011
 --         110
 --
---  Source:
+--  Based on:
 --   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/interleaved_mult.vhd
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 22.06.2017
 ----------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------
--- GF(2^M) interleaved multiplier PACKAGE
-------------------------------------------------------------
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-
-PACKAGE p_gf2m_interleaved_mult_package IS
-    -- Constants
-    --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 9;
-    --CONSTANT M: integer := 163;
-    --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
-    CONSTANT F: std_logic_vector(M-1 downto 0):= "000000011"; --for M=9 bits
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
-END p_gf2m_interleaved_mult_package;
 
 -----------------------------------
 -- GF(2^M) interleaved MSB-first multipication data path
@@ -52,7 +41,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
-USE work.p_gf2m_interleaved_mult_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_interleaved_data_path IS
     PORT (
@@ -80,7 +69,7 @@ ARCHITECTURE rtl OF e_gf2m_interleaved_data_path IS
     SIGNAL new_a, new_c: std_logic_vector(M-1 DOWNTO 0);
 BEGIN
     -- Register and multiplexer
-    register_a: PROCESS(clk_i)
+    register_a: PROCESS(clk_i, rst_i)
     BEGIN
         IF rst_i = '1' THEN 
             aa <= (OTHERS => '0');
@@ -95,7 +84,7 @@ BEGIN
         END IF;
     END PROCESS register_a;
 
-    shift_register_b: PROCESS(clk_i)
+    shift_register_b: PROCESS(clk_i, rst_i)
     BEGIN
         IF rst_i = '1' THEN 
             bb <= (OTHERS => '0');
@@ -111,7 +100,7 @@ BEGIN
         END IF;
     END PROCESS shift_register_b;
 
-    register_c: PROCESS(inic_i, clk_i)
+    register_c: PROCESS(inic_i, clk_i, rst_i)
     BEGIN
         IF inic_i = '1' or rst_i = '1' THEN 
             cc <= (OTHERS => '0');
@@ -124,9 +113,9 @@ BEGIN
     END PROCESS register_c;
     
     -- Calculate next value for register a and c
-    new_a(0) <= aa(M-1) and F(0);
+    new_a(0) <= aa(M-1) and F2(0);
     new_a_calc: FOR i IN 1 TO M-1 GENERATE
-        new_a(i) <= aa(i-1) xor (aa(M-1) and F(i));
+        new_a(i) <= aa(i-1) xor (aa(M-1) and F2(i));
     END GENERATE;
 
     new_c_calc: FOR i IN 0 TO M-1 GENERATE
@@ -144,7 +133,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 USE IEEE.std_logic_arith.all;
 USE IEEE.std_logic_unsigned.all;
-USE work.p_gf2m_interleaved_mult_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_interleaved_multiplier IS
     PORT (

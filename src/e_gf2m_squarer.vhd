@@ -10,68 +10,12 @@
 --   (x^2 + x + 1)^2 = (x^4+x^2+1) 
 --     1 1 1         =   1 0 1 0 1
 --
---  Source:
+--  Based on:
 --   http://arithmetic-circuits.org/finite-field/vhdl_Models/chapter10_codes/VHDL/K-163/classic_squarer.vhd
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 26.06.2017
 ----------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------
--- GF(2^M) classic squaring package
-------------------------------------------------------------
-
-LIBRARY IEEE;
-USE IEEE.std_logic_1164.all;
-USE IEEE.std_logic_arith.all;
-USE IEEE.std_logic_unsigned.all;
-
-PACKAGE p_gf2m_classic_squarer_parameters IS
-    -- Constants
-    --CONSTANT M: integer := 8;
-    CONSTANT M: integer := 9;
-    --CONSTANT M: integer := 163;
-    --CONSTANT F: std_logic_vector(M-1 downto 0):= "00011011"; --for M=8 bits
-    CONSTANT F: std_logic_vector(M-1 downto 0):= "000000011"; --for M=9 bits
-    --CONSTANT F: std_logic_vector(M-1 DOWNTO 0):= "000"&x"00000000000000000000000000000000000000C9"; --for M=163
-    
-    -- Types
-    TYPE matrix_reductionR IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);
-    
-    -- Functions
-    FUNCTION reduction_matrix_R RETURN matrix_reductionR;
-END p_gf2m_classic_squarer_parameters;
-
-PACKAGE BODY p_gf2m_classic_squarer_parameters IS
-    FUNCTION reduction_matrix_R RETURN matrix_reductionR IS
-    VARIABLE R: matrix_reductionR;
-    BEGIN
-        -- Initialise matrix
-        FOR j IN 0 TO M-1 LOOP
-            FOR i IN 0 TO M-2 LOOP
-                R(j)(i) := '0'; 
-            END LOOP;
-        END LOOP;
-        
-        -- Copy polynomial 
-        FOR j IN 0 TO M-1 LOOP
-            R(j)(0) := F(j);
-        END LOOP;
-        
-        -- Compute lookup table   
-        FOR i IN 1 TO M-2 LOOP
-            FOR j IN 0 TO M-1 LOOP
-                IF j = 0 THEN 
-                    R(j)(i) := R(M-1)(i-1) and R(j)(0);
-                ELSE
-                    R(j)(i) := R(j-1)(i-1) xor (R(M-1)(i-1) and R(j)(0)); 
-                END IF;
-            END LOOP;
-        END LOOP;
-        
-        RETURN R;
-    END reduction_matrix_R;
-END p_gf2m_classic_squarer_parameters;
 
 ------------------------------------------------------------
 -- GF(2^M) polynomial reduction
@@ -80,7 +24,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
-USE work.p_gf2m_classic_squarer_parameters.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_reducer IS
     PORT (
@@ -120,7 +64,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
-USE work.p_gf2m_classic_squarer_parameters.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_classic_squarer IS
     PORT (
