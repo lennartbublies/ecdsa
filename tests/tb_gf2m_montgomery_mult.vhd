@@ -1,12 +1,11 @@
 --------------------------------------------------------------------------------
 -- Simple testbench for "montgomery_mult" module (for m=8)
---
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.std_logic_unsigned.all;
 USE ieee.numeric_std.ALL;
-use work.e_gf2m_montgomery_mult_package.all;
+use work.tld_ecdsa_package.all;
 
 ENTITY tb_gf2m_montgomery_mult IS
 END tb_gf2m_montgomery_mult;

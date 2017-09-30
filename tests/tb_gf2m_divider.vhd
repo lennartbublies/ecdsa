@@ -12,14 +12,13 @@ USE ieee.std_logic_unsigned.all;
 USE ieee.numeric_std.ALL;
 USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- for UNIFORM, TRUNC
-
 USE std.textio.ALL;
-USE work.e_gf2m_divider_parameters.all;
+USE work.tld_ecdsa_package.all;
 
-ENTITY tb_k163_divider IS
-END tb_k163_divider;
+ENTITY tb_gf2m_divider IS
+END tb_gf2m_divider;
 
-ARCHITECTURE behavior OF tb_k163_divider IS 
+ARCHITECTURE behavior OF tb_gf2m_divider IS 
     -- Import entity e_gf2m_classic_multiplier
     COMPONENT e_gf2m_classic_multiplier
         PORT(

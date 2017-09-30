@@ -14,7 +14,7 @@ USE ieee.std_logic_textio.ALL;
 USE ieee.math_real.all; -- FOR UNIFORM, TRUNC
 
 USE std.textio.ALL;
-USE work.p_gf2m_eea_inversion_package.all;
+USE work.tld_ecdsa_package.all;
 
 ENTITY tb_eea_inversion IS
 END tb_eea_inversion;
