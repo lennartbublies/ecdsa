@@ -25,7 +25,7 @@ static curve_t testcurve9 = {
 
     // This value of n is not necessarily correct for the curve, don't use it
     // for signing.
-    .n = { 0b00000110, 0b00000100 }, // !!WRONG!! It is used for signing! 
+    .n = { 0b00000110, 0b00000100 },
     //.n = { 0b00000011, 0b00000010 },
 
     .words = 2,

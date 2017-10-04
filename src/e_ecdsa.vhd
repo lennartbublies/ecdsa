@@ -184,13 +184,12 @@ ARCHITECTURE rtl OF e_ecdsa IS
     SIGNAL xGU1, yGU1 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL xQBU2, yQBU2 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL xP, yP : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL valid : std_logic := '0';
-    
+
     -- Constantsenable_verify_u12
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     
     -- States for state machine
-    subtype states IS natural RANGE 0 TO 25;
+    subtype states IS natural RANGE 0 TO 27;
     SIGNAL current_state: states;
 BEGIN
     -- Set parameter of sect163k1
@@ -399,29 +398,30 @@ BEGIN
         --  8,9   : VERIFY -> compute 1/S
         --  10,11 : VERIFY -> compute u1 = ew und u2 = rw
         CASE current_state IS
-            WHEN 0 TO 1   => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '1'; 
-            WHEN 2        => enable_sign_r <= '1'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 3        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 4        => enable_sign_r <= '0'; enable_sign_mod_rx <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 5        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 6        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 7        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 8        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 9        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 10       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '1'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 11 TO 12 => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0';  
-            WHEN 13       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '1'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 14       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 15       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '1'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 16       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 17       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '1'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 18       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 19       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 20       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 21       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 22       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
-            WHEN 23       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1'; ready_o <= '0'; 
-            WHEN 24 TO 25 => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; 
+            WHEN 0 TO 1   => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '1'; valid_o <= '0'; 
+            WHEN 2        => enable_sign_r <= '1'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 3        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0';
+            WHEN 4        => enable_sign_r <= '0'; enable_sign_mod_rx <= '1'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 5        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 6        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '1'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 7        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 8        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '1'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 9        => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 10       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '1'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 11 TO 12 => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 13       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '1'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 14       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 15       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '1'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 16       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 17       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '1'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 18       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 19       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '1'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 20       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 21       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '1'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 22       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 23       => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '1'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 24 TO 25 => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '0'; valid_o <= '0'; 
+            WHEN 26 TO 27 => enable_sign_r <= '0'; enable_sign_mod_rx <= '0'; enable_sign_darx <= '0'; enable_sign_z2k <= '0'; enable_sign_mod_s <= '0'; enable_verify_invs <= '0'; enable_verify_mod_w <= '0'; enable_verify_u12 <= '0'; enable_verify_mod_u1u2 <= '0'; enable_verify_u1gu2qb <= '0'; enable_verify_P <= '0'; ready_o <= '1'; valid_o <= '1'; 
         END CASE;
         
         IF rst_i = '1' THEN 
@@ -434,23 +434,23 @@ BEGIN
                     IF enable_i = '0' THEN 
                         current_state <= 1; 
                     END IF;
-                -- SIGN
                 WHEN 1 => 
                     IF (enable_i = '1' and mode_i = '0') THEN 
                         current_state <= 2; 
                     ELSIF (enable_i = '1' and mode_i = '1') THEN
                         current_state <= 13;
                     END IF;
+                -- SIGN
                 WHEN 2 =>
                     current_state <= 3;
                 WHEN 3 => 
                     IF (done_sign_r = '1') THEN
                         -- Validate R: restart if R = 0
-                        --IF (xR = ZERO) THEN
-                        --    current_state <= 0;
-                        --ELSE
+                        IF (xR = ZERO) THEN
+                            current_state <= 0;
+                        ELSE
                             current_state <= 4;
-                        --END IF;
+                        END IF;
 					END IF;
                 WHEN 4 =>
                     current_state <= 5;
@@ -478,11 +478,11 @@ BEGIN
 					END IF;
                 WHEN 12 => 
                     -- Validate S: restart if S = 0
-                    --IF (s = ZERO) THEN
-                    --    current_state <= 2;
-                    --ELSE
+                    IF (s = ZERO) THEN
                         current_state <= 0;
-                    --END IF;
+                    ELSE
+                        current_state <= 0;
+                    END IF;
                 -- VALIDATE
                 WHEN 13 =>
                     current_state <= 14;
@@ -522,14 +522,22 @@ BEGIN
                     END IF;
                 WHEN 25 =>
                     IF (xP = r_i) THEN
-                        valid <= '1';
+                        current_state <= 26;
                     ELSE    
-                        valid <= '0';
+                        current_state <= 0;
                     END IF;
-                    current_state <= 0;
+                -- Valid
+                WHEN 26 =>
+                    IF enable_i = '0' THEN 
+                        current_state <= 27; 
+                    END IF;
+                WHEN 27 => 
+                    IF (enable_i = '1' and mode_i = '0') THEN 
+                        current_state <= 2; 
+                    ELSIF (enable_i = '1' and mode_i = '1') THEN
+                        current_state <= 13;
+                    END IF;
             END CASE;
         END IF;
     END PROCESS;
-    
-    valid_o <= valid;
 END;
