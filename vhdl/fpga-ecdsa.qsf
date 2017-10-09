@@ -62,7 +62,6 @@ set_global_assignment -name VHDL_FILE ../src/e_uart_transmit.vhd
 set_global_assignment -name VHDL_FILE ../src/e_baud_clock.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_receive_data.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_transmit_mux.vhd
-set_global_assignment -name VHDL_FILE ../src/e_posi_register.vhd
 set_global_assignment -name VHDL_FILE ../src/tld_ecdsa.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_receive_mux.vhd
 set_global_assignment -name VHDL_FILE ../src/e_nm_sipo_register.vhd
