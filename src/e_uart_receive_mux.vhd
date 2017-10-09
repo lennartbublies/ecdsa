@@ -38,34 +38,15 @@ END e_uart_receive_mux;
 ARCHITECTURE rtl OF e_uart_receive_mux IS
     -- Import entity e_sipo_register 
     COMPONENT e_nm_sipo_register  IS
-        GENERIC (
-            N : integer;
-            M : integer
-        );
         PORT(
             clk_i : IN std_logic;
             rst_i : IN std_logic;
             enable_i : IN std_logic;
-            data_i : IN std_logic_vector(N-1 DOWNTO 0);
+            data_i : IN std_logic_vector(U-1 DOWNTO 0);
             data_o : OUT std_logic_vector(M-1 DOWNTO 0)
         );
     END COMPONENT;
-    
-    -- Import entity sha256
-    COMPONENT sha256 IS
-        PORT (
-            clk : IN std_logic;
-            reset : IN std_logic;
-            enable : IN std_logic;
-            ready : OUT std_logic;
-            update : IN std_logic;
-            word_address : OUT std_logic_vector(3 DOWNTO 0);
-            word_input : IN std_logic_vector(31 DOWNTO 0);
-            hash_output : OUT std_logic_vector(255 DOWNTO 0);
-            debug_port : OUT std_logic_vector(31 DOWNTO 0)
-        );
-    END COMPONENT;
-    
+
     -- IMPORT UART COMPONENT
 	COMPONENT e_uart_receive_data IS
 		GENERIC ( 
@@ -88,22 +69,12 @@ ARCHITECTURE rtl OF e_uart_receive_mux IS
     SIGNAL uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL enable_r_register, enable_s_register, enable_m_register: std_logic := '0';
 
-    -- HASH Entity
-    SIGNAL sha256_ready, sha256_update: std_logic := '0';
-    SIGNAL sha256_enable: std_logic := '1';
-    SIGNAL sha256_word_address : std_logic_vector(3 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL sha256_word_input, sha256_debug_port : std_logic_vector(31 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL sha256_hash_output : std_logic_vector(255 DOWNTO 0) := (OTHERS=>'0');
-	
 	-- UART signals
 	--SIGNAL s_uart_data: std_logic_vector (M-1 DOWNTO 0) := (OTHERS=>'0');
 	
 BEGIN
     -- Instantiate sipo register entity for r register
-    r_register: e_nm_sipo_register GENERIC MAP (
-        N => 8,
-        M => M
-    ) PORT MAP(
+    r_register: e_nm_sipo_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_r_register,  
@@ -112,10 +83,7 @@ BEGIN
     );
         
     -- Instantiate sipo register entity for s register
-    s_register: e_nm_sipo_register GENERIC MAP (
-        N => 8,
-        M => M
-    ) PORT MAP(
+    s_register: e_nm_sipo_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_s_register,  
@@ -124,28 +92,12 @@ BEGIN
     );
 
     -- Instantiate sipo register entity for m register
-    m_register: e_nm_sipo_register GENERIC MAP (
-        N => 8,
-        M => M
-    ) PORT MAP(
+    m_register: e_nm_sipo_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_m_register,  
         data_i => uart_data, 
-        data_o => m_o --sha256_word_input
-    );
-    
-    -- Instantiate sha256 entity to compute hashes
-    hash: sha256 PORT MAP(
-        clk => clk_i,
-        reset => rst_i,
-        enable => sha256_enable,                               -- ENABLE ENTITY, CAN BE FORCED TO 1!
-        ready => sha256_ready,                                 -- READY FLAG FOR HASH COMPUTED
-        update => sha256_update, --enable_m_register           -- START GENERATING HASH
-        word_address => sha256_word_address,                   
-        word_input => sha256_word_input,                       -- INPUT BUFFER 
-        hash_output => sha256_hash_output, --m_o(M-1 DOWNTO 0) -- ONLY 163 BIT ARE USED!
-        debug_port => sha256_debug_port                        -- NOT NEEDED
+        data_o => m_o
     );
      
     -- INSTANTIATE UART ENTITY

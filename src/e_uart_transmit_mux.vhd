@@ -10,7 +10,6 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
-
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_uart_transmit_mux IS
@@ -38,17 +37,13 @@ END e_uart_transmit_mux;
 ARCHITECTURE rtl OF e_uart_transmit_mux IS
     -- Import entity e_posi_register 
     COMPONENT e_nm_posi_register  IS
-        GENERIC (
-            N : integer;
-            M : integer
-        );
         PORT(
             clk_i : IN std_logic;
             rst_i : IN std_logic;
             enable_i : IN std_logic;
             load_i : IN std_logic;
-            data_i : IN std_logic_vector(N-1 DOWNTO 0);
-            data_o : OUT std_logic_vector(M-1 DOWNTO 0)
+            data_i : IN std_logic_vector(M-1 DOWNTO 0);
+            data_o : OUT std_logic_vector(U-1 DOWNTO 0)
         );
     END COMPONENT;
 
@@ -83,10 +78,7 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     
 BEGIN
     -- Instantiate sipo register entity for r register
-    r_register: e_nm_posi_register GENERIC MAP (
-        N => M,
-        M => 8
-    ) PORT MAP(
+    r_register: e_nm_posi_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_r_register, 
@@ -96,10 +88,7 @@ BEGIN
     );
         
     -- Instantiate sipo register entity for r register
-    s_register: e_nm_posi_register GENERIC MAP (
-        N => M,
-        M => 8
-    ) PORT MAP(
+    s_register: e_nm_posi_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_s_register, 

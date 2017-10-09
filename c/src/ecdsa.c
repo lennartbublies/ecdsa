@@ -15,17 +15,18 @@
 
 // --- ecsda static k ---
 
-/*static eccint_t KK[21] = {
+static eccint_t KK[21] = {
           //0x03,0x35,0x5B,0xF8,0x3C,0x49,0x7F,0x92,0x2F,0xFA,0xEC,0x53,0xC7,0x31,0x5B,0x34,0x8F,0xAF,0xB4,0xDA,0x2F
           //0x00,0xCD,0x06,0x20,0x32,0x60,0xEE,0xE9,0x54,0x93,0x51,0xBD,0x29,0x73,0x3E,0x7D,0x1E,0x2E,0xD4,0x9D,0x88
           //0x2F,0xDA,0xB4,0xAF,0x8F,0x34,0x5B,0x31,0xC7,0x53,0xEC,0xFA,0x2F,0x92,0x7F,0x49,0x3C,0xF8,0x5B,0x35,0x03 // swapped
-          //0x88,0x9D,0xD4,0x2E,0x1E,0x7D,0x3E,0x73,0x29,0xBD,0x51,0x93,0x54,0xE9,0xEE,0x60,0x32,0x20,0x06,0xCD,0x00 // swapped
-          0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 // swapped
-};*/ // K=163
+          0x88,0x9D,0xD4,0x2E,0x1E,0x7D,0x3E,0x73,0x29,0xBD,0x51,0x93,0x54,0xE9,0xEE,0x60,0x32,0x20,0x06,0xCD,0x00 // swapped
+          //0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 // swapped
+          //0x00,0xCD,0x96,0xCC,0x43,0xDC,0xFC,0x8C,0xD9,0x42,0xF7,0x5C,0xFC,0x0D,0x3D,0x4C,0x08,0x8C,0xF2,0xDC,0x83 // swapped
+}; // K=163
 
-static eccint_t KK[2] = {
+/*static eccint_t KK[2] = {
           0b01101001, 0b00000000
-}; // K=9
+};*/ // K=9
 
 // --- ecsda funcs ---
 
@@ -89,7 +90,6 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
     eccint_t * k = KK;
     eccint_t t1[curve->words];
     eccint_t t2[curve->words];
-    eccint_t t3[curve->words];
     eccint_point_t point;
 
     do {
@@ -102,7 +102,7 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
             //eccint_mod(k, curve->n, k, curve);
 
             // Compute kP = (x_1, y_1) and convert x_1 to integer
-            eccint_point_mul(k, &curve->P, &point, curve);
+            eccint_point_mul(k, &curve->P, &point, curve); 
              
             // Compute r = x_1 mod n
             eccint_mod(point.x, curve->n, signature->r, curve);
@@ -115,18 +115,11 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
         //         s =         ((e +  t1  ) / k) mod n
         
         // t1 = d * r
-        // WRONG? I think we have to calculate this: (da*r mod q) mod n
-        // But this code calculates this: da*r mod n
-        //eccint_mul_mod(privatekey, signature->r, curve->n, t2, curve);
-        eccint_mul_mod(privatekey, signature->r, curve->q, t2, curve);
-        eccint_mod(t2, curve->n, t2, curve);
+        eccint_mul_mod(privatekey, signature->r, curve->n, t2, curve);
 
         eccint_add(hash, t2, t1, curve->words); // t1 = e + d * r
-        // WRONG? Maybe same issue like before
-        //eccint_div_mod(t1, k, curve->n, signature->s, curve);
-        eccint_div_mod(t1, k, curve->q, t3, curve);
-        eccint_mod(t3, curve->n, signature->s, curve);
-
+        eccint_div_mod(t1, k, curve->n, signature->s, curve);
+        
         if (verbose) {
             printf("# SIGN: da = \n    ");
             ecc_print_n(privatekey, curve->words);
@@ -136,7 +129,7 @@ void ecc_sign_verbose(const eccint_t *privatekey, const eccint_t *hash, eccint_s
             ecc_print_n(k, curve->words);
             printf("# SIGN: kP = \n");
             ecc_print_point_n(&point, curve->words);
-            printf("# SIGN: r =  (kPx)\n    ");
+            printf("# SIGN: r =  (kPx mod n)\n    ");
             ecc_print_n(signature->r, curve->words);
             printf("# SIGN: d * kPx  = \n    ");
             ecc_print_n(t2, curve->words);
@@ -178,26 +171,16 @@ int ecc_verify_verbose(const eccint_point_t *publickey, const eccint_t *hash, co
     }
 
     // Compute w = s^(-1) mod n
-    // WRONG? Maybe same issue like above
-    //eccint_inv_mod(signature->s, curve->n, w, curve);
-    eccint_inv_mod(signature->s, curve->q, w, curve);
-    eccint_mod(w, curve->n, w, curve);
+    eccint_inv_mod(signature->s, curve->n, w, curve);
 
     // Compute u_1 = e * w mod n
-    // WRONG? Maybe same issue like above
-    //eccint_mul_mod(hash, w, curve->n, u1, curve);
-    eccint_mul_mod(hash, w, curve->q, u1, curve);
-    eccint_mod(u1, curve->n, u1, curve);
-    
+    eccint_mul_mod(hash, w, curve->n, u1, curve);
+
     // ...and u_2 = r * w mod n
-    // WRONG? Maybe same issue like above
-    //eccint_mul_mod(signature->r, w, curve->n, u2, curve);
-    eccint_mul_mod(signature->r, w, curve->q, u2, curve);
-    eccint_mod(u2, curve->n, u2, curve);
+    eccint_mul_mod(signature->r, w, curve->n, u2, curve);
 
     // Compute X = u_1 * P + u_2 * Q
     //         X =    X1   +     X2
-    // TODO could use Shamir's trick
     eccint_point_mul(u1, &curve->P, &X1, curve);
     eccint_point_mul(u2, publickey, &X2, curve);
     eccint_point_add(&X1, &X2, &X, curve);

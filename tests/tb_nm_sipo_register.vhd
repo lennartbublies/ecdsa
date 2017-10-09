@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
---  Testbench - SIPO Register
+--  Testbench - SIPO Register (Serial In Parallel Out)
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 18.08.2017
@@ -13,6 +13,7 @@ USE ieee.numeric_std.ALL;
 USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
+USE work.tld_ecdsa_package.all;
 
 ENTITY tb_nm_sipo_register IS
 END tb_nm_sipo_register;
@@ -20,15 +21,11 @@ END tb_nm_sipo_register;
 ARCHITECTURE rtl OF tb_nm_sipo_register IS 
     -- Import entity e_sipo_register 
     COMPONENT e_nm_sipo_register  IS
-        GENERIC (
-            N : integer;
-            M : integer
-        );
         PORT(
             clk_i : IN std_logic;
             rst_i : IN std_logic;
             enable_i : IN std_logic;
-            data_i : IN std_logic_vector(N-1 DOWNTO 0);
+            data_i : IN std_logic_vector(U-1 DOWNTO 0);
             data_o : OUT std_logic_vector(M-1 DOWNTO 0)
         );
     END COMPONENT;
@@ -44,10 +41,7 @@ ARCHITECTURE rtl OF tb_nm_sipo_register IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate sipo register entity
-    sipo_register: e_nm_sipo_register GENERIC MAP (
-            N => 8,
-            M => 32
-        ) PORT MAP(
+    sipo_register: e_nm_sipo_register PORT MAP(
             clk_i => clk, 
             rst_i => rst,
             enable_i => enable,  

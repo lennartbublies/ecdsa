@@ -119,7 +119,8 @@ BEGIN
                 gen_random(xx, M, seed1, seed2); 
             END LOOP;
             --hash <= xx;
-            hash <= "101000111";
+            hash <= "000" & x"CD06203260EEE9549351BD29733E7D1E2ED49D88";
+            --hash <= "101000111";
             
             -- Start test 1:
             -- Count runtime

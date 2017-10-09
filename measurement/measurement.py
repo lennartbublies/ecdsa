@@ -4,7 +4,7 @@ import csv
 
 # Number of measurements
 MEASUREMENTS = 1
-CSV_FILE = "measurements.csv"
+CSV_FILE = "vhdl_measurements.csv"
 
 def read_uart(ser):
     """
@@ -15,11 +15,11 @@ def read_uart(ser):
 
     Return readed string
     """
-		out = ''
+        out = ''
         # Wait until all chars are readed
-		while ser.inWaiting() > 0:
-			out += ser.read(1)
-		
+        while ser.inWaiting() > 0:
+            out += ser.read(1)
+        
         return out
 
 def measure_sign(ser, message):
@@ -75,11 +75,11 @@ def measure_verify(ser, message, (r, s)):
     
 # Configure the serial connections
 ser = serial.Serial(
-	port='/dev/ttyUSB1',
-	baudrate=9600,
-	parity=serial.PARITY_ODD,
-	stopbits=serial.STOPBITS_TWO,
-	bytesize=serial.SEVENBITS
+    port='/dev/ttyUSB1',
+    baudrate=9600,
+    parity=serial.PARITY_ODD,
+    stopbits=serial.STOPBITS_TWO,
+    bytesize=serial.SEVENBITS
 )
 
 # Try to open UART connection
@@ -102,4 +102,5 @@ for i in range(0, MEASUREMENTS):
     # Store results
     with open(CSV_FILE, 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        #writer.writerow(["ID", "R", "S", "VTIME", "V", "VTIME"])
         writer.writerow([i, r, s, sign_time, result, verify_time])    

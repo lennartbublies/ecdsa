@@ -1,23 +1,24 @@
 #include <stdlib.h>
 #include <stdio.h>
-
-#include <errno.h>
-#include <fcntl.h> 
-#include <string.h>
-#include <termios.h>
-#include <unistd.h>
+#include <time.h>
 
 #include "ecctypes.h"
 #include "eccprint.h"
 #include "eccmemory.h"
 #include "ecdsa.h"
 
-//#include "curves/sect163k1.h"
-#include "curves/testcurve2x9.h"
+#include "curves/sect163k1.h"
+//#include "curves/testcurve2x9.h"
 #include "sha256.h"
 
+// Enable DEBUG
+static eccint_t DEBUG = 1;
+
+// Number of measurments
+static eccint_t MEASUREMENTS = 1;
+
 // K=163
-/*static eccint_t dA[21] = {
+static eccint_t dA[21] = {
           0xCA,0x87,0x3B,0xF2,0xFC,0x81,0x2B,0x82,0x5E,0xA2,0x9B,0xC0,0xAF,0x78,0x96,0x71,0x70,0xBA,0x78,0x4E,0x05 // swapped
 };
 static eccint_point_t QA =  { 
@@ -34,11 +35,11 @@ static eccint_point_t QB =  {
 };
 
 static eccint_t testhash[21] = {
-          0xA3,0x38,0xC1,0x9A,0x62,0x30,0xAE,0x5,0x02,0xD4,0x1E,0xAB,0x3F,0x6B,0x83,0xFC,0xB2,0x14,0xB3,0x47,0x08
-};*/
+          0x88,0x9D,0xD4,0x2E,0x1E,0x7D,0x3E,0x73,0x29,0xBD,0x51,0x93,0x54,0xE9,0xEE,0x60,0x32,0x20,0x06,0xCD,0x00
+};
 
 // K=9
-static eccint_t dA[2] = {
+/*static eccint_t dA[2] = {
     0b00111110, 0b00000000
 };
 
@@ -58,93 +59,27 @@ static eccint_point_t QB =  {
 
 static eccint_t testhash[2] = {
     0b01000111, 0b00000001
-};
+};*/
 
-int
-set_uart_interface_attribs (int fd, int speed, int parity)
+void
+generate_keys(const curve_t *curve) 
 {
-    struct termios tty;
-    memset (&tty, 0, sizeof tty);
-    if (tcgetattr (fd, &tty) != 0) {
-        printf("uart error %d from tcgetattr", errno);
-        return -1;
-    }
+    eccint_point_t publickey;
+    eccint_t privatekey[curve->words];
+    
+    // Generate private and public key
+    ecc_keygen(&publickey, privatekey, curve);
 
-    cfsetospeed (&tty, speed);
-    cfsetispeed (&tty, speed);
-
-    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;     // 8-bit chars
-    // disable IGNBRK for mismatched speed tests; otherwise receive break
-    // as \000 chars
-    tty.c_iflag &= ~IGNBRK;         // disable break processing
-    tty.c_lflag = 0;                // no signaling chars, no echo,
-                                    // no canonical processing
-    tty.c_oflag = 0;                // no remapping, no delays
-    tty.c_cc[VMIN]  = 0;            // read doesn't block
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
-
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
-
-    tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls,
-                                    // enable reading
-    tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
-    tty.c_cflag |= parity;
-    tty.c_cflag &= ~CSTOPB;
-    tty.c_cflag &= ~CRTSCTS;
-
-    if (tcsetattr (fd, TCSANOW, &tty) != 0) {
-        printf("uart error %d from tcsetattr", errno);
-        return -1;
-    }
-    return 0;
+    // Print
+    ecc_print_n(privatekey, curve->words);
+    ecc_print_point_n(&publickey, curve->words);
 }
 
 void
-set_uart_blocking (int fd, int should_block)
+debug(eccint_t *privatekey_dA, eccint_point_t *publickey_QA, eccint_t *privatekey_dB, eccint_point_t *publickey_QB, const curve_t *curve)
 {
-    struct termios tty;
-    memset (&tty, 0, sizeof tty);
-    if (tcgetattr (fd, &tty) != 0) {
-        printf("error %d from tggetattr", errno);
-        return;
-    }
-
-    tty.c_cc[VMIN]  = should_block ? 1 : 0;
-    tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
-
-    if (tcsetattr (fd, TCSANOW, &tty) != 0) {
-        printf("uart error %d setting term attributes", errno);
-    }
-}
-
-int
-main(int argc, char** argv)
-{
-    //const curve_t *curve = &sect163k1;
-    const curve_t *curve = &testcurve9;
-    eccint_t *privatekey_dA = dA;
-    eccint_point_t *publickey_QA = &QA;
-    eccint_t *privatekey_dB = dB;
-    eccint_point_t *publickey_QB = &QB;
     eccint_signature_t signature;
-    eccint_t *hash;
-    //char *portname = "/dev/ttyUSB1";
-    int result = 0;
-    
-    // -- Vars -------------------------------------------
-    
-    // -- ENABLE THIS CODE FOR NEW PRIVATE AND PUBLIC KEY --
-    //eccint_point_t publickey;
-    //eccint_t privatekey[curve->words];
-    //ecc_keygen(&publickey, privatekey, curve);
-    //ecc_print_n(privatekey, curve->words);
-    //ecc_print_point_n(&publickey, curve->words);
-    
-    // -- ENABLE THIS CODE FOR NEW HASH --
-    /*eccint_t hash2[curve->words];
-    eccint_urand(hash2, curve->words);
-    eccint_mod(hash2, curve->n, hash2, curve);
-    ecc_print_n(hash2, curve->words);*/
+    eccint_t *hash = testhash;
 
     printf("-------------------------------\n");
     printf("Curve:\n");
@@ -152,9 +87,11 @@ main(int argc, char** argv)
     printf("generator point: \n");
     ecc_print_point_n(&curve->P, curve->words);
     printf("mod f: \n");
-    ecc_print(curve->q, curve->words);
-    printf("\n\n");
-    
+    ecc_print_n(curve->q, curve->words);
+    printf("n: \n");
+    ecc_print_n(curve->n, curve->words);
+    printf("\n");
+
     printf("-------------------------------\n");
     printf("Private/Public Keys: \n");
     printf("-------------------------------\n");
@@ -167,49 +104,62 @@ main(int argc, char** argv)
     printf("\nQB: \n");
     ecc_print_point(publickey_QB, curve->words);
     printf("\n\n");
-    
-    // -- UART ---------------------------------------------------
-    
-    // Try to open uart connection
-    //int ser = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
-    //if (ser < 0){
-    //    printf("error %d opening %s: %s", errno, portname, strerror (errno));
-    //    return 1;
-    //}
-    
-    // Setting interface attributes like baut rate
-    //set_uart_interface_attribs(ser, B9600, 0);  // set speed to 9600 bps, 8n1 (no parity)
-    //set_uart_blocking(ser, 1);                  // set blocking (read will block)
-    
-    // -- Sign message -------------------------------------------
-
-    // char buf [100];
-    // int n = read (ser, buf, sizeof buf);  // read up to 100 characters if ready to read
 
     printf("-------------------------------\n");
     printf("Sign/Verify: \n");
     printf("-------------------------------\n");
-    
-    hash = testhash;
-    ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
-    //ecc_sign_verbose(privatekey, hash, &signature, curve, 1);
 
+    ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
     if (eccint_cmp(signature.r, curve->n, curve->words) >= 0) {
         printf("SIGNATURE CREATION FAILED\n\n");
     }
 
-    // write (ser, "hello!\n", 7);           // send 7 character greeting
-    // usleep ((7 + 25) * 100);              // sleep enough to transmit the 7 plus
-                                             // receive 25:  approx 100 uS per char transmit
-
-    // -- Verifiy message -------------------------------------------
-    
-    hash = testhash;
-    result = ecc_verify_verbose(publickey_QA, hash, &signature, curve, 1);
-    //result = ecc_verify_verbose(&publickey, hash, &signature, curve, 1);
-
-    if (!result) {
+    if (!ecc_verify_verbose(publickey_QA, hash, &signature, curve, 1)) {
         printf("SIGNATURE VERIFICATION FAILED\n\n");
     }
     printf("finish...\n");
+}
+
+int
+main(int argc, char** argv)
+{
+    const curve_t *curve = &sect163k1;
+    //const curve_t *curve = &testcurve9;
+    eccint_t *privatekey_dA = dA;
+    eccint_point_t *publickey_QA = &QA;
+    eccint_t *privatekey_dB = dB;
+    eccint_point_t *publickey_QB = &QB;
+    eccint_signature_t signature;
+
+    if (DEBUG) {
+        debug(privatekey_dA, publickey_QA, privatekey_dB, publickey_QB, curve);
+    } else {
+        int i, result;
+        FILE *fp;
+        
+        fp=fopen("c_measurements.csv", "w+");
+        fprintf(fp,"ID, R, S, VTIME, V, VTIME");
+
+        for (i=0; i<MEASUREMENTS; i++) {
+            eccint_t hash[curve->words];
+            time_t sign_start, sign_stop, verify_start, verify_stop;
+            
+            // Generate random hash
+            eccint_urand(hash, curve->words);
+
+            // Measure time after sign/verify
+            sign_start = time(NULL);
+            ecc_sign(privatekey_dA, hash, &signature, curve);
+            sign_stop = time(NULL) - sign_start;
+
+            verify_start = time(NULL);
+            result = ecc_verify(publickey_QA, hash, &signature, curve);
+            verify_stop = time(NULL) - verify_start;
+
+            fprintf(fp,"%d, %d, %d, %.2f, %d, %.2f\n", i, eccint_as_number(signature.r, curve->words), eccint_as_number(signature.s, curve->words),
+                (double)(sign_stop), result, (double)(verify_stop));
+        }
+
+        fclose(fp);
+    }
 }

@@ -151,7 +151,7 @@ BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
                 a  <= ('0'&kk); 
-                aa <= ('0'&k); 
+                aa <= ('0'&ONES); 
                 k_ready <= '0';
             ELSIF ch_aa = '1' THEN 
                 a  <= next_a; 

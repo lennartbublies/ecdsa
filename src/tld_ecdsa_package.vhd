@@ -3,11 +3,13 @@
 --  FPGA implementation of ECDSA algorithm  
 --
 --  Constants:
---   M     - Galois field base GF(2^M)
+--   M     - Galois field base GF(p=2^M)
 --   logM  - Helper for M
 --   N     - N part of ECC curve
 --   F1/F2 - Different F parts (<OP> mod F) of ECC curve
 --   A     - A part of ECC curve
+--   F*    - Number of elements of p=2^M (mod operator)
+--   U     - Length of UART input/output
 --
 --  Autor: Lennart Bublies (inf100434)
 --  Date: 02.07.2017
@@ -25,20 +27,21 @@ USE IEEE.numeric_std.ALL;
 
 PACKAGE tld_ecdsa_package IS
     -- 163 Bit
-    --CONSTANT M: natural := 163;
-    --CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
-    --CONSTANT N: std_logic_vector(M DOWNTO 0):= x"4000000000000000000020108A2E0CC0D99f8A5EE";
-    --CONSTANT F1: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
-    --CONSTANT F2: std_logic_vector(M DOWNTO 0):= x"00000000000000000000000000000000000000C9";
+    CONSTANT M: natural := 163;
+    CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
+    CONSTANT N: std_logic_vector(M DOWNTO 0):= x"4000000000000000000020108A2E0CC0D99F8A5EF";
+    CONSTANT F1: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
+    CONSTANT F2: std_logic_vector(M-1 DOWNTO 0):= "000" & x"00000000000000000000000000000000000000C9";
 
     -- 9 Bit
-    CONSTANT M: natural := 9;
-    CONSTANT logM: integer := 5;
-    CONSTANT N: std_logic_vector(M downto 0):= "1000000011";
-    CONSTANT F1: std_logic_vector(M downto 0):= "1000000011";
-    CONSTANT F2: std_logic_vector(M-1 downto 0):= "000000011";
+    --CONSTANT M: natural := 9;
+    --CONSTANT logM: integer := 5;
+    --CONSTANT N: std_logic_vector(M downto 0):= "1000000011";
+    --CONSTANT F1: std_logic_vector(M downto 0):= "1000000011";
+    --CONSTANT F2: std_logic_vector(M-1 downto 0):= "000000011";
 
     -- Other
+    CONSTANT U: natural := 8;
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
     CONSTANT A: std_logic_vector(M-1 downto 0) := (0 => '1', OTHERS=>'0');
     CONSTANT ONES: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'1');
