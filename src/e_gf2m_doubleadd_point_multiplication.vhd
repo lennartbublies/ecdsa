@@ -36,6 +36,9 @@ USE IEEE.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_doubleadd_point_multiplication IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+    );
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -55,6 +58,9 @@ END e_gf2m_doubleadd_point_multiplication;
 ARCHITECTURE rtl of e_gf2m_doubleadd_point_multiplication IS
     -- Import entity e_k163_point_doubling 
     COMPONENT e_gf2m_point_doubling  IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
 			clk_i: IN std_logic; 
 			rst_i: IN std_logic; 
@@ -69,6 +75,9 @@ ARCHITECTURE rtl of e_gf2m_doubleadd_point_multiplication IS
 
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -100,7 +109,9 @@ BEGIN
     END GENERATE;
     
     -- Instantiate point doubling entity
-    doubling: e_gf2m_point_doubling PORT MAP(
+    doubling: e_gf2m_point_doubling GENERIC MAP (
+        MODULO => MODULO
+    ) PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_doubling,  
@@ -112,7 +123,9 @@ BEGIN
         );
 
     -- Instantiate point addition entity
-	addition: e_gf2m_point_addition PORT MAP(
+	addition: e_gf2m_point_addition GENERIC MAP (
+        MODULO => P
+    ) PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_addition,  

@@ -67,6 +67,9 @@ ARCHITECTURE rtl OF e_ecdsa IS
 
     -- Import entity e_gf2m_doubleadd_point_multiplication
     COMPONENT e_gf2m_doubleadd_point_multiplication IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -80,20 +83,11 @@ ARCHITECTURE rtl OF e_ecdsa IS
         );
     END COMPONENT;
 
-    -- Import entity e_gf2m_modulo
-    COMPONENT e_gf2m_modulo IS
-        PORT (
-            clk_i: IN std_logic;  
-            rst_i: IN std_logic;  
-            enable_i: IN std_logic;
-            g_i: IN std_logic_vector(M-1 DOWNTO 0);
-            z_o: OUT std_logic_vector(M-1 DOWNTO 0);
-            ready_o: OUT std_logic
-        );
-    END COMPONENT;
-
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -110,6 +104,9 @@ ARCHITECTURE rtl OF e_ecdsa IS
     
     -- Import entity e_gf2m_divider
     COMPONENT e_gf2m_divider IS
+        GENERIC (
+            MODULO : std_logic_vector(M DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -123,6 +120,9 @@ ARCHITECTURE rtl OF e_ecdsa IS
     
     -- Import entity e_gf2m_interleaved_multiplier
     COMPONENT e_gf2m_interleaved_multiplier IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -136,6 +136,9 @@ ARCHITECTURE rtl OF e_ecdsa IS
 
     -- Import entity e_gf2m_eea_inversion
     COMPONENT e_gf2m_eea_inversion IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -168,8 +171,6 @@ ARCHITECTURE rtl OF e_ecdsa IS
     SIGNAL enable_sign_r, done_sign_r: std_logic := '0';          -- Enable/Disable signature computation
     SIGNAL enable_sign_darx, done_sign_darx: std_logic := '0'; 
     SIGNAL enable_sign_z2k, done_sign_z2k: std_logic := '0';
-    SIGNAL enable_sign_mod_rx, done_sign_mod_rx : std_logic := '0';
-    SIGNAL enable_sign_mod_s, done_sign_mod_s : std_logic := '0';
 
     -- MODE VERIFY
     SIGNAL w : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
@@ -178,8 +179,6 @@ ARCHITECTURE rtl OF e_ecdsa IS
     SIGNAL enable_verify_u12, done_verify_u1, done_verify_u2 : std_logic := '0'; 
     SIGNAL enable_verify_u1gu2qb, done_verify_u1g, done_verify_u2qb : std_logic := '0';
     SIGNAL enable_verify_P, done_verify_P : std_logic := '0';
-    SIGNAL enable_verify_mod_w, done_verify_mod_w : std_logic := '0';
-    SIGNAL enable_verify_mod_u1u2, done_verify_mod_u1, done_verify_mod_u2 : std_logic := '0';
     SIGNAL xGU1, yGU1 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL xQBU2, yQBU2 : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL xP, yP : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
@@ -205,7 +204,7 @@ BEGIN
 
     --xG  <= "011101110";
     --yG  <= "010101111";
-    --N   <= "000000000";
+    --P   <= "000000000";
     --dA  <= "000111110";
     --xQA <= "011000101";
     --yQA <= "111011010";
@@ -216,7 +215,9 @@ BEGIN
     -- SIGN -----------------------------------------------------------------
     
     -- Instantiate multiplier to compute R = k.G = (xR, yR)
-    sign_pmul_r: e_gf2m_doubleadd_point_multiplication PORT MAP (
+    sign_pmul_r: e_gf2m_doubleadd_point_multiplication GENERIC MAP (
+            MODULO => P
+    ) PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_r, 
@@ -229,7 +230,9 @@ BEGIN
     );
 
     -- Instantiate multiplier entity to compute dA * xR
-    sign_mul_darx: e_gf2m_interleaved_multiplier PORT MAP( 
+    sign_mul_darx: e_gf2m_interleaved_multiplier GENERIC MAP (
+            MODULO => P
+    ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_sign_darx, 
@@ -245,7 +248,9 @@ BEGIN
     END GENERATE;
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
-    sign_divide_edarx_k: e_gf2m_divider PORT MAP( 
+    sign_divide_edarx_k: e_gf2m_divider GENERIC MAP (
+            MODULO => '1' & P
+    ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_sign_z2k,
@@ -261,7 +266,9 @@ BEGIN
     -- VALIDATE -----------------------------------------------------------------
 
     -- Instantiate inversion entity to compute w = 1/s
-    verify_invs: e_gf2m_eea_inversion PORT MAP (
+    verify_invs: e_gf2m_eea_inversion GENERIC MAP (
+            MODULO => P
+    ) PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_invs,
@@ -271,7 +278,9 @@ BEGIN
     );
 
     -- Instantiate multiplier entity to compute u1 = ew
-    verify_mul_u1: e_gf2m_interleaved_multiplier PORT MAP( 
+    verify_mul_u1: e_gf2m_interleaved_multiplier GENERIC MAP (
+            MODULO => P
+    ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
@@ -282,7 +291,9 @@ BEGIN
     );
 
     -- Instantiate multiplier entity to compute u2 = rw
-    verify_mul_u2: e_gf2m_interleaved_multiplier PORT MAP( 
+    verify_mul_u2: e_gf2m_interleaved_multiplier GENERIC MAP (
+            MODULO => P
+    ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u12, 
@@ -293,7 +304,9 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp6 = u1.G
-    verify_pmul_u1gu2q: e_gf2m_doubleadd_point_multiplication PORT MAP (
+    verify_pmul_u1gu2q: e_gf2m_doubleadd_point_multiplication GENERIC MAP (
+            MODULO => P
+    ) PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
@@ -306,7 +319,9 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp7 = u2.QB
-    verify_pmul_u1gu2qb: e_gf2m_doubleadd_point_multiplication PORT MAP (
+    verify_pmul_u1gu2qb: e_gf2m_doubleadd_point_multiplication GENERIC MAP (
+            MODULO => P
+    ) PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_u1gu2qb, 
@@ -319,7 +334,9 @@ BEGIN
     );
 
     -- Instantiate point addition entity
-    verify_adder_u1gu2qb: e_gf2m_point_addition PORT MAP ( 
+    verify_adder_u1gu2qb: e_gf2m_point_addition GENERIC MAP (
+            MODULO => P
+    ) PORT MAP ( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_verify_P,

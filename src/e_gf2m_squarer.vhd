@@ -27,6 +27,9 @@ USE ieee.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_reducer IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0)
+    );
     PORT (
         -- Input SIGNAL
         d_i: IN std_logic_vector(2*M-2 DOWNTO 0);
@@ -38,7 +41,7 @@ END e_gf2m_reducer;
 
 ARCHITECTURE rtl OF e_gf2m_reducer IS
     -- Initial reduction matrix from polynomial F
-    CONSTANT R: matrix_reductionR := reduction_matrix_R;
+    CONSTANT R: matrix_reduction_return := reduction_matrix(MODULO);
 BEGIN
     -- GENERATE M-1 XORs FOR each redcutions matrix row
     gen_xors: FOR j IN 0 TO M-1 GENERATE
@@ -67,6 +70,9 @@ USE ieee.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_classic_squarer IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+    );
     PORT (
         -- Input SIGNAL
         a_i: IN std_logic_vector(M-1 DOWNTO 0);
@@ -79,6 +85,9 @@ END e_gf2m_classic_squarer;
 ARCHITECTURE rtl OF e_gf2m_classic_squarer IS
     -- Import entity e_gf2m_reducer
     COMPONENT e_gf2m_reducer IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             d_i: IN std_logic_vector(2*M-2 DOWNTO 0);
             c_o: OUT std_logic_vector(M-1 DOWNTO 0)
@@ -101,7 +110,9 @@ BEGIN
     END GENERATE;
 
     -- Instantiate polynomial reducer
-    reducer: e_gf2m_reducer PORT MAP(
+    reducer: e_gf2m_reducer GENERIC MAP (
+            MODULO => MODULO
+        ) PORT MAP(
             d_i => d, 
             c_o => c_o
         );

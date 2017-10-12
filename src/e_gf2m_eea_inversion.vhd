@@ -25,6 +25,9 @@ USE ieee.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_eea_inversion_data_path IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0)
+    );
     PORT (
         -- Input signals
         r, s: IN std_logic_vector(M DOWNTO 0);
@@ -88,23 +91,29 @@ USE IEEE.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_eea_inversion IS
-PORT (
-    -- Clock, reset and enable
-    clk_i: IN std_logic;
-    rst_i: IN std_logic; 
-    enable_i: IN std_logic; 
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+    );
+    PORT (
+        -- Clock, reset and enable
+        clk_i: IN std_logic;
+        rst_i: IN std_logic; 
+        enable_i: IN std_logic; 
 
-    -- Input signals
-    a_i: IN std_logic_vector (M-1 DOWNTO 0);
+        -- Input signals
+        a_i: IN std_logic_vector (M-1 DOWNTO 0);
 
-    -- Output signals
-    z_o: OUT std_logic_vector (M-1 DOWNTO 0);
-    ready_o: OUT std_logic
-);
+        -- Output signals
+        z_o: OUT std_logic_vector (M-1 DOWNTO 0);
+        ready_o: OUT std_logic
+    );
 END e_gf2m_eea_inversion;
 
 ARCHITECTURE rtl of e_gf2m_eea_inversion IS
     COMPONENT e_gf2m_eea_inversion_data_path
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             r, s : IN std_logic_vector(M DOWNTO 0);
             u, v : IN std_logic_vector(M DOWNTO 0);
@@ -126,7 +135,9 @@ ARCHITECTURE rtl of e_gf2m_eea_inversion IS
     SIGNAL d, new_d: std_logic_vector(logM DOWNTO 0);
 BEGIN
     -- Instantiate inversion data path
-    data_path_block: e_gf2m_eea_inversion_data_path PORT MAP(
+    data_path_block: e_gf2m_eea_inversion_data_path GENERIC MAP (
+        MODULO => MODULO
+    ) PORT MAP(
         r => r, 
         s => s,
         u => u, 
@@ -145,7 +156,7 @@ BEGIN
     BEGIN
         -- Reset entity on reset
         IF rst_i = '1' or first_step = '1' THEN 
-            r <= ('0' & a_i); s <= ('1' & F2);
+            r <= ('0' & a_i); s <= ('1' & MODULO);
             u <= (0 => '1', OTHERS => '0'); v <= (OTHERS => '0');
             d <= (OTHERS => '0');
         ELSIF clk_i'event and clk_i = '1' THEN

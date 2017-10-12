@@ -109,6 +109,10 @@ debug(eccint_t *privatekey_dA, eccint_point_t *publickey_QA, eccint_t *privateke
     printf("Sign/Verify: \n");
     printf("-------------------------------\n");
 
+    if (!ecc_validate_publickey(publickey_QA, curve)) {
+        printf("PUBLIC KEY INVALID\n\n");
+    }
+
     ecc_sign_verbose(privatekey_dA, hash, &signature, curve, 1);
     if (eccint_cmp(signature.r, curve->n, curve->words) >= 0) {
         printf("SIGNATURE CREATION FAILED\n\n");

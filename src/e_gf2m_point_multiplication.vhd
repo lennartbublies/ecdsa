@@ -29,6 +29,9 @@ USE IEEE.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_point_multiplication IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+    );
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -48,6 +51,9 @@ END e_gf2m_point_multiplication;
 ARCHITECTURE rtl of e_gf2m_point_multiplication IS
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -64,6 +70,9 @@ ARCHITECTURE rtl of e_gf2m_point_multiplication IS
     
     -- Import entity e_gf2m_classic_squarer
     COMPONENT e_gf2m_classic_squarer IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             a_i: IN std_logic_vector(M-1 DOWNTO 0);
             c_o: OUT std_logic_vector(M-1 DOWNTO 0)
@@ -85,7 +94,9 @@ ARCHITECTURE rtl of e_gf2m_point_multiplication IS
 BEGIN
     -- Instantiate point addition entity
     --  Calculate (x3, y3) = (xxp, y1) + (xq, yq)
-    first_component: e_gf2m_point_addition PORT MAP(
+    first_component: e_gf2m_point_addition GENERIC MAP (
+            MODULO => MODULO
+        ) PORT MAP(
             clk_i => clk_i, 
             rst_i => rst_i,
             enable_i => start_addition,  
@@ -100,14 +111,18 @@ BEGIN
 
     -- Instantiate squarer entity for x part
     --  Calculate xxp^2
-    x_squarer: e_gf2m_classic_squarer PORT MAP( 
+    x_squarer: e_gf2m_classic_squarer GENERIC MAP (
+            MODULO => MODULO
+        ) PORT MAP( 
             a_i => xxP, 
             c_o => square_xxP
         );
 
     -- Instantiate squarer entity for y part    
     --  Calculate yyp^2
-    y_squarer: e_gf2m_classic_squarer PORT MAP( 
+    y_squarer: e_gf2m_classic_squarer GENERIC MAP (
+            MODULO => MODULO
+        ) PORT MAP( 
             a_i => yyP, 
             c_o => square_yyP
         );
