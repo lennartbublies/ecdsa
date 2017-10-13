@@ -76,7 +76,7 @@ BEGIN
     -- tx output
     p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter)
     BEGIN
-        IF rst_i = '0' THEN 
+        IF rst_i = '1' THEN 
             tx_o <= '1';
             s_iter <= 0;
         ELSIF rising_edge(clk_i) THEN
@@ -126,7 +126,7 @@ BEGIN
     
     p_fsm_store : PROCESS(clk_i,rst_i,s_next)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             s_curr <= idle;
         ELSIF rising_edge(clk_i) THEN
             s_curr <= s_next;
@@ -184,7 +184,7 @@ BEGIN
 
     p_reg_store : PROCESS(rst_i,clk_i) --ALL)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             s_phase <= idle;
         ELSIF rising_edge(clk_i) THEN
             s_phase <= s_phase_next;
@@ -193,7 +193,7 @@ BEGIN
     
     p_reg_output : PROCESS(clk_i,rst_i,s_phase)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             reg_o   <= '0';
             reg_ena_o <= '0';
         ELSIF rising_edge(clk_i) THEN

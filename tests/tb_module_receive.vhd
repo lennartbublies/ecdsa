@@ -82,9 +82,9 @@ BEGIN
     
         s_rx <= '1';
 		WAIT FOR 100 ns;
-		s_rst <= '0';
-		WAIT FOR 20 ns;
 		s_rst <= '1';
+		WAIT FOR 20 ns;
+		s_rst <= '0';
         WAIT FOR 880 ns;
 		
         

@@ -34,7 +34,7 @@ ARCHITECTURE tb_arch OF tb_uart_transmit IS
     END COMPONENT e_uart_transmit;
 
     SIGNAL s_clk        : std_logic;
-    SIGNAL s_rst        : std_logic := '1'; 
+    SIGNAL s_rst        : std_logic := '0'; 
     SIGNAL s_mode       : std_logic := '0';
     SIGNAL s_verify     : std_logic := '0';
     SIGNAL s_start_bit  : std_logic := '0';
@@ -73,9 +73,9 @@ BEGIN
         s_uart_data <= "10011001";
         
         WAIT FOR 80 ns;
-        s_rst <= '0';
-        WAIT FOR 20 ns;
         s_rst <= '1';
+        WAIT FOR 20 ns;
+        s_rst <= '0';
         WAIT FOR 200 ns;
         
         s_start_bit <= '1';
