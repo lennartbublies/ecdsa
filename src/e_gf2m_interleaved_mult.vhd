@@ -44,6 +44,9 @@ USE ieee.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_interleaved_data_path IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0)
+    );
     PORT (
         -- Clock and reset signals
         clk_i: IN std_logic; 
@@ -113,9 +116,9 @@ BEGIN
     END PROCESS register_c;
     
     -- Calculate next value for register a and c
-    new_a(0) <= aa(M-1) and F2(0);
+    new_a(0) <= aa(M-1) and MODULO(0);
     new_a_calc: FOR i IN 1 TO M-1 GENERATE
-        new_a(i) <= aa(i-1) xor (aa(M-1) and F2(i));
+        new_a(i) <= aa(i-1) xor (aa(M-1) and MODULO(i));
     END GENERATE;
 
     new_c_calc: FOR i IN 0 TO M-1 GENERATE
@@ -136,6 +139,9 @@ USE IEEE.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_interleaved_multiplier IS
+    GENERIC (
+        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+    );
     PORT (
         -- Clock, reset, enable
         clk_i: IN std_logic; 
@@ -155,6 +161,9 @@ END e_gf2m_interleaved_multiplier;
 ARCHITECTURE rtl OF e_gf2m_interleaved_multiplier IS    
     -- Import entity e_gf2m_interleaved_data_path
     COMPONENT e_gf2m_interleaved_data_path IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic;
@@ -176,7 +185,9 @@ ARCHITECTURE rtl OF e_gf2m_interleaved_multiplier IS
 BEGIN
     -- Instantiate interleaved data path
     -- Used to computes the polynomial multiplication mod F in one step
-    data_path: e_gf2m_interleaved_data_path PORT MAP (
+    data_path: e_gf2m_interleaved_data_path GENERIC MAP (
+            MODULO => MODULO
+        ) PORT MAP (
             clk_i => clk_i,  
             rst_i => rst_i, 
             a_i => a_i, 

@@ -1,5 +1,5 @@
 Analysis & Synthesis report for fpga-ecdsa
-Mon Oct 09 22:25:49 2017
+Thu Oct 12 21:26:15 2017
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -23,24 +23,84 @@ Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edit
  15. General Register Statistics
  16. Inverted Register Statistics
  17. Multiplexer Restructuring Statistics (Restructuring Performed)
- 18. Parameter Settings for User Entity Instance: e_uart_receive_mux:uart_receive|e_uart_receive_data:uart_receiver
- 19. Parameter Settings for User Entity Instance: e_uart_transmit_mux:uart_transmit|e_uart_transmit:transmit_instance
- 20. Parameter Settings for User Entity Instance: e_uart_transmit_mux:uart_transmit|e_uart_transmit:transmit_instance|e_baud_clock:baud_clock_inst
- 21. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit|e_uart_transmit:transmit_instance"
- 22. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit|e_nm_posi_register:s_register"
- 23. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit|e_nm_posi_register:r_register"
- 24. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit"
- 25. Port Connectivity Checks: "e_uart_receive_mux:uart_receive"
- 26. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb"
- 27. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb"
- 28. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q"
- 29. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_divider:sign_divide_edarx_k"
- 30. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:sign_mul_darx"
- 31. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer"
- 32. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r"
- 33. Port Connectivity Checks: "e_ecdsa:ecdsa"
- 34. Elapsed Time Per Partition
- 35. Analysis & Synthesis Messages
+ 18. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r
+ 19. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling
+ 20. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider
+ 21. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation
+ 22. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 23. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation
+ 24. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation|e_gf2m_reducer:reducer
+ 25. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier
+ 26. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 27. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition
+ 28. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_divider:divider
+ 29. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation
+ 30. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 31. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier
+ 32. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 33. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:sign_mul_darx
+ 34. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:sign_mul_darx|e_gf2m_interleaved_data_path:data_path
+ 35. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_divider:sign_divide_edarx_k
+ 36. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_eea_inversion:verify_invs
+ 37. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_eea_inversion:verify_invs|e_gf2m_eea_inversion_data_path:data_path_block
+ 38. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u1
+ 39. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u1|e_gf2m_interleaved_data_path:data_path
+ 40. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u2
+ 41. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u2|e_gf2m_interleaved_data_path:data_path
+ 42. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q
+ 43. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling
+ 44. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider
+ 45. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation
+ 46. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 47. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation
+ 48. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation|e_gf2m_reducer:reducer
+ 49. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier
+ 50. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 51. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition
+ 52. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_divider:divider
+ 53. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation
+ 54. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 55. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier
+ 56. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 57. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb
+ 58. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling
+ 59. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider
+ 60. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation
+ 61. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 62. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation
+ 63. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation|e_gf2m_reducer:reducer
+ 64. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier
+ 65. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 66. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition
+ 67. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_divider:divider
+ 68. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation
+ 69. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 70. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier
+ 71. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 72. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb
+ 73. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_divider:divider
+ 74. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_classic_squarer:lambda_square_computation
+ 75. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer
+ 76. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_interleaved_multiplier:multiplier
+ 77. Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path
+ 78. Parameter Settings for User Entity Instance: e_uart_receive_mux:uart_receive|e_uart_receive_data:uart_receiver
+ 79. Parameter Settings for User Entity Instance: e_uart_transmit_mux:uart_transmit|e_uart_transmit:transmit_instance
+ 80. Parameter Settings for User Entity Instance: e_uart_transmit_mux:uart_transmit|e_uart_transmit:transmit_instance|e_baud_clock:baud_clock_inst
+ 81. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit|e_uart_transmit:transmit_instance"
+ 82. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit|e_nm_posi_register:s_register"
+ 83. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit|e_nm_posi_register:r_register"
+ 84. Port Connectivity Checks: "e_uart_transmit_mux:uart_transmit"
+ 85. Port Connectivity Checks: "e_uart_receive_mux:uart_receive"
+ 86. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb"
+ 87. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb"
+ 88. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q"
+ 89. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_divider:sign_divide_edarx_k"
+ 90. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:sign_mul_darx"
+ 91. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer"
+ 92. Port Connectivity Checks: "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r"
+ 93. Port Connectivity Checks: "e_ecdsa:ecdsa"
+ 94. Elapsed Time Per Partition
+ 95. Analysis & Synthesis Messages
 
 
 
@@ -66,13 +126,13 @@ applicable agreement for further details.
 +--------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Mon Oct 09 22:25:48 2017           ;
+; Analysis & Synthesis Status        ; Successful - Thu Oct 12 21:26:14 2017           ;
 ; Quartus II 64-Bit Version          ; 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition ;
 ; Revision Name                      ; fpga-ecdsa                                      ;
 ; Top-level Entity Name              ; tld_ecdsa                                       ;
 ; Family                             ; Cyclone II                                      ;
-; Total logic elements               ; 22,151                                          ;
-;     Total combinational functions  ; 21,968                                          ;
+; Total logic elements               ; 22,165                                          ;
+;     Total combinational functions  ; 21,981                                          ;
 ;     Dedicated logic registers      ; 14,786                                          ;
 ; Total registers                    ; 14786                                           ;
 ; Total pins                         ; 4                                               ;
@@ -209,16 +269,16 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +---------------------------------------------+--------+
 ; Resource                                    ; Usage  ;
 +---------------------------------------------+--------+
-; Estimated Total logic elements              ; 22,151 ;
+; Estimated Total logic elements              ; 22,165 ;
 ;                                             ;        ;
-; Total combinational functions               ; 21968  ;
+; Total combinational functions               ; 21981  ;
 ; Logic element usage by number of LUT inputs ;        ;
-;     -- 4 input functions                    ; 12007  ;
-;     -- 3 input functions                    ; 6551   ;
-;     -- <=2 input functions                  ; 3410   ;
+;     -- 4 input functions                    ; 12011  ;
+;     -- 3 input functions                    ; 6549   ;
+;     -- <=2 input functions                  ; 3421   ;
 ;                                             ;        ;
 ; Logic elements by mode                      ;        ;
-;     -- normal mode                          ; 21669  ;
+;     -- normal mode                          ; 21682  ;
 ;     -- arithmetic mode                      ; 299    ;
 ;                                             ;        ;
 ; Total registers                             ; 14786  ;
@@ -229,7 +289,7 @@ Parallel compilation was disabled, but you have multiple processors available. E
 ; Embedded Multiplier 9-bit elements          ; 0      ;
 ; Maximum fan-out node                        ; clk_i  ;
 ; Maximum fan-out                             ; 14786  ;
-; Total fan-out                               ; 129293 ;
+; Total fan-out                               ; 129314 ;
 ; Average fan-out                             ; 3.52   ;
 +---------------------------------------------+--------+
 
@@ -239,8 +299,8 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +-------------------------------------------------------------------+-------------------+--------------+-------------+--------------+---------+-----------+------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
 ; Compilation Hierarchy Node                                        ; LC Combinationals ; LC Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                                                                                                               ; Library Name ;
 +-------------------------------------------------------------------+-------------------+--------------+-------------+--------------+---------+-----------+------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+
-; |tld_ecdsa                                                        ; 21968 (1)         ; 14786 (0)    ; 0           ; 0            ; 0       ; 0         ; 4    ; 0            ; |tld_ecdsa                                                                                                                                                                                        ; work         ;
-;    |e_ecdsa:ecdsa|                                                ; 21678 (256)       ; 14509 (5)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa                                                                                                                                                                          ; work         ;
+; |tld_ecdsa                                                        ; 21981 (1)         ; 14786 (0)    ; 0           ; 0            ; 0       ; 0         ; 4    ; 0            ; |tld_ecdsa                                                                                                                                                                                        ; work         ;
+;    |e_ecdsa:ecdsa|                                                ; 21691 (256)       ; 14509 (5)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa                                                                                                                                                                          ; work         ;
 ;       |e_gf2m_divider:sign_divide_edarx_k|                        ; 868 (868)         ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_divider:sign_divide_edarx_k                                                                                                                                       ; work         ;
 ;       |e_gf2m_doubleadd_point_multiplication:sign_pmul_r|         ; 5408 (1170)       ; 3658 (654)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r                                                                                                                        ; work         ;
 ;          |e_gf2m_point_addition:addition|                         ; 1998 (947)        ; 1502 (330)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition                                                                                         ; work         ;
@@ -251,12 +311,12 @@ Parallel compilation was disabled, but you have multiple processors available. E
 ;             |e_gf2m_divider:divider|                              ; 706 (706)         ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider                                                                  ; work         ;
 ;             |e_gf2m_interleaved_multiplier:multiplier|            ; 505 (16)          ; 499 (10)     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier                                                ; work         ;
 ;                |e_gf2m_interleaved_data_path:data_path|           ; 489 (489)         ; 489 (489)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path         ; work         ;
-;       |e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb| ; 5291 (1176)       ; 3662 (658)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb                                                                                                                ; work         ;
-;          |e_gf2m_point_addition:addition|                         ; 1998 (946)        ; 1502 (330)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition                                                                                 ; work         ;
-;             |e_gf2m_divider:divider|                              ; 707 (707)         ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_divider:divider                                                          ; work         ;
+;       |e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb| ; 5303 (1176)       ; 3662 (658)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb                                                                                                                ; work         ;
+;          |e_gf2m_point_addition:addition|                         ; 1998 (947)        ; 1502 (330)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition                                                                                 ; work         ;
+;             |e_gf2m_divider:divider|                              ; 706 (706)         ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_divider:divider                                                          ; work         ;
 ;             |e_gf2m_interleaved_multiplier:multiplier|            ; 345 (16)          ; 499 (10)     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier                                        ; work         ;
 ;                |e_gf2m_interleaved_data_path:data_path|           ; 329 (329)         ; 489 (489)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ; work         ;
-;          |e_gf2m_point_doubling:doubling|                         ; 2117 (906)        ; 1502 (330)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling                                                                                 ; work         ;
+;          |e_gf2m_point_doubling:doubling|                         ; 2129 (918)        ; 1502 (330)   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling                                                                                 ; work         ;
 ;             |e_gf2m_divider:divider|                              ; 706 (706)         ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider                                                          ; work         ;
 ;             |e_gf2m_interleaved_multiplier:multiplier|            ; 505 (16)          ; 499 (10)     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier                                        ; work         ;
 ;                |e_gf2m_interleaved_data_path:data_path|           ; 489 (489)         ; 489 (489)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ; work         ;
@@ -277,8 +337,8 @@ Parallel compilation was disabled, but you have multiple processors available. E
 ;          |e_gf2m_interleaved_data_path:data_path|                 ; 490 (490)         ; 489 (489)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u1|e_gf2m_interleaved_data_path:data_path                                                                                       ; work         ;
 ;       |e_gf2m_interleaved_multiplier:verify_mul_u2|               ; 328 (2)           ; 326 (0)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u2                                                                                                                              ; work         ;
 ;          |e_gf2m_interleaved_data_path:data_path|                 ; 326 (326)         ; 326 (326)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u2|e_gf2m_interleaved_data_path:data_path                                                                                       ; work         ;
-;       |e_gf2m_point_addition:verify_adder_u1gu2qb|                ; 2178 (1135)       ; 850 (167)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb                                                                                                                               ; work         ;
-;          |e_gf2m_divider:divider|                                 ; 1029 (1029)       ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_divider:divider                                                                                                        ; work         ;
+;       |e_gf2m_point_addition:verify_adder_u1gu2qb|                ; 2179 (1135)       ; 850 (167)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb                                                                                                                               ; work         ;
+;          |e_gf2m_divider:divider|                                 ; 1030 (1030)       ; 673 (673)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_divider:divider                                                                                                        ; work         ;
 ;          |e_gf2m_interleaved_multiplier:multiplier|               ; 14 (14)           ; 10 (10)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_interleaved_multiplier:multiplier                                                                                      ; work         ;
 ;    |e_uart_receive_mux:uart_receive|                              ; 127 (0)           ; 236 (0)      ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_uart_receive_mux:uart_receive                                                                                                                                                        ; work         ;
 ;       |e_nm_sipo_register:m_register|                             ; 0 (0)             ; 163 (163)    ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |tld_ecdsa|e_uart_receive_mux:uart_receive|e_nm_sipo_register:m_register                                                                                                                          ; work         ;
@@ -1690,6 +1750,606 @@ Note: All latches listed above may not be present at the end of synthesis due to
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r                                                                                           ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling                                                            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider                                      ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation           ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                         ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary              ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation               ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                     ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary          ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier                   ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                      ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition                                                            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_divider:divider                                      ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation           ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                         ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary              ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier                   ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                      ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:sign_mul_darx                                                                                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:sign_mul_darx|e_gf2m_interleaved_data_path:data_path                                                          ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_divider:sign_divide_edarx_k                                                                                                           ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_eea_inversion:verify_invs                                                                                                            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_eea_inversion:verify_invs|e_gf2m_eea_inversion_data_path:data_path_block                                                             ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u1                                                                                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u1|e_gf2m_interleaved_data_path:data_path                                                          ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u2                                                                                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_interleaved_multiplier:verify_mul_u2|e_gf2m_interleaved_data_path:data_path                                                          ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q                                                                                    ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling                                                     ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider                               ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation    ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                     ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation        ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                        ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                             ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition                                                     ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_divider:divider                               ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation    ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                     ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2q|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                        ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                             ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb                                                                                   ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling                                                    ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider                              ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation   ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                      ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation       ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_classic_squarer:x1_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                             ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                  ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier           ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_doubling:doubling|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                         ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                              ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition                                                    ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_divider:divider                              ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation   ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                      ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier           ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:verify_pmul_u1gu2qb|e_gf2m_point_addition:addition|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type                                         ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary                              ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb                                                                                                  ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_divider:divider                                                                            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                                ; Type            ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_classic_squarer:lambda_square_computation                                                 ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_classic_squarer:lambda_square_computation|e_gf2m_reducer:reducer                          ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_interleaved_multiplier:multiplier                                                         ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: e_ecdsa:ecdsa|e_gf2m_point_addition:verify_adder_u1gu2qb|e_gf2m_interleaved_multiplier:multiplier|e_gf2m_interleaved_data_path:data_path                  ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; Parameter Name ; Value                                                                                                                                                               ; Type            ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+; modulo         ; 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011001001 ; Unsigned Binary ;
++----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
 +----------------------------------------------------------------------------------------------------------------+
 ; Parameter Settings for User Entity Instance: e_uart_receive_mux:uart_receive|e_uart_receive_data:uart_receiver ;
 +----------------+--------+--------------------------------------------------------------------------------------+
@@ -1784,178 +2444,177 @@ Note: In order to hide this table in the UI and the text report file, please set
 ; Port           ; Type  ; Severity ; Details                                                         ;
 +----------------+-------+----------+-----------------------------------------------------------------+
 ; xp_i[162..161] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[159..158] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[137..136] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[125..124] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[122..119] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[108..106] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[104..103] ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[98..97]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[93..91]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[89..87]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[78..77]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[72..69]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[50..49]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[46..45]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[13..12]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[2..1]     ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[153..152] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[150..147] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[145..143] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[139..138] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[135..133] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[129..128] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[118..115] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[111..109] ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[100..99]  ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[96..94]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[86..85]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[74..73]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[66..61]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[59..58]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[52..51]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[48..47]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[44..38]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[32..30]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[28..26]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[24..23]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[21..20]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[149..148] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[143..141] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[135..131] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[128..127] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[120..119] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[114..113] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[105..104] ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[101..98]  ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[92..91]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[83..77]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[75..74]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[70..69]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[64..63]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[57..56]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[54..51]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[42..41]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[36..33]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[30..27]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[24..23]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[21..19]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[16..15]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[13..11]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[2..0]     ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[158..152] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[147..146] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[140..136] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[130..129] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[126..123] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[116..115] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[112..111] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[107..106] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[103..102] ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[90..87]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[85..84]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[68..65]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[62..60]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[48..43]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[40..37]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[32..31]   ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[26..25]   ; Input ; Info     ; Stuck at GND                                                    ;
 ; xp_i[18..17]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[15..14]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[11..10]   ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[8..5]     ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[10..9]    ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[7..5]     ; Input ; Info     ; Stuck at GND                                                    ;
 ; xp_i[160]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[157]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[156]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[155]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[154]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[159]      ; Input ; Info     ; Stuck at VCC                                                    ;
 ; xp_i[151]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[146]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[142]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[141]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[140]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[132]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[131]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[130]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[127]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[126]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[123]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[114]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[113]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[112]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[105]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[102]      ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[101]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[90]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[84]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[83]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[82]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[81]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[80]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[79]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[150]      ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[145]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[144]      ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[122]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[121]      ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[118]      ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[117]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[110]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[109]      ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[108]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[97]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[96]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[95]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[94]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[93]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[86]       ; Input ; Info     ; Stuck at VCC                                                    ;
 ; xp_i[76]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[75]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[68]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[67]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[60]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[57]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[56]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[55]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[54]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[53]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[37]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[36]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[35]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[34]       ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[33]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[29]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[25]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[22]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[19]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[16]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; xp_i[9]        ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[73]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[72]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[71]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[59]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[58]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[55]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[50]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[49]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; xp_i[22]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[14]       ; Input ; Info     ; Stuck at GND                                                    ;
+; xp_i[8]        ; Input ; Info     ; Stuck at VCC                                                    ;
 ; xp_i[4]        ; Input ; Info     ; Stuck at VCC                                                    ;
 ; xp_i[3]        ; Input ; Info     ; Stuck at GND                                                    ;
-; xp_i[0]        ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[155..154] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[148..147] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[145..144] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[142..140] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[120..119] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[112..110] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[108..106] ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[99..95]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[93..92]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[88..87]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[83..79]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[68..61]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[50..47]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[44..42]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[38..35]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[32..31]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[25..24]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[22..20]   ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[9..7]     ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[5..4]     ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[162..156] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[139..137] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[135..134] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[128..126] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[122..121] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[118..113] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[103..102] ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[91..89]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[76..73]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[60..59]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[57..51]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[46..45]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[41..39]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[34..33]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[161..159] ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[156..154] ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[141..139] ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[121..119] ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[111..109] ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[99..96]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[89..88]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[71..69]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[64..62]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[60..59]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[57..55]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[48..46]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[43..41]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[39..38]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[31..29]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[25..23]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[19..18]   ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[5..3]     ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[158..157] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[151..149] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[147..146] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[144..142] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[134..133] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[127..126] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[114..112] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[106..105] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[101..100] ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[95..94]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[92..90]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[85..84]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[82..80]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[78..75]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[73..72]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[66..65]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[52..51]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[45..44]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[37..35]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[33..32]   ; Input ; Info     ; Stuck at GND                                                    ;
 ; yp_i[28..26]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[19..18]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[16..15]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[13..12]   ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[3..0]     ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[22..20]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[17..16]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[14..13]   ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[9..8]     ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[162]      ; Input ; Info     ; Stuck at GND                                                    ;
 ; yp_i[153]      ; Input ; Info     ; Stuck at GND                                                    ;
 ; yp_i[152]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[151]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[150]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[149]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[146]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[143]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[136]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[133]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[132]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[131]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[130]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[129]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[148]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[145]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[138]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[137]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[136]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[135]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[132]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[131]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[130]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[129]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[128]      ; Input ; Info     ; Stuck at VCC                                                    ;
 ; yp_i[125]      ; Input ; Info     ; Stuck at VCC                                                    ;
 ; yp_i[124]      ; Input ; Info     ; Stuck at GND                                                    ;
 ; yp_i[123]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[109]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[105]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[122]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[118]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[117]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[116]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[115]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[108]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[107]      ; Input ; Info     ; Stuck at VCC                                                    ;
 ; yp_i[104]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[101]      ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[100]      ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[94]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[86]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[85]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[84]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[78]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[77]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[72]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[71]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[70]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[69]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[58]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[30]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[29]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[23]       ; Input ; Info     ; Stuck at GND                                                    ;
-; yp_i[17]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[14]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[11]       ; Input ; Info     ; Stuck at VCC                                                    ;
-; yp_i[10]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[103]      ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[102]      ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[93]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[87]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[86]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[83]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[79]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[74]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[68]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[67]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[61]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[58]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[54]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[53]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[50]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[49]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[40]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[34]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[15]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[12]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[11]       ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[10]       ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[7]        ; Input ; Info     ; Stuck at VCC                                                    ;
 ; yp_i[6]        ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[2]        ; Input ; Info     ; Stuck at GND                                                    ;
+; yp_i[1]        ; Input ; Info     ; Stuck at VCC                                                    ;
+; yp_i[0]        ; Input ; Info     ; Stuck at GND                                                    ;
 +----------------+-------+----------+-----------------------------------------------------------------+
 
 
@@ -2738,7 +3397,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:01:26     ;
+; Top            ; 00:01:05     ;
 +----------------+--------------+
 
 
@@ -2748,7 +3407,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Analysis & Synthesis
     Info: Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-    Info: Processing started: Mon Oct 09 22:24:09 2017
+    Info: Processing started: Thu Oct 12 21:24:55 2017
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off fpga-ecdsa -c fpga-ecdsa
 Warning (20028): Parallel compilation is not licensed and has been disabled
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_nm_piso_register.vhd
@@ -2769,9 +3428,7 @@ Info (12021): Found 2 design units, including 1 entities, in source file /users/
 Info (12021): Found 2 design units, including 0 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/tld_ecdsa_package.vhd
     Info (12022): Found design unit 1: tld_ecdsa_package
     Info (12022): Found design unit 2: tld_ecdsa_package-body
-Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_gf2m_mod.vhd
-    Info (12022): Found design unit 1: e_gf2m_modulo-rtl
-    Info (12023): Found entity 1: e_gf2m_modulo
+Warning (12019): Can't analyze file -- file ../src/e_gf2m_mod.vhd is missing
 Info (12021): Found 2 design units, including 1 entities, in source file /users/mail/nas/projects/fpga-ecdsa/src/e_uart_transmit.vhd
     Info (12022): Found design unit 1: e_uart_transmit-td_arch
     Info (12023): Found entity 1: e_uart_transmit
@@ -2827,9 +3484,9 @@ Info (12021): Found 2 design units, including 1 entities, in source file /users/
 Info (12127): Elaborating entity "tld_ecdsa" for the top level hierarchy
 Warning (10540): VHDL Signal Declaration warning at tld_ecdsa.vhd(86): used explicit default value for signal "ecdsa_mode" because signal was never assigned a value
 Info (12128): Elaborating entity "e_ecdsa" for hierarchy "e_ecdsa:ecdsa"
-Warning (10036): Verilog HDL or VHDL warning at e_ecdsa.vhd(156): object "xQA" assigned a value but never read
-Warning (10036): Verilog HDL or VHDL warning at e_ecdsa.vhd(157): object "yQA" assigned a value but never read
-Warning (10036): Verilog HDL or VHDL warning at e_ecdsa.vhd(185): object "yP" assigned a value but never read
+Warning (10036): Verilog HDL or VHDL warning at e_ecdsa.vhd(159): object "xQA" assigned a value but never read
+Warning (10036): Verilog HDL or VHDL warning at e_ecdsa.vhd(160): object "yQA" assigned a value but never read
+Warning (10036): Verilog HDL or VHDL warning at e_ecdsa.vhd(188): object "yP" assigned a value but never read
 Info (12128): Elaborating entity "e_gf2m_doubleadd_point_multiplication" for hierarchy "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r"
 Info (12128): Elaborating entity "e_gf2m_point_doubling" for hierarchy "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling"
 Info (12128): Elaborating entity "e_gf2m_divider" for hierarchy "e_ecdsa:ecdsa|e_gf2m_doubleadd_point_multiplication:sign_pmul_r|e_gf2m_point_doubling:doubling|e_gf2m_divider:divider"
@@ -3288,14 +3945,14 @@ Warning (13004): Presettable and clearable registers converted to equivalent cir
 Info (17049): 294 registers lost all their fanouts during netlist optimizations.
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 22967 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 22980 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 3 input pins
     Info (21059): Implemented 1 output pins
-    Info (21061): Implemented 22963 logic cells
-Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 392 warnings
-    Info: Peak virtual memory: 659 megabytes
-    Info: Processing ended: Mon Oct 09 22:25:49 2017
-    Info: Elapsed time: 00:01:40
-    Info: Total CPU time (on all processors): 00:01:38
+    Info (21061): Implemented 22976 logic cells
+Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 393 warnings
+    Info: Peak virtual memory: 636 megabytes
+    Info: Processing ended: Thu Oct 12 21:26:15 2017
+    Info: Elapsed time: 00:01:20
+    Info: Total CPU time (on all processors): 00:01:18
 
 

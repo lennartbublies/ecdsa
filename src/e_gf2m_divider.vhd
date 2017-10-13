@@ -43,6 +43,9 @@ USE IEEE.std_logic_unsigned.all;
 USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_divider IS
+    GENERIC (
+        MODULO : std_logic_vector(M DOWNTO 0) := '1' & P
+    );
     PORT(
         -- Clock, reset and enable
         clk_i: IN std_logic;  
@@ -76,7 +79,7 @@ BEGIN
         IF clk_i'event and clk_i = '1' THEN
             -- First computation  (global arguments)
             IF load = '1' THEN 
-                a <= F1; 
+                a <= MODULO; 
                 c <= (OTHERS => '0');
             -- Seccond computation
             ELSIF ce_ac = '1' THEN 
@@ -140,12 +143,12 @@ BEGIN
 
     -- Shift and Add
     --  IF b(0)=0 THEN
-    --      next_d(i) = (F1(i+1)&next_d(M-1)) + d(i+1)              ????? (F1(i+1)&next_d(M-1)) ?????
+    --      next_d(i) = (MODULO(i+1)&next_d(M-1)) + d(i+1)              ????? (MODULO(i+1)&next_d(M-1)) ?????
     --  ELSIF b(0)=1 THEN 
-    --      next_d(i) = (F1(i+1)&next_d(M-1)) + d(i+1) + c(i+1)     ????? (F1(i+1)&next_d(M-1)) ?????
+    --      next_d(i) = (MODULO(i+1)&next_d(M-1)) + d(i+1) + c(i+1)     ????? (MODULO(i+1)&next_d(M-1)) ?????
     --  ENDIF
     second_iteration: FOR i IN 0 TO M-2 GENERATE
-        next_d(i) <= (F1(i+1) and next_d(M-1)) xor ((b(0) and (d(i+1) xor c(i+1))) or (not(b(0)) and d(i+1)));
+        next_d(i) <= (MODULO(i+1) and next_d(M-1)) xor ((b(0) and (d(i+1) xor c(i+1))) or (not(b(0)) and d(i+1)));
     END GENERATE;
     next_d(M-1) <= (b(0) and (d(0) xor c(0))) or (not(b(0)) and d(0));
 
