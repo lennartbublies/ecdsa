@@ -32,7 +32,7 @@ USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_point_doubling IS
     GENERIC (
-        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+        MODULO : std_logic_vector(M DOWNTO 0) := ONE
     );
     PORT(
         -- Clock, reset, enable
@@ -123,7 +123,7 @@ BEGIN
     -- Instantiate divider entity
     --  Calculate div_xy = y1 / x1
     divider: e_gf2m_divider GENERIC MAP (
-            MODULO => '1' & MODULO
+            MODULO => MODULO
     ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
@@ -143,14 +143,14 @@ BEGIN
     -- Instantiate squarer 
     --  Calculate lambda^2 and x1^2
     lambda_square_computation: e_gf2m_classic_squarer GENERIC MAP (
-            MODULO => MODULO
+            MODULO => MODULO(M-1 DOWNTO 0)
     ) PORT MAP( 
         a_i => lambda, 
         c_o => lambda_square
     );
 
     x1_square_computation: e_gf2m_classic_squarer GENERIC MAP (
-            MODULO => MODULO
+            MODULO => MODULO(M-1 DOWNTO 0)
     ) PORT MAP( 
         a_i => x1_i, 
         c_o => x1_square
@@ -165,7 +165,7 @@ BEGIN
     -- Instantiate multiplier entity
     --  Calculate mult_lx2 = lambda * x2_tmp 
     multiplier: e_gf2m_interleaved_multiplier GENERIC MAP (
-            MODULO => MODULO
+            MODULO => MODULO(M-1 DOWNTO 0)
     ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 

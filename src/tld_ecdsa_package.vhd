@@ -28,10 +28,9 @@ PACKAGE tld_ecdsa_package IS
     -- 163 Bit sect163k1
     CONSTANT M: natural := 163;
     CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
-    --CONSTANT N: std_logic_vector(M DOWNTO 0):= x"4000000000000000000020108A2E0CC0D99F8A5EF";
-    --CONSTANT N: std_logic_vector(M-1 DOWNTO 0):= "000" & x"000000000000000000020108A2E0CC0D99F8A5EF";
-    CONSTANT N: std_logic_vector(M-1 DOWNTO 0):= "000" & x"00000000000000000000000000000000000000C9";
-    CONSTANT P: std_logic_vector(M-1 DOWNTO 0):= "000" & x"00000000000000000000000000000000000000C9";
+    --CONSTANT N: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
+    CONSTANT N: std_logic_vector(M DOWNTO 0):= x"4000000000000000000020108A2E0CC0D99F8A5EF";
+    CONSTANT P: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
     CONSTANT A: std_logic_vector(M-1 downto 0) := (0 => '1', OTHERS=>'0');
 
     -- 9 Bit testcurve
@@ -47,7 +46,8 @@ PACKAGE tld_ecdsa_package IS
     -- Other
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
     CONSTANT ONES: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'1');
-    
+    CONSTANT ONE: std_logic_vector(M downto 0) := (0 => '1', OTHERS=>'0');
+
     -- Types for reduction matrix
     TYPE matrix_reduction_return IS ARRAY (0 TO M-1) OF STD_LOGIC_VECTOR(M-2 DOWNTO 0);
     SUBTYPE matrix_reduction_arg IS STD_LOGIC_VECTOR(M-1 DOWNTO 0);

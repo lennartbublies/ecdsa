@@ -68,7 +68,7 @@ ARCHITECTURE rtl OF e_ecdsa IS
     -- Import entity e_gf2m_doubleadd_point_multiplication
     COMPONENT e_gf2m_doubleadd_point_multiplication IS
         GENERIC (
-            MODULO : std_logic_vector(M-1 DOWNTO 0)
+            MODULO : std_logic_vector(M DOWNTO 0)
         );
         PORT (
             clk_i: IN std_logic; 
@@ -86,7 +86,7 @@ ARCHITECTURE rtl OF e_ecdsa IS
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
         GENERIC (
-            MODULO : std_logic_vector(M-1 DOWNTO 0)
+            MODULO : std_logic_vector(M DOWNTO 0)
         );
         PORT(
             clk_i: IN std_logic; 
@@ -231,7 +231,7 @@ BEGIN
 
     -- Instantiate multiplier entity to compute dA * xR
     sign_mul_darx: e_gf2m_interleaved_multiplier GENERIC MAP (
-            MODULO => P
+            MODULO => P(M-1 DOWNTO 0)
     ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i,
@@ -249,7 +249,7 @@ BEGIN
 
     -- Instantiate divider entity to compute (e + dA*xR)/k
     sign_divide_edarx_k: e_gf2m_divider GENERIC MAP (
-            MODULO => '1' & P
+            MODULO => P
     ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
@@ -267,7 +267,7 @@ BEGIN
 
     -- Instantiate inversion entity to compute w = 1/s
     verify_invs: e_gf2m_eea_inversion GENERIC MAP (
-            MODULO => P
+            MODULO => P(M-1 DOWNTO 0)
     ) PORT MAP (
         clk_i => clk_i, 
         rst_i => rst_i, 
@@ -279,7 +279,7 @@ BEGIN
 
     -- Instantiate multiplier entity to compute u1 = ew
     verify_mul_u1: e_gf2m_interleaved_multiplier GENERIC MAP (
-            MODULO => P
+            MODULO => P(M-1 DOWNTO 0)
     ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
@@ -292,7 +292,7 @@ BEGIN
 
     -- Instantiate multiplier entity to compute u2 = rw
     verify_mul_u2: e_gf2m_interleaved_multiplier GENERIC MAP (
-            MODULO => P
+            MODULO => P(M-1 DOWNTO 0)
     ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
