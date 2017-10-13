@@ -30,7 +30,7 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
     END COMPONENT e_uart_transmit_mux;
 
     SIGNAL s_clk        : std_logic;
-    SIGNAL s_rst        : std_logic := '1'; 
+    SIGNAL s_rst        : std_logic := '0'; 
     SIGNAL s_mode       : std_logic := '0';
     SIGNAL s_enable     : std_logic := '0';
     SIGNAL s_r_i        : std_logic_vector(M-1 DOWNTO 0) := "00000000";
@@ -66,9 +66,9 @@ BEGIN
         s_s_i <= "10011001";
         
         WAIT FOR 80 ns;
-        s_rst <= '0';
-        WAIT FOR 20 ns;
         s_rst <= '1';
+        WAIT FOR 20 ns;
+        s_rst <= '0';
         WAIT FOR 200 ns;
         
         enable_i <= '1';

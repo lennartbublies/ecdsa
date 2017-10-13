@@ -123,7 +123,7 @@ BEGIN
     --- save the rx signal via shifting into s_data:
     p_shift : PROCESS(clk_i,rst_i,rst_internal,rx_i,s_data,scan_clk,bit_cnt) --ALL)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             s_data <= (others => '0');
         ELSIF rising_edge(clk_i) AND scan_clk = '1' THEN
             IF bit_cnt < 8 THEN
@@ -137,7 +137,7 @@ BEGIN
         
     p_scan_symbol : PROCESS(clk_i,rx_i,scan_clk,rst_i,bit_cnt,rst_internal)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             bit_cnt <= 0;
         ELSIF rst_internal = '0' THEN
             bit_cnt <= 0;
@@ -152,7 +152,7 @@ BEGIN
     -- p_scan_clk : PROCESS(ALL)
     p_scan_clk : PROCESS(clk_i,rst_i,rx_i,rst_internal,wait_cnt,bit_cnt,scan_cnt) 
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             scan_clk <= '0';
             scan_cnt <= 0;
             wait_cnt <= 0;
@@ -185,7 +185,7 @@ BEGIN
     
     p_byte_store : PROCESS(rst_i,clk_i) --ALL)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             s_uart_state <= idle;
         ELSIF rising_edge(clk_i) THEN
             s_uart_state <= s_uart_next;
@@ -195,7 +195,7 @@ BEGIN
     -- push to output 
     p_scan_out : PROCESS(clk_i,rst_i,s_uart_state,s_uart_next)
     BEGIN 
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             s_data_o <= "00000000";
             s_rdy <= '0';
         ELSIF rising_edge(clk_i) THEN
@@ -262,7 +262,7 @@ BEGIN
     
     p_cnt_bytes_store : PROCESS(rst_i,clk_i) --ALL)
     BEGIN
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             s_phase <= idle;
         ELSIF rising_edge(clk_i) THEN
             s_phase <= s_phase_next;
@@ -272,7 +272,7 @@ BEGIN
         -- push to output 
     p_bytes_out : PROCESS(clk_i,rst_i,s_phase,s_phase_next)
     BEGIN 
-        IF rst_i = '0' THEN
+        IF rst_i = '1' THEN
             data_o  <= "00000000";
             rdy_o   <= '0';
             ena_r_o <= '0';

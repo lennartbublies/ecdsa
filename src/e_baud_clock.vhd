@@ -36,7 +36,7 @@ BEGIN
 
     p_generator : PROCESS(clk_i,rst_i)
     BEGIN
-        IF rst_i = '0' THEN 
+        IF rst_i = '1' THEN 
             baud_clk_o  <= '0';
             clk_count <= 0;            
         ELSIF rising_edge(clk_i) THEN
