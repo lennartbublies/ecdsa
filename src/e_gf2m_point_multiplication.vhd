@@ -30,7 +30,7 @@ USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_point_multiplication IS
     GENERIC (
-        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+        MODULO : std_logic_vector(M DOWNTO 0) := ONE
     );
     PORT (
         -- Clock, reset, enable
@@ -52,7 +52,7 @@ ARCHITECTURE rtl of e_gf2m_point_multiplication IS
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
         GENERIC (
-            MODULO : std_logic_vector(M-1 DOWNTO 0)
+            MODULO : std_logic_vector(M DOWNTO 0)
         );
         PORT(
             clk_i: IN std_logic; 
@@ -112,7 +112,7 @@ BEGIN
     -- Instantiate squarer entity for x part
     --  Calculate xxp^2
     x_squarer: e_gf2m_classic_squarer GENERIC MAP (
-            MODULO => MODULO
+            MODULO => MODULO(M-1 DOWNTO 0)
         ) PORT MAP( 
             a_i => xxP, 
             c_o => square_xxP
@@ -121,7 +121,7 @@ BEGIN
     -- Instantiate squarer entity for y part    
     --  Calculate yyp^2
     y_squarer: e_gf2m_classic_squarer GENERIC MAP (
-            MODULO => MODULO
+            MODULO => MODULO(M-1 DOWNTO 0)
         ) PORT MAP( 
             a_i => yyP, 
             c_o => square_yyP

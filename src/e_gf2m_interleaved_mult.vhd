@@ -140,7 +140,7 @@ USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_interleaved_multiplier IS
     GENERIC (
-        MODULO : std_logic_vector(M-1 DOWNTO 0) := P
+        MODULO : std_logic_vector(M-1 DOWNTO 0) := ONE(M-1 DOWNTO 0)
     );
     PORT (
         -- Clock, reset, enable

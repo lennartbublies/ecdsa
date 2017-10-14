@@ -44,7 +44,7 @@ USE work.tld_ecdsa_package.all;
 
 ENTITY e_gf2m_divider IS
     GENERIC (
-        MODULO : std_logic_vector(M DOWNTO 0) := '1' & P
+        MODULO : std_logic_vector(M DOWNTO 0) := ONE
     );
     PORT(
         -- Clock, reset and enable
