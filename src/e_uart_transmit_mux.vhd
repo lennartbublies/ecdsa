@@ -71,7 +71,6 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     SIGNAL s_uart_data_s: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL enable_r_register, enable_s_register: std_logic := '0';
     
-    SIGNAL s_start_transmit : std_logic;
     SIGNAL s_reg_ctrl       : std_logic;
     SIGNAL s_reg_ena        : std_logic;
     SIGNAL s_uart_data      : std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
@@ -108,7 +107,7 @@ BEGIN
             rst_i     => rst_i,
             mode_i    => mode_i,
             verify_i  => v_i,
-            start_i   => s_start_transmit,
+            start_i   => enable_i,
             data_i    => s_uart_data,
             tx_o      => uart_o,
             reg_o     => s_reg_ctrl,
