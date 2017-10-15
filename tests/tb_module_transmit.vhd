@@ -14,6 +14,8 @@ ENTITY tb_module_transmit IS
 END ENTITY tb_module_transmit;
 
 ARCHITECTURE tb_arch OF tb_module_transmit IS
+    
+    CONSTANT M : integer := 8;
 
     -- IMPORT e_uart_transmit_mux COMPONENT
     COMPONENT e_uart_transmit_mux IS
@@ -41,7 +43,7 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
     
 BEGIN
     -- Instantiate uart transmitter
-    transmit_instance : e_uart_transmit
+    transmit_instance : e_uart_transmit_mux
         PORT MAP ( 
             clk_i       => s_clk,
             rst_i       => s_rst,
@@ -71,9 +73,9 @@ BEGIN
         s_rst <= '0';
         WAIT FOR 200 ns;
         
-        enable_i <= '1';
+        s_enable <= '1';
         WAIT FOR 20 ns;
-        enable_i <= '0';
+        s_enable <= '0';
         
         WAIT;
         

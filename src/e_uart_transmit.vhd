@@ -70,7 +70,9 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
 	SIGNAL s_phase, s_phase_next : phase_state_type;
     
     SIGNAL s_cnt_phas1 : NATURAL RANGE 0 TO 128;
+    SIGNAL s_phas1_tmp : NATURAL RANGE 0 TO 128;
     SIGNAL s_cnt_phas2 : NATURAL RANGE 0 TO 128;
+    SIGNAL s_phas2_tmp : NATURAL RANGE 0 TO 128;
     
 BEGIN 
     -- tx output
@@ -103,15 +105,15 @@ BEGIN
     p_fsm_transition : PROCESS(s_curr,start_i,s_baud_clk,s_iter,s_phase,s_cnt_phas2)
     BEGIN
         s_next <= s_curr;
-        s_baud_rst <= '1';
+        s_baud_rst <= '0';
         CASE s_curr IS
             WHEN idle => 
                 IF start_i = '1' OR s_phase = phase1 OR (s_phase = phase2 AND s_cnt_phas2 /= 0) THEN
-                    s_baud_rst <= '0';
+                    s_baud_rst <= '1';
                     s_next <= start;
                 END IF;
             WHEN start =>
-                    s_baud_rst <= '1';
+                    s_baud_rst <= '0';
                     s_next <= transmit;
             WHEN transmit =>
                 IF s_iter = 9 THEN 
@@ -152,9 +154,11 @@ BEGIN
     
     -- register control -----------------------------------------
     -- fsm
-    p_reg_fsm : PROCESS(s_phase,start_i,mode_i,s_curr,s_next,param_bytes,s_cnt_phas1,s_cnt_phas2)
+    p_reg_fsm : PROCESS(s_phase,start_i,mode_i,s_curr,s_next,param_bytes,s_cnt_phas1,s_cnt_phas2,s_phas1_tmp,s_phas2_tmp)
     BEGIN
         s_phase_next <= s_phase;
+        s_cnt_phas1  <= s_phas1_tmp;
+        s_cnt_phas2  <= s_phas2_tmp;
         CASE s_phase IS
             WHEN idle =>
                 s_cnt_phas1 <= param_bytes;
@@ -167,14 +171,14 @@ BEGIN
                     s_phase_next <= phase2;
                 END IF;
                 IF s_curr = stop AND s_next = idle THEN
-                    s_cnt_phas1 <= s_cnt_phas1 - 1;
+                    s_cnt_phas1 <= s_phas1_tmp - 1;
                 END IF;
             WHEN phase2 => 
                 IF s_cnt_phas2 = 0 THEN
                     s_phase_next <= stop;
                 END IF;
                 IF s_curr = stop AND s_next = idle THEN
-                    s_cnt_phas2 <= s_cnt_phas2 - 1;
+                    s_cnt_phas2 <= s_phas2_tmp - 1;
                 END IF;
             WHEN stop => 
                 s_phase_next <= idle;
@@ -182,12 +186,14 @@ BEGIN
     
     END PROCESS p_reg_fsm;
 
-    p_reg_store : PROCESS(rst_i,clk_i) --ALL)
+    p_reg_store : PROCESS(rst_i,clk_i,s_phas1_tmp) --ALL)
     BEGIN
         IF rst_i = '1' THEN
             s_phase <= idle;
         ELSIF rising_edge(clk_i) THEN
             s_phase <= s_phase_next;
+            s_phas1_tmp <= s_cnt_phas1;
+            s_phas2_tmp <= s_cnt_phas2;
         END IF;
     END PROCESS p_reg_store;
     
