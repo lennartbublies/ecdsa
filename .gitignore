@@ -6,3 +6,4 @@ vhdl/incremental_db/*
 ecdsa-tex/*.pdf
 *.gz
 *.tmp
+.idea

@@ -11,7 +11,7 @@ USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 USE work.tld_ecdsa_package.all;
 
-ENTITY e_nm_posi_register IS
+ENTITY e_nm_piso_register IS
     PORT(
         clk_i : IN std_logic;
         rst_i : IN std_logic;
@@ -20,9 +20,9 @@ ENTITY e_nm_posi_register IS
         data_i : IN std_logic_vector(M-1 DOWNTO 0);
         data_o : OUT std_logic_vector(U-1 DOWNTO 0)
     );
-END e_nm_posi_register;
+END e_nm_piso_register;
 
-ARCHITECTURE rtl OF e_nm_posi_register IS
+ARCHITECTURE rtl OF e_nm_piso_register IS
     SIGNAL temp : std_logic_vector(M-1 DOWNTO 0);
 BEGIN
     PROCESS (clk_i, rst_i, load_i, data_i) IS

@@ -36,7 +36,7 @@ END e_uart_transmit_mux;
 
 ARCHITECTURE rtl OF e_uart_transmit_mux IS
     -- Import entity e_posi_register 
-    COMPONENT e_nm_posi_register  IS
+    COMPONENT e_nm_piso_register  IS
         PORT(
             clk_i : IN std_logic;
             rst_i : IN std_logic;
@@ -77,7 +77,7 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     
 BEGIN
     -- Instantiate sipo register entity for r register
-    r_register: e_nm_posi_register PORT MAP(
+    r_register: e_nm_piso_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_r_register, 
@@ -87,7 +87,7 @@ BEGIN
     );
         
     -- Instantiate sipo register entity for r register
-    s_register: e_nm_posi_register PORT MAP(
+    s_register: e_nm_piso_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => enable_s_register, 

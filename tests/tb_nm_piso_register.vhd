@@ -1,8 +1,11 @@
 ----------------------------------------------------------------------------------------------------
 --  Testbench - PISO Register (Parallel In Serial Out)
 --
---  Autor: Lennart Bublies (inf100434)
+--  This testbench is written for the use with production parameters. (M=163, U=8)
+--
+--  Autor: Lennart Bublies (inf100434), Leander Schulz (inf102143)
 --  Date: 18.08.2017
+--  Last Change: 16.10.2017 
 ----------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -13,6 +16,7 @@ USE ieee.numeric_std.ALL;
 USE ieee.std_logic_textio.ALL;
 USE ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
+USE work.tld_ecdsa_package.all;
 
 ENTITY tb_nm_posi_register IS
 END tb_nm_posi_register;
@@ -25,18 +29,17 @@ ARCHITECTURE rtl OF tb_nm_posi_register IS
             rst_i : IN std_logic;
             enable_i : IN std_logic;
             load_i : IN std_logic;
-            data_i : IN std_logic_vector(N-1 DOWNTO 0);
-            data_o : OUT std_logic_vector(M-1 DOWNTO 0)
+            data_i : IN std_logic_vector(M-1 DOWNTO 0);
+            data_o : OUT std_logic_vector(U-1 DOWNTO 0)
         );
     END COMPONENT;
 
   -- Internal signals
-  SIGNAL data: std_logic_vector(31 DOWNTO 0) := (OTHERS=>'0');
-  SIGNAL posi: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
+  SIGNAL data: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
+  SIGNAL posi: std_logic_vector(U-1 DOWNTO 0) := (OTHERS=>'0');
   SIGNAL clk, rst, enable, load: std_logic := '0';
   CONSTANT DELAY : time := 100 ns;
-  CONSTANT PERIOD : time := 200 ns;
-  CONSTANT DUTY_CYCLE : real := 0.5;
+  CONSTANT PERIOD : time := 20 ns;
   CONSTANT OFFSET : time := 0 ns;
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
@@ -56,9 +59,9 @@ BEGIN
         WAIT FOR OFFSET;
         CLOCK_LOOP : LOOP
             clk <= '0';
-            WAIT FOR (PERIOD *(1.0 - DUTY_CYCLE));
+            WAIT FOR PERIOD;
             clk <= '1';
-            WAIT FOR (PERIOD * DUTY_CYCLE);
+            WAIT FOR PERIOD;
         END LOOP CLOCK_LOOP;
     END PROCESS;
 
@@ -70,18 +73,45 @@ BEGIN
         rst <= '1';
         WAIT FOR PERIOD;
         rst <= '0';
-        WAIT FOR PERIOD;
+        WAIT FOR PERIOD*4;
 
-        enable <= '1';
+        data <= "100" & x"0B0A09080706050403020108A2E0CC0D99F8A5EF";
         load <= '1';
-        data <= x"0A0B0C0D";
         WAIT FOR PERIOD;
         load <= '0';
         WAIT FOR PERIOD*4;
+        
+        enable <= '1';
+        WAIT FOR PERIOD*2;
         enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        enable <= '1';
+        WAIT FOR PERIOD*2;
+        enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        enable <= '1';
+        WAIT FOR PERIOD*2;
+        enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        enable <= '1';
+        WAIT FOR PERIOD*2;
+        enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        enable <= '1';
+        WAIT FOR PERIOD*2;
+        enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        enable <= '1';
+        WAIT FOR PERIOD*2;
+        enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        enable <= '1';
+        WAIT FOR PERIOD*2;
+        enable <= '0'; 
+        WAIT FOR PERIOD*8;
+        
         
         WAIT FOR DELAY;
-
         -- Report results
         ASSERT (FALSE) REPORT
             "Simulation successful!"
