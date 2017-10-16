@@ -69,7 +69,7 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     -- Internal signals
     SIGNAL s_uart_data_r: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL s_uart_data_s: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
-    SIGNAL enable_r_register, enable_s_register: std_logic := '0';
+    SIGNAL s_enable_r, s_enable_s : std_logic := '0';
     
     SIGNAL s_reg_ctrl       : std_logic;
     SIGNAL s_reg_ena        : std_logic;
@@ -80,7 +80,7 @@ BEGIN
     r_register: e_nm_piso_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
-        enable_i => enable_r_register, 
+        enable_i => s_enable_r, 
         load_i => enable_i,         
         data_i => r_i, 
         data_o => s_uart_data_r
@@ -90,7 +90,7 @@ BEGIN
     s_register: e_nm_piso_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
-        enable_i => enable_s_register, 
+        enable_i => s_enable_s, 
         load_i => enable_i,         
         data_i => s_i, 
         data_o => s_uart_data_s
@@ -116,5 +116,16 @@ BEGIN
         
     -- multiplexer to control register inputs
     s_uart_data <= s_uart_data_r WHEN (s_reg_ctrl = '0') ELSE s_uart_data_s;
-    s_reg_ena <= enable_r_register WHEN (s_reg_ctrl = '0') ELSE enable_s_register;
+    --s_reg_ena <= enable_r_register WHEN (s_reg_ctrl = '0') ELSE enable_s_register;
+    
+    -- demux for register enable port
+    PROCESS(s_reg_ena,s_reg_ctrl)
+    BEGIN
+        CASE s_reg_ctrl is
+          WHEN '0'    => s_enable_r <= s_reg_ena; 
+                         s_enable_s <= '0';
+          WHEN OTHERS => s_enable_r <= '0'; 
+                         s_enable_s <= s_reg_ena;
+        END CASE; 
+    END PROCESS;
 END rtl;
