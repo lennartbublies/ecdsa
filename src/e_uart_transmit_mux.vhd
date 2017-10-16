@@ -99,7 +99,7 @@ BEGIN
     -- Instantiate uart transmitter
     transmit_instance : e_uart_transmit
         GENERIC MAP (
-            baud_rate   => 9600,
+            baud_rate   => 500000,
             N           => 1,
             M           => M
         ) PORT MAP ( 

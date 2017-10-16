@@ -9,13 +9,14 @@
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
+USE work.tld_ecdsa_package.all;
 
 ENTITY tb_module_transmit IS
 END ENTITY tb_module_transmit;
 
 ARCHITECTURE tb_arch OF tb_module_transmit IS
     
-    CONSTANT M : integer := 8;
+    --CONSTANT M : integer := 8;
 
     -- IMPORT e_uart_transmit_mux COMPONENT
     COMPONENT e_uart_transmit_mux IS
@@ -35,9 +36,9 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
     SIGNAL s_rst        : std_logic := '0'; 
     SIGNAL s_mode       : std_logic := '0';
     SIGNAL s_enable     : std_logic := '0';
-    SIGNAL s_r_i        : std_logic_vector(M-1 DOWNTO 0) := "00000000";
-    SIGNAL s_s_i        : std_logic_vector(M-1 DOWNTO 0) := "00000000";
-    SIGNAL s_v_i        : std_logic;
+    SIGNAL s_r_i        : std_logic_vector(M-1 DOWNTO 0) := zero;
+    SIGNAL s_s_i        : std_logic_vector(M-1 DOWNTO 0) := zero;
+    SIGNAL s_v_i        : std_logic := '0';
     
     SIGNAL s_tx         : std_logic;
     
@@ -64,8 +65,8 @@ BEGIN
 
     tx_gen : PROCESS
     BEGIN
-        s_r_i <= "10011001";
-        s_s_i <= "10011001";
+        s_r_i <= ones;
+        s_s_i <= ones;
         
         WAIT FOR 80 ns;
         s_rst <= '1';
