@@ -29,10 +29,13 @@ BEGIN
     BEGIN
         IF (rst_i='1') THEN
             temp <= (OTHERS=>'0');
-        ELSIF (load_i = '1') THEN
-            temp <= data_i ;
-        ELSIF (clk_i'event and clk_i='1' and enable_i='1') THEN
-            temp(M-U-1 DOWNTO 0) <= temp(M-1 DOWNTO U);
+        ELSIF rising_edge(clk_i) THEN
+            IF load_i = '1' THEN
+                temp <= data_i ;
+            END IF;
+            IF enable_i='1' THEN
+                temp(M-U-1 DOWNTO 0) <= temp(M-1 DOWNTO U);
+            END IF;
         END IF;
     END PROCESS;
             
