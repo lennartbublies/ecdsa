@@ -81,13 +81,17 @@ BEGIN
         IF rst_i = '1' THEN 
             tx_o <= '1';
             s_iter <= 0;
+            reg_ena_o <= '0';
         ELSIF rising_edge(clk_i) THEN
         
             IF s_curr = idle THEN
                 tx_o <= '1';
+                reg_ena_o <= '0';
             ELSIF s_curr = start THEN
                 tx_o <= '0';
+                reg_ena_o <= '1';
             ELSIF s_curr = transmit THEN
+                reg_ena_o <= '0';
                 IF s_baud_clk = '1' THEN
                     IF s_iter < 8 THEN
                         tx_o <= data_i(s_iter);
@@ -95,6 +99,7 @@ BEGIN
                     s_iter <= s_iter + 1;
                 END IF;
             ELSIF s_curr = stop THEN
+                reg_ena_o <= '0';
                 tx_o <= '1';
                 s_iter <= 0;
             END IF;
@@ -201,20 +206,15 @@ BEGIN
     BEGIN
         IF rst_i = '1' THEN
             reg_o   <= '0';
-            reg_ena_o <= '0';
         ELSIF rising_edge(clk_i) THEN
             IF s_phase = idle THEN
                 reg_o   <= '0';
-                reg_ena_o <= '0';
             ELSIF s_phase = phase1 THEN
                 reg_o   <= '0';
-                reg_ena_o <= '0';
             ELSIF s_phase = phase2 THEN
                 reg_o   <= '1';
-                reg_ena_o <= '0';
             ELSIF s_phase = stop THEN
                 reg_o   <= '0';
-                reg_ena_o <= '0';
             END IF;               
         END IF;  
     END PROCESS p_reg_output;
