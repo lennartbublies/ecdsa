@@ -19,7 +19,6 @@ ARCHITECTURE tb_arch OF tb_uart_transmit IS
     COMPONENT e_uart_transmit IS
         GENERIC(
             baud_rate : IN NATURAL RANGE 1200 TO 500000;
-            N : integer;
             M : integer 
         );
         PORT( 
@@ -48,7 +47,6 @@ BEGIN
     transmit_instance : e_uart_transmit
         GENERIC MAP (
             baud_rate   => 500000,
-            N           => 3, -- message length [byte]
             M           => 8  -- key length [bit]
         ) PORT MAP ( 
             clk_i    => s_clk,

@@ -51,7 +51,6 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     COMPONENT e_uart_transmit IS
         GENERIC(
             baud_rate : IN NATURAL RANGE 1200 TO 500000;
-            N : integer;
             M : integer 
         );
         PORT( 
@@ -100,7 +99,6 @@ BEGIN
     transmit_instance : e_uart_transmit
         GENERIC MAP (
             baud_rate   => 500000,
-            N           => 1,
             M           => M
         ) PORT MAP ( 
             clk_i     => clk_i,

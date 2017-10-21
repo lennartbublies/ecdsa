@@ -27,7 +27,6 @@ USE IEEE.std_logic_1164.ALL;
 ENTITY e_uart_transmit IS
     GENERIC(
         baud_rate : IN NATURAL RANGE 1200 TO 500000;
-        N         : integer;
         M         : integer 
     );
     PORT( 
@@ -166,9 +165,9 @@ BEGIN
     p_calc_bytes : PROCESS(param_bytes)
     BEGIN
         IF (param_bytes_b = 0) THEN
-            param_bytes <= param_bytes_a+1;
+            param_bytes <= param_bytes_a;
         ELSE
-            param_bytes <= param_bytes_a+2;
+            param_bytes <= param_bytes_a+1;
         END IF;
     END PROCESS p_calc_bytes; 
     
