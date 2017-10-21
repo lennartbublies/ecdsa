@@ -36,8 +36,9 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
     SIGNAL s_rst        : std_logic := '0'; 
     SIGNAL s_mode       : std_logic := '0';
     SIGNAL s_enable     : std_logic := '0';
-    SIGNAL s_r_i        : std_logic_vector(M-1 DOWNTO 0) := zero;
-    SIGNAL s_s_i        : std_logic_vector(M-1 DOWNTO 0) := zero;
+    -- bytes from int(1) to int(20) + '111'
+    SIGNAL s_r_i        : std_logic_vector(M-1 DOWNTO 0) := "1110000000100000010000000110000010000000101000001100000011100001000000010010000101000001011000011000000110100001110000011110001000000010001000100100001001100010100";
+    SIGNAL s_s_i        : std_logic_vector(M-1 DOWNTO 0) := "101" & x"1B1A19181716151413121118A2E0CC0D99F8A5EF";
     SIGNAL s_v_i        : std_logic := '0';
     
     SIGNAL s_tx         : std_logic;
@@ -65,8 +66,6 @@ BEGIN
 
     tx_gen : PROCESS
     BEGIN
-        s_r_i <= ones;
-        s_s_i <= ones;
         
         WAIT FOR 80 ns;
         s_rst <= '1';

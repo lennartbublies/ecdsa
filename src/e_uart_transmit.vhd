@@ -60,6 +60,8 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
     SIGNAL s_baud_clk : std_logic;
     SIGNAL s_baud_rst : std_logic := '1';
     
+    SIGNAL s_data_i   : std_logic_vector (7 DOWNTO 0);
+    
     -- reg_o, reg_ena_o
     -- p_calc_bytes
     CONSTANT  param_bytes_a : NATURAL RANGE 1 TO 128 := M / 8;
@@ -75,6 +77,19 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
     SIGNAL s_phas2_tmp : NATURAL RANGE 0 TO 128;
     
 BEGIN 
+
+    -- save data to send
+    p_store_data_i : PROCESS(clk_i,rst_i,s_next,data_i)
+    BEGIN
+        IF rst_i = '1' THEN 
+            s_data_i <= "00000000";
+        ELSIF rising_edge(clk_i) THEN
+            IF s_curr = start THEN
+                s_data_i <= data_i;
+            END IF;
+        END IF;
+    END PROCESS p_store_data_i;
+    
     -- tx output
     p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter)
     BEGIN
@@ -94,7 +109,7 @@ BEGIN
                 reg_ena_o <= '0';
                 IF s_baud_clk = '1' THEN
                     IF s_iter < 8 THEN
-                        tx_o <= data_i(s_iter);
+                        tx_o <= s_data_i(s_iter);
                     END IF;
                     s_iter <= s_iter + 1;
                 END IF;
