@@ -5,7 +5,6 @@
 --               
 -- GENERIC:
 --  baud_rate - baud rate of uart transmission
---  N         - Message length in Byte
 --  M         - Key length in Bit
 -- PORT:
 --  clk_i     - global clock signal
@@ -15,10 +14,11 @@
 --  data_i    - data byte to send
 --  tx_o      - sequential transmission signal
 --  reg_o     - switch between registers
+--  reg_ena_o - register enable
 --
 -- Author:       Leander Schulz (inf102143@fh-wedel.de)
 -- Date:         01.09.2017
--- Last change:  01.09.2017
+-- Last change:  22.10.2017
 -------------------------------------------------------------------------------
 
 LIBRARY IEEE;
