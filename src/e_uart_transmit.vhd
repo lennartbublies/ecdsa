@@ -75,6 +75,9 @@ ARCHITECTURE td_arch OF e_uart_transmit IS
     SIGNAL s_cnt_phas2 : NATURAL RANGE 0 TO 128;
     SIGNAL s_phas2_tmp : NATURAL RANGE 0 TO 128;
     
+    -- verify signals
+    SIGNAL s_verify : std_logic := '0';
+    
 BEGIN 
 
     -- save data to send
@@ -84,13 +87,18 @@ BEGIN
             s_data_i <= "00000000";
         ELSIF rising_edge(clk_i) THEN
             IF s_curr = start THEN
-                s_data_i <= data_i;
+                s_verify <= verify_i;
+                IF mode_i = '0' THEN
+                    s_data_i <= data_i;
+                ELSE 
+                    s_data_i <= "00000000";
+                END IF;
             END IF;
         END IF;
     END PROCESS p_store_data_i;
     
     -- tx output
-    p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter)
+    p_transmit_byte : PROCESS(clk_i,rst_i,s_curr,s_baud_clk,s_iter,s_verify)
     BEGIN
         IF rst_i = '1' THEN 
             tx_o <= '1';
@@ -108,7 +116,13 @@ BEGIN
                 reg_ena_o <= '0';
                 IF s_baud_clk = '1' THEN
                     IF s_iter < 8 THEN
-                        tx_o <= s_data_i(s_iter);
+                        -- -- -- TX OUTPUT HERE -- -- -->
+                        IF mode_i = '0' THEN
+                            tx_o <= s_data_i(s_iter);
+                        ELSE
+                            tx_o <= s_verify;
+                        END IF;
+                        -- <-- -- TX OUTPUT HERE -- -- --
                     END IF;
                     s_iter <= s_iter + 1;
                 END IF;

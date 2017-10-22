@@ -24,7 +24,7 @@ END e_nm_sipo_register;
 ARCHITECTURE rtl OF e_nm_sipo_register IS
 	SIGNAL temp: std_logic_vector(M-1 DOWNTO 0);
 BEGIN
-    PROCESS(clk_i)
+    PROCESS(clk_i,rst_i,enable_i)
     BEGIN
         IF rst_i = '1' THEN 
             temp <= (OTHERS => '0');

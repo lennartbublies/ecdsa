@@ -39,7 +39,7 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
     -- bytes from int(1) to int(20) + '111'
     SIGNAL s_r_i        : std_logic_vector(M-1 DOWNTO 0) := "1110000000100000010000000110000010000000101000001100000011100001000000010010000101000001011000011000000110100001110000011110001000000010001000100100001001100010100";
     SIGNAL s_s_i        : std_logic_vector(M-1 DOWNTO 0) := "101" & x"1B1A19181716151413121118A2E0CC0D99F8A5EF";
-    SIGNAL s_v_i        : std_logic := '0';
+    SIGNAL s_verify     : std_logic := '0';
     
     SIGNAL s_tx         : std_logic;
     
@@ -53,7 +53,7 @@ BEGIN
             enable_i    => s_enable,
             r_i         => s_r_i,
             s_i         => s_s_i,
-            v_i         => s_v_i,
+            v_i         => s_verify,
             uart_o      => s_tx
         );
     
@@ -66,13 +66,40 @@ BEGIN
 
     tx_gen : PROCESS
     BEGIN
-        
+        -- Simulate Transmission of example keys
+        -- Simulation time ~ 850us
         WAIT FOR 80 ns;
         s_rst <= '1';
         WAIT FOR 20 ns;
         s_rst <= '0';
         WAIT FOR 200 ns;
         
+        s_enable <= '1';
+        WAIT FOR 20 ns;
+        s_enable <= '0';
+        
+        WAIT FOR 990000 ns;
+        
+        -- Simulation of verify (mode = 1; verify = True = 1)
+        -- Simulation time ~850us
+        s_mode <= '1'; 
+        s_verify <= '1';
+        
+        -- run
+        WAIT FOR 100 ns;
+        s_enable <= '1';
+        WAIT FOR 20 ns;
+        s_enable <= '0';
+        
+        WAIT FOR 100 us;
+        
+        -- Simulation of verify (mode = 1; verify = False = 0)
+        -- Simulation time ~850us
+        s_mode <= '1'; 
+        s_verify <= '0';
+        
+        -- run
+        WAIT FOR 100 ns;
         s_enable <= '1';
         WAIT FOR 20 ns;
         s_enable <= '0';
