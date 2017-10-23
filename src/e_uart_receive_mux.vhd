@@ -48,7 +48,7 @@ ARCHITECTURE rtl OF e_uart_receive_mux IS
     END COMPONENT;
 
     -- IMPORT UART COMPONENT
-	COMPONENT e_uart_receive_data IS
+	COMPONENT e_uart_receiver IS
 		GENERIC ( 
 			baud_rate : IN NATURAL RANGE 1200 TO 500000;
             N : IN NATURAL RANGE 1 TO 256;
@@ -63,7 +63,7 @@ ARCHITECTURE rtl OF e_uart_receive_mux IS
 			ena_s_o	 : OUT std_logic;
 			ena_m_o	 : OUT std_logic;
 			rdy_o    : OUT std_logic);
-	 END COMPONENT e_uart_receive_data;
+	 END COMPONENT e_uart_receiver;
     
     -- Internal signals
     SIGNAL uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
@@ -108,7 +108,7 @@ BEGIN
     --  -> Create hashes
     --      --> Change M_REGISTER to 32 output
     --      --> Change 
-	uart_receiver: e_uart_receive_data
+	uart_receiver : e_uart_receiver
 	GENERIC MAP ( 
 		baud_rate => 500000, -- 9600 in production
 		N => 8,	-- length of message

@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------
--- Entity - UART Receive Data
+-- Entity - UART Receiver
 --		Receives data from RX of UART interface. Can be toggled between SIG and VALID mode. 
 --
 --      The key has to be right aligned if it is not byte-aligned:
@@ -29,7 +29,7 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 
-ENTITY e_uart_receive_data IS
+ENTITY e_uart_receiver IS
     
     GENERIC (   
         baud_rate : IN NATURAL RANGE 1200 TO 500000;
@@ -45,9 +45,9 @@ ENTITY e_uart_receive_data IS
 		ena_s_o	: OUT std_logic;
 		ena_m_o	: OUT std_logic;
 		rdy_o	: OUT std_logic);
-    END ENTITY e_uart_receive_data;
+    END ENTITY e_uart_receiver;
 
-ARCHITECTURE e_uart_receive_data_arch OF e_uart_receive_data IS
+ARCHITECTURE e_uart_receiver_arch OF e_uart_receiver IS
 --	signal declaration
 	--TYPE uart_state_type IS (idle, start, data0, data1, data2, data3, data4, data5, data6, data7, parity, stop);
     TYPE uart_state_type IS (idle, start, data, stop);
@@ -323,4 +323,4 @@ BEGIN
         END IF;        
     END PROCESS p_bytes_out;
         
-END ARCHITECTURE e_uart_receive_data_arch;
+END ARCHITECTURE e_uart_receiver_arch;

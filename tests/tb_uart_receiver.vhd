@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- Entity - UART Receive Data Testbench
---		Testbench of e_uart_receive_data
+--		Testbench of e_uart_receiver
 --
 -- Generic:
 --		baud_rate : baud rate of UART
@@ -20,13 +20,13 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 
-ENTITY tb_uart_receive_data IS
-END ENTITY tb_uart_receive_data;
+ENTITY tb_uart_receiver IS
+END ENTITY tb_uart_receiver;
 
-ARCHITECTURE e_uart_receive_data_tb_arch OF tb_uart_receive_data IS
+ARCHITECTURE e_uart_receiver_tb_arch OF tb_uart_receiver IS
 
     -- IMPORT UART COMPONENT
-	COMPONENT e_uart_receive_data IS
+	COMPONENT e_uart_receiver IS
 		GENERIC ( 
             baud_rate : IN NATURAL RANGE 1200 TO 500000;
             N : IN NATURAL RANGE 1 TO 256;
@@ -41,7 +41,7 @@ ARCHITECTURE e_uart_receive_data_tb_arch OF tb_uart_receive_data IS
             ena_s_o	 : OUT std_logic;
             ena_m_o	 : OUT std_logic;
             rdy_o    : OUT std_logic);
-	END COMPONENT e_uart_receive_data;
+	END COMPONENT e_uart_receiver;
 	
 
     -- TB internal signals
@@ -61,7 +61,7 @@ ARCHITECTURE e_uart_receive_data_tb_arch OF tb_uart_receive_data IS
 -- 500000 baud ^= 2000ns   ^= 100 cycles
 BEGIN
    	 
-	uart_receiver: e_uart_receive_data
+	uart_receiver: e_uart_receiver
 	GENERIC MAP ( 
 		baud_rate => 500000,
 		N => 1,	    -- length of message
@@ -326,7 +326,7 @@ BEGIN
 
 
 
-END ARCHITECTURE e_uart_receive_data_tb_arch;
+END ARCHITECTURE e_uart_receiver_tb_arch;
 	
 	
 	

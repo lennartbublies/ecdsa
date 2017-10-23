@@ -51,6 +51,7 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VHDL_FILE ../src/e_uart_receiver.vhd
 set_global_assignment -name VHDL_FILE ../src/e_nm_piso_register.vhd
 set_global_assignment -name VHDL_FILE ../src/e_gf2m_point_multiplication.vhd
 set_global_assignment -name VHDL_FILE ../src/e_gf2m_point_doubling.vhd
@@ -60,7 +61,6 @@ set_global_assignment -name VHDL_FILE ../src/tld_ecdsa_package.vhd
 set_global_assignment -name VHDL_FILE ../src/e_gf2m_mod.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_transmit.vhd
 set_global_assignment -name VHDL_FILE ../src/e_baud_clock.vhd
-set_global_assignment -name VHDL_FILE ../src/e_uart_receive_data.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_transmit_mux.vhd
 set_global_assignment -name VHDL_FILE ../src/tld_ecdsa.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_receive_mux.vhd
