@@ -86,6 +86,9 @@ ARCHITECTURE e_uart_receive_data_arch OF e_uart_receive_data IS
     SIGNAL s_cnt_phas1 : NATURAL RANGE 0 TO 128;
     SIGNAL s_cnt_phas2 : NATURAL RANGE 0 TO 128;
     SIGNAL s_cnt_phas3 : NATURAL RANGE 0 TO 256 := N;
+    SIGNAL s_phas1_tmp : NATURAL RANGE 0 TO 128;
+    SIGNAL s_phas2_tmp : NATURAL RANGE 0 TO 128;
+    SIGNAL s_phas3_tmp : NATURAL RANGE 0 TO 128;
 
     SIGNAL s_rdy    : std_logic;
     SIGNAL s_data   : std_logic_vector (0 TO 7);
@@ -94,7 +97,7 @@ ARCHITECTURE e_uart_receive_data_arch OF e_uart_receive_data IS
 BEGIN
 
 	-- UART Receive State Machine
-    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk,bit_cnt) --ALL) p_byte_fsm : PROCESS(ALL)
+    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk,bit_cnt)
     BEGIN
         s_uart_next <= s_uart_state;
         rst_internal <= '1';
@@ -219,9 +222,12 @@ BEGIN
     END PROCESS p_calc_bytes;    
     
     -- state machine 
-    p_cnt_bytes : PROCESS(rst_i,rst_internal,s_rdy)--,s_cnt_phas1,s_cnt_phas2,s_cnt_phas3,s_phase)
+    p_cnt_bytes : PROCESS(rst_i,mode_i,rst_internal,s_phase,s_rdy,s_phas1_tmp,s_phas2_tmp,s_phas3_tmp,param_bytes)
     BEGIN
         s_phase_next <= s_phase;
+        s_cnt_phas1  <= s_phas1_tmp;
+        s_cnt_phas2  <= s_phas2_tmp;
+        s_cnt_phas3  <= s_phas3_tmp;
         CASE s_phase IS
             WHEN idle =>
                 s_cnt_phas1 <= param_bytes;
@@ -234,23 +240,23 @@ BEGIN
                 END IF;
             WHEN phase1 =>
                 IF s_rdy = '1' THEN
-                    s_cnt_phas1 <= s_cnt_phas1 - 1;
+                    s_cnt_phas1 <= s_phas1_tmp - 1;
                 END IF;
-                IF s_cnt_phas1 = 0 THEN
+                IF s_phas1_tmp = 0 THEN
                     s_phase_next <= phase2;
                 END IF;
             WHEN phase2 => 
                 IF s_rdy = '1' THEN
-                    s_cnt_phas2 <= s_cnt_phas2 - 1;
+                    s_cnt_phas2 <= s_phas2_tmp - 1;
                 END IF;
-                IF s_cnt_phas2 = 0 THEN
+                IF s_phas2_tmp = 0 THEN
                     s_phase_next <= phase3;
                 END IF;
             WHEN phase3 => 
                 IF s_rdy = '1' THEN
-                    s_cnt_phas3 <= s_cnt_phas3 - 1;
+                    s_cnt_phas3 <= s_phas3_tmp - 1;
                 END IF;
-                IF s_cnt_phas3 = 0 THEN
+                IF s_phas3_tmp = 0 THEN
                     s_phase_next <= stop;
                 END IF;
             WHEN stop => 
@@ -266,6 +272,9 @@ BEGIN
             s_phase <= idle;
         ELSIF rising_edge(clk_i) THEN
             s_phase <= s_phase_next;
+            s_phas1_tmp <= s_cnt_phas1;
+            s_phas2_tmp <= s_cnt_phas2;
+            s_phas3_tmp <= s_cnt_phas3;
         END IF;
     END PROCESS p_cnt_bytes_store;
     
