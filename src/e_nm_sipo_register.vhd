@@ -1,9 +1,8 @@
 ----------------------------------------------------------------------------------------------------
 --  ENTITY - Serial In Parallel Out Register
 --
---  Autor: Lennart Bublies (inf100434), Leander Schulz (inf102143@fh-wedel.de)
+--  Autor: Lennart Bublies (inf100434)
 --  Date: 29.06.2017
---  Last change:  22.10.2017
 ----------------------------------------------------------------------------------------------------
 
 LIBRARY IEEE;

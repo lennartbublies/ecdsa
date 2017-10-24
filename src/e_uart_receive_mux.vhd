@@ -26,7 +26,7 @@ ENTITY e_uart_receive_mux IS
         mode_i : IN std_logic;
         
         -- Output
-        r_o : OUT std_logic_vector(M-1 DOWNTO 0);
+        r_o : OUT std_logic_vector(M-1 DOWNTO 0); -- M-1
         s_o : OUT std_logic_vector(M-1 DOWNTO 0);
         m_o : OUT std_logic_vector(M-1 DOWNTO 0);
         
