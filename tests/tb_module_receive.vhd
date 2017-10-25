@@ -31,13 +31,13 @@ ARCHITECTURE tb_uart_receive_mux_arch OF tb_uart_receive_mux IS
     -- IMPORT UART COMPONENT
     COMPONENT e_uart_receive_mux IS
         PORT ( 
-            clk_i : IN std_logic;
-            rst_i : IN std_logic;
+            clk_i  : IN std_logic;
+            rst_i  : IN std_logic;
             uart_i : IN std_logic;
-            mode_i : IN std_logic;
-            r_o : OUT std_logic_vector(M-1 DOWNTO 0);
-            s_o : OUT std_logic_vector(M-1 DOWNTO 0);
-            m_o : OUT std_logic_vector(M-1 DOWNTO 0);
+            mode_o  : OUT std_logic;
+            r_o     : OUT std_logic_vector(M-1 DOWNTO 0);
+            s_o     : OUT std_logic_vector(M-1 DOWNTO 0);
+            m_o     : OUT std_logic_vector(M-1 DOWNTO 0);
             ready_o : OUT std_logic
         );
     END COMPONENT e_uart_receive_mux;
@@ -47,7 +47,7 @@ ARCHITECTURE tb_uart_receive_mux_arch OF tb_uart_receive_mux IS
     SIGNAL s_clk        : std_logic;
     SIGNAL s_rx         : std_logic := '1';
     SIGNAL s_rst        : std_logic;
-    SIGNAL s_mode       : std_logic := '1';
+    SIGNAL s_mode       : std_logic;
     SIGNAL s_data       : std_logic_vector(7 DOWNTO 0);
 	SIGNAL s_r_o        : std_logic_vector(M-1 DOWNTO 0);
 	SIGNAL s_s_o        : std_logic_vector(M-1 DOWNTO 0);
@@ -95,7 +95,7 @@ BEGIN
         clk_i   => s_clk,
         rst_i   => s_rst,
         uart_i  => s_rx,
-        mode_i  => s_mode,
+        mode_o  => s_mode,
         r_o     => s_r_o,
         s_o     => s_s_o,
         m_o     => s_m_o,
@@ -120,6 +120,9 @@ BEGIN
 		s_rst <= '0';
         WAIT FOR 880 ns;
 		
+        -- set mode to 1 (verify)
+        s_data <= "11111111";
+        p_send_byte(s_data,s_rx);
         ASSERT FALSE REPORT "R Byte 1-21" SEVERITY NOTE;
         s_data <= "00000001";
         p_send_byte(s_data,s_rx);
@@ -218,13 +221,16 @@ BEGIN
         s_data <= "10111011";
         p_send_byte(s_data,s_rx);
         
-        -- Switching mode_i to 1 (sign)
+        -- reset between mode switching
         WAIT FOR 20000 ns;
-        s_mode <= '0';
         s_rst  <= '1';
         WAIT FOR 20 ns;
         s_rst  <= '0';
         WAIT FOR 20000 ns;
+        
+        -- Switching mode_i to 0 (sign)
+        s_data <= "00000000";
+        p_send_byte(s_data,s_rx);        
         
         ASSERT FALSE REPORT "Verify - Message Bytes" SEVERITY NOTE;
         s_data <= "11010101";

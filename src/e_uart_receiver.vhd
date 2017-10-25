@@ -39,7 +39,7 @@ ENTITY e_uart_receiver IS
 		clk_i	: IN std_logic;
 		rst_i	: IN std_logic;
 	 	rx_i	: IN std_logic;
-		mode_i	: IN std_logic;
+		mode_o	: OUT std_logic;
 		data_o	: OUT std_logic_vector (7 DOWNTO 0);
 		ena_r_o	: OUT std_logic;
 		ena_s_o	: OUT std_logic;
@@ -102,6 +102,7 @@ ARCHITECTURE e_uart_receiver_arch OF e_uart_receiver IS
     CONSTANT c_mode_sign   : std_logic_vector (7 DOWNTO 0) := "00000000";
     CONSTANT c_mode_verify : std_logic_vector (7 DOWNTO 0) := "11111111";
     SIGNAL s_mode, s_mode_tmp : std_logic;
+    SIGNAL s_mode_start, s_mode_start_tmp : std_logic;
 	
 BEGIN
 
@@ -195,7 +196,7 @@ BEGIN
         END IF;
     END PROCESS p_scan_clk;
     
-    p_byte_store : PROCESS(rst_i,clk_i) --ALL)
+    p_byte_store : PROCESS(rst_i,clk_i,param_bytes) --ALL)
     BEGIN
         IF rst_i = '1' THEN
             s_uart_state <= idle;
@@ -203,7 +204,8 @@ BEGIN
             s_phas1_tmp <= param_bytes;
             s_phas2_tmp <= param_bytes;
             s_phas3_tmp <= N;
-            s_mode       <= '0';
+            s_mode      <= '0';
+            s_mode_start <= '0';
         ELSIF rising_edge(clk_i) THEN
             s_uart_state <= s_uart_next;
             s_phase     <= s_phase_next;
@@ -211,6 +213,7 @@ BEGIN
             s_phas2_tmp <= s_cnt_phas2;
             s_phas3_tmp <= s_cnt_phas3;
             s_mode       <= s_mode_tmp;
+            s_mode_start <= s_mode_start_tmp;
         END IF;
     END PROCESS p_byte_store;
 
@@ -227,10 +230,10 @@ BEGIN
                     IF s_data = c_mode_sign THEN
                         -- sign
                         s_mode_tmp <= '0';
-                        s_rdy <= '1';
+                        s_mode_start_tmp <= '1';
                     ELSIF s_data = c_mode_verify THEN
                         -- verify
-                        s_mode_tmp <= '1';
+                        s_mode_start_tmp <= '1';
                         s_rdy <= '1';
                     ELSE
                         -- mode detection failed
@@ -273,10 +276,10 @@ BEGIN
                     s_phase_next <= mode;
                 END IF;
             WHEN mode =>
-                IF s_rdy = '1' AND s_mode = '1' THEN
+                IF s_mode_start = '1' AND s_mode = '1' THEN
                     -- verify
                     s_phase_next <= phase1;
-                ELSIF s_rdy = '1' AND s_mode = '0' THEN
+                ELSIF s_mode_start = '1' AND s_mode = '0' THEN
                     -- sign
                     s_phase_next <= phase3;
                 END IF;
@@ -307,17 +310,21 @@ BEGIN
     END PROCESS p_cnt_bytes;
     
         -- push to output 
-    p_bytes_out : PROCESS(clk_i,rst_i,s_phase,s_phase_next)
+    p_bytes_out : PROCESS(clk_i,rst_i,s_phase,s_phase_next,s_mode)
     BEGIN 
         IF rst_i = '1' THEN
+            mode_o  <= '0';
             data_o  <= "00000000";
             rdy_o   <= '0';
             ena_r_o <= '0';
             ena_s_o <= '0';
             ena_m_o <= '0';
         ELSIF rising_edge(clk_i) THEN
+            IF s_mode_start = '1' THEN
+                mode_o <= s_mode;
+            END IF;
             IF s_rdy = '1' THEN
-                IF s_phase = idle THEN
+                IF s_phase = idle OR s_phase = mode THEN
                     data_o  <= "00000000";
                     ena_r_o <= '0';
                     ena_s_o <= '0';

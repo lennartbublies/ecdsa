@@ -23,7 +23,7 @@ ENTITY e_uart_receive_mux IS
         uart_i : IN std_logic;
         
         -- Set mode
-        mode_i : IN std_logic;
+        mode_o	: OUT std_logic;
         
         -- Output
         r_o : OUT std_logic_vector(M-1 DOWNTO 0); -- M-1
@@ -57,7 +57,7 @@ ARCHITECTURE rtl OF e_uart_receive_mux IS
 			clk_i    : IN  std_logic;
 			rst_i    : IN  std_logic;
 			rx_i     : IN  std_logic;
-			mode_i   : IN  std_logic;
+			mode_o	 : OUT std_logic;
 			data_o   : OUT std_logic_vector (7 DOWNTO 0);
 			ena_r_o	 : OUT std_logic;
 			ena_s_o	 : OUT std_logic;
@@ -117,7 +117,7 @@ BEGIN
 		clk_i    => clk_i,
 		rst_i    => rst_i,
 		rx_i     => uart_i,
-		mode_i   => mode_i,
+		mode_o   => mode_o,
 		data_o   => uart_data,
 		ena_r_o	 => enable_r_register, 
 		ena_s_o	 => enable_s_register, 

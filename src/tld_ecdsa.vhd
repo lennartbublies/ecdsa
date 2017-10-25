@@ -55,13 +55,13 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     -- Import entity e_uart_receive_mux
     COMPONENT e_uart_receive_mux IS
         PORT ( 
-            clk_i : IN std_logic;
-            rst_i : IN std_logic;
+            clk_i  : IN std_logic;
+            rst_i  : IN std_logic;
             uart_i : IN std_logic;
-            mode_i : IN std_logic;
-            r_o : OUT std_logic_vector(M-1 DOWNTO 0);
-            s_o : OUT std_logic_vector(M-1 DOWNTO 0);
-            m_o : OUT std_logic_vector(M-1 DOWNTO 0);
+            mode_o  : OUT std_logic;
+            r_o     : OUT std_logic_vector(M-1 DOWNTO 0);
+            s_o     : OUT std_logic_vector(M-1 DOWNTO 0);
+            m_o     : OUT std_logic_vector(M-1 DOWNTO 0);
             ready_o : OUT std_logic
         );
     END COMPONENT;
@@ -69,14 +69,14 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     -- Import entity e_uart_transmit_mux
     COMPONENT e_uart_transmit_mux IS
         PORT ( 
-            clk_i : IN std_logic;
-            rst_i : IN std_logic;
-            mode_i : IN std_logic;
+            clk_i   : IN std_logic;
+            rst_i   : IN std_logic;
+            mode_i  : IN std_logic;
             enable_i : IN std_logic;
-            r_i : IN std_logic_vector(M-1 DOWNTO 0);
-            s_i : IN std_logic_vector(M-1 DOWNTO 0);
-            v_i : IN std_logic;
-            uart_o : OUT std_logic
+            r_i     : IN std_logic_vector(M-1 DOWNTO 0);
+            s_i     : IN std_logic_vector(M-1 DOWNTO 0);
+            v_i     : IN std_logic;
+            uart_o  : OUT std_logic
         );
     END COMPONENT;
     
@@ -106,7 +106,7 @@ BEGIN
         clk_i => clk_i, 
         rst_i => rst_i,
         uart_i => uart_rx_i,
-        mode_i => ecdsa_mode,
+        mode_o => ecdsa_mode,
         r_o => ecdsa_r_in,
         s_o => ecdsa_s_in,
         m_o => ecdsa_hash,
