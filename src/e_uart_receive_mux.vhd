@@ -3,7 +3,7 @@
 --
 --  Autor: Lennart Bublies (inf100434), Leander Schulz (inf102143)
 --  Date: 29.06.2017
---  Modified: 17.09.2017
+--  Last change: 25.10.2017
 ----------------------------------------------------------------------------------------------------
 
 LIBRARY IEEE;
@@ -111,7 +111,7 @@ BEGIN
 	uart_receiver : e_uart_receiver
 	GENERIC MAP ( 
 		baud_rate => 500000, -- 9600 in production
-		N => 8,	-- length of message
+		N => 3,	-- length of message
 		M => M)  -- length of key
 	PORT MAP (
 		clk_i    => clk_i,

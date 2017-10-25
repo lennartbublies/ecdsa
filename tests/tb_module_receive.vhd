@@ -16,6 +16,7 @@
 --    
 --  Author: Leander Schulz (inf102143@fh-wedel.de)
 --  Date: 08.08.2017
+--  Last change: 25.10.2017
 ----------------------------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -217,6 +218,21 @@ BEGIN
         s_data <= "10111011";
         p_send_byte(s_data,s_rx);
         
+        -- Switching mode_i to 1 (sign)
+        WAIT FOR 20000 ns;
+        s_mode <= '0';
+        s_rst  <= '1';
+        WAIT FOR 20 ns;
+        s_rst  <= '0';
+        WAIT FOR 20000 ns;
+        
+        ASSERT FALSE REPORT "Verify - Message Bytes" SEVERITY NOTE;
+        s_data <= "11010101";
+        p_send_byte(s_data,s_rx);
+        s_data <= "10011010";
+        p_send_byte(s_data,s_rx);
+        s_data <= "10111011";
+        p_send_byte(s_data,s_rx);
         
         WAIT;
     END PROCESS rx_gen;

@@ -24,7 +24,7 @@
 --    
 --  Author:         Leander Schulz (inf102143@fh-wedel.de)
 --  Date:           10.07.2017
---  Last change:    05.09.2017
+--  Last change:    25.10.2017
 ----------------------------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -291,7 +291,6 @@ BEGIN
             IF s_rdy = '1' THEN
                 IF s_phase = idle THEN
                     data_o  <= "00000000";
-                    rdy_o   <= '0';
                     ena_r_o <= '0';
                     ena_s_o <= '0';
                     ena_m_o <= '0';
@@ -311,14 +310,20 @@ BEGIN
                     ena_s_o <= '0';
                     ena_m_o <= '1';
                 ELSIF s_phase = stop THEN
-                    rdy_o <= '1';
+                    ena_r_o <= '0';
+                    ena_s_o <= '0';
+                    ena_m_o <= '0';
                 END IF;               
             ELSE
                 data_o  <= "00000000";
-                rdy_o   <= '0';
                 ena_r_o <= '0';
                 ena_s_o <= '0';
                 ena_m_o <= '0';
+            END IF;
+            IF s_phase_next = stop THEN
+                rdy_o <= '1';
+            ELSE
+                rdy_o <= '0';
             END IF;
         END IF;        
     END PROCESS p_bytes_out;
