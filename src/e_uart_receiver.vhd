@@ -80,11 +80,12 @@ ARCHITECTURE e_uart_receiver_arch OF e_uart_receiver IS
     SIGNAL    param_bytes   : NATURAL RANGE 1 TO 128;
 
 -- p_cnt_bytes
-    -- mode   = detect mode ("00000000" for sign or "11111111" for verify)
-    -- phase1 = read point r
-    -- phase2 = read point s
-    -- phase3 = read message
-    TYPE phase_state_type IS (idle, mode, phase1, phase2, phase3, stop);
+    -- dmode    = detect mode ("00000000" for sign or "11111111" for verify)
+    -- smode    = set mode ('0' or '1')
+    -- phase1   = read point r
+    -- phase2   = read point s
+    -- phase3   = read message
+    TYPE phase_state_type IS (idle, dmode, smode, phase1, phase2, phase3, stop);
 	SIGNAL s_phase, s_phase_next : phase_state_type;
     
     SIGNAL s_cnt_phas1 : NATURAL RANGE 0 TO 128;
@@ -107,7 +108,7 @@ ARCHITECTURE e_uart_receiver_arch OF e_uart_receiver IS
 BEGIN
 
 	-- UART Receive State Machine
-    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk,bit_cnt)
+    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk,bit_cnt,s_rdy)
     BEGIN
         s_uart_next <= s_uart_state;
         rst_internal <= '1';
@@ -127,19 +128,19 @@ BEGIN
                     s_uart_next <= stop;
                 END IF;
             WHEN stop => 
-                IF rx_i = '0' THEN
+                IF rx_i = '0' OR s_rdy = '1' THEN
                     s_uart_next <= idle;
                 END IF;
         END CASE;
     END PROCESS p_byte_fsm;
     
     --- save the rx signal via shifting into s_data:
-    p_shift : PROCESS(clk_i,rst_i,rst_internal,rx_i,s_data,scan_clk,bit_cnt) --ALL)
+    p_shift : PROCESS(clk_i,rst_i,rst_internal,rx_i,s_data,scan_clk,bit_cnt,s_uart_state) --ALL)
     BEGIN
         IF rst_i = '1' THEN
             s_data <= (others => '0');
         ELSIF rising_edge(clk_i) AND scan_clk = '1' THEN
-            IF bit_cnt < 8 THEN
+            IF bit_cnt < 8 AND NOT (s_uart_state = idle) THEN
                 s_data(0) <= rx_i;
                 FOR i IN 1 TO 7 LOOP
                     s_data(i) <= s_data(i-1);
@@ -155,7 +156,7 @@ BEGIN
         ELSIF rst_internal = '0' THEN
             bit_cnt <= 0;
         ELSIF rising_edge(clk_i) AND scan_clk = '1' THEN
-            IF bit_cnt < 9 THEN
+            IF bit_cnt < 9 AND NOT (s_uart_state = idle) THEN
                 bit_cnt <= bit_cnt + 1;
             END IF;
         END IF;
@@ -170,18 +171,18 @@ BEGIN
             scan_cnt <= 0;
             wait_cnt <= 0;
         ELSIF rising_edge(clk_i) THEN
-            IF rst_internal = '0' THEN          -- internal reset when start bit detected                    
+            IF rst_internal = '0' THEN                      
                     scan_clk <= '0';
                     scan_cnt <= 0;
                     wait_cnt <= 0;
-            ELSIF wait_cnt < wait_rate THEN            -- warte Halbe Baud-Rate
+            ELSIF wait_cnt < wait_rate THEN
                 wait_cnt <= wait_cnt + 1;
             ELSE
-                IF bit_cnt = 9 THEN          -- internal reset when start bit detected                    
+                IF bit_cnt = 9 AND NOT (s_uart_state = idle) THEN                  
                     scan_clk <= '0';
                     scan_cnt <= 0;
                     wait_cnt <= 0;
-                ELSIF scan_cnt = 0 THEN                -- generiere scan_clk
+                ELSIF scan_cnt = 0 THEN
                     scan_clk <= '1';
                     scan_cnt <= scan_cnt + 1;
                 ELSE
@@ -223,16 +224,18 @@ BEGIN
         IF rst_i = '1' THEN
             s_data_o <= "00000000";
             s_rdy <= '0';
+            s_mode_start_tmp <= '0';
         ELSIF rising_edge(clk_i) THEN
             IF s_uart_state = data AND s_uart_next = stop THEN
                 -- detect mode
-                IF s_phase = mode THEN
+                IF s_phase = dmode THEN
                     IF s_data = c_mode_sign THEN
                         -- sign
                         s_mode_tmp <= '0';
                         s_mode_start_tmp <= '1';
                     ELSIF s_data = c_mode_verify THEN
                         -- verify
+                        s_mode_tmp <= '1';
                         s_mode_start_tmp <= '1';
                         s_rdy <= '1';
                     ELSE
@@ -243,8 +246,10 @@ BEGIN
                 ELSE
                     s_data_o <= s_data;
                     s_rdy <= '1'; 
+                    s_mode_start_tmp <= '0';
                 END IF;
             ELSE
+                s_mode_start_tmp <= '0';
                 s_rdy <= '0';
             END IF;
         END IF;        
@@ -273,13 +278,17 @@ BEGIN
                 s_cnt_phas2 <= param_bytes;
                 s_cnt_phas3 <= N;
                 IF rst_internal = '0' THEN
-                    s_phase_next <= mode;
+                    s_phase_next <= dmode;
                 END IF;
-            WHEN mode =>
-                IF s_mode_start = '1' AND s_mode = '1' THEN
+            WHEN dmode =>
+                IF s_mode_start = '1'  THEN
+                    s_phase_next <= smode;
+                END IF;
+            WHEN smode =>
+                IF s_mode = '1' THEN
                     -- verify
                     s_phase_next <= phase1;
-                ELSIF s_mode_start = '1' AND s_mode = '0' THEN
+                ELSIF s_mode = '0' THEN
                     -- sign
                     s_phase_next <= phase3;
                 END IF;
@@ -324,7 +333,7 @@ BEGIN
                 mode_o <= s_mode;
             END IF;
             IF s_rdy = '1' THEN
-                IF s_phase = idle OR s_phase = mode THEN
+                IF s_phase = idle OR s_phase = dmode or s_phase = smode THEN
                     data_o  <= "00000000";
                     ena_r_o <= '0';
                     ena_s_o <= '0';

@@ -16,7 +16,7 @@
 --    
 --  Author: Leander Schulz (inf102143@fh-wedel.de)
 --  Date: 08.08.2017
---  Last change: 25.10.2017
+--  Last change: 28.10.2017
 ----------------------------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -31,9 +31,9 @@ ARCHITECTURE tb_uart_receive_mux_arch OF tb_uart_receive_mux IS
     -- IMPORT UART COMPONENT
     COMPONENT e_uart_receive_mux IS
         PORT ( 
-            clk_i  : IN std_logic;
-            rst_i  : IN std_logic;
-            uart_i : IN std_logic;
+            clk_i       : IN std_logic;
+            rst_i           : IN std_logic;
+            uart_i      : IN std_logic;
             mode_o  : OUT std_logic;
             r_o     : OUT std_logic_vector(M-1 DOWNTO 0);
             s_o     : OUT std_logic_vector(M-1 DOWNTO 0);
@@ -222,11 +222,11 @@ BEGIN
         p_send_byte(s_data,s_rx);
         
         -- reset between mode switching
-        WAIT FOR 20000 ns;
+        WAIT FOR 200000 ns;
         s_rst  <= '1';
         WAIT FOR 20 ns;
         s_rst  <= '0';
-        WAIT FOR 20000 ns;
+        WAIT FOR 200000 ns;
         
         -- Switching mode_i to 0 (sign)
         s_data <= "00000000";
