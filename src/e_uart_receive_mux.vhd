@@ -111,7 +111,7 @@ BEGIN
 	uart_receiver : e_uart_receiver
 	GENERIC MAP ( 
 		baud_rate => 500000, -- 9600 in production
-		N => 3,	-- length of message
+		N => 21,	-- length of message
 		M => M)  -- length of key
 	PORT MAP (
 		clk_i    => clk_i,

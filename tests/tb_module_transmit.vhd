@@ -31,7 +31,7 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
             uart_o : OUT std_logic
         );
     END COMPONENT e_uart_transmit_mux;
-
+    
     SIGNAL s_clk        : std_logic;
     SIGNAL s_rst        : std_logic := '0'; 
     SIGNAL s_mode       : std_logic := '0';
@@ -42,6 +42,8 @@ ARCHITECTURE tb_arch OF tb_module_transmit IS
     SIGNAL s_verify     : std_logic := '0';
     
     SIGNAL s_tx         : std_logic;
+    
+    
     
 BEGIN
     -- Instantiate uart transmitter
