@@ -72,7 +72,7 @@ BEGIN
         r_o     => s_r,
         s_o     => s_s,
         m_o     => s_m_o,
-        ready_o => s_enable
+        ready_o => OPEN
     );
 
 --- Instance of Transmitter
@@ -111,7 +111,11 @@ BEGIN
             s_rx <= '0';        -- Start Bit
             WAIT FOR 2000 ns;
             FOR i IN 0 TO 7 LOOP
-                s_rx <= s_mode_i;
+                IF s_mode_i = '0' THEN
+                    s_rx <= '0';
+                ELSE
+                    s_rx <= '1';
+                END IF;
                 WAIT FOR 2000 ns;
             END LOOP;
             s_rx <= '1';        -- stop bit and idle
@@ -178,7 +182,8 @@ BEGIN
         -- Test Case 2
         s_mode <= '1';
         p_send(s_mode,s_r_1,s_s_1,s_m_1,s_rx);
-        
+        -- start transmission
+        s_enable <= '1';
 
         WAIT;
     END PROCESS rx_gen;
