@@ -266,7 +266,7 @@ BEGIN
     END PROCESS p_calc_bytes;    
     
     -- state machine 
-    p_cnt_bytes : PROCESS(rst_i,rst_internal,s_mode,s_phase,s_rdy,s_phas1_tmp,s_phas2_tmp,s_phas3_tmp,param_bytes)
+    p_cnt_bytes : PROCESS(rst_i,rst_internal,s_mode,s_phase,s_rdy,s_mode_start,s_phas1_tmp,s_phas2_tmp,s_phas3_tmp,param_bytes)
     BEGIN
         s_phase_next <= s_phase;
         s_cnt_phas1  <= s_phas1_tmp;

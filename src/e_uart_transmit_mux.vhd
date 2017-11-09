@@ -74,13 +74,17 @@ ARCHITECTURE rtl OF e_uart_transmit_mux IS
     SIGNAL s_reg_ena        : std_logic;
     SIGNAL s_uart_data      : std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     
+    SIGNAL s_enable_i_curr  : std_logic;
+    SIGNAL s_enable_i_next  : std_logic;
+    SIGNAL s_enable_i       : std_logic;
+    
 BEGIN
     -- Instantiate sipo register entity for r register
     r_register: e_nm_piso_register PORT MAP(
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => s_enable_r, 
-        load_i => enable_i,         
+        load_i => s_enable_i,         
         data_i => r_i, 
         data_o => s_uart_data_r
     );
@@ -90,7 +94,7 @@ BEGIN
         clk_i => clk_i, 
         rst_i => rst_i,
         enable_i => s_enable_s, 
-        load_i => enable_i,         
+        load_i => s_enable_i,         
         data_i => s_i, 
         data_o => s_uart_data_s
     );
@@ -105,7 +109,7 @@ BEGIN
             rst_i     => rst_i,
             mode_i    => mode_i,
             verify_i  => v_i,
-            start_i   => enable_i,
+            start_i   => s_enable_i,
             data_i    => s_uart_data,
             tx_o      => uart_o,
             reg_o     => s_reg_ctrl,
@@ -126,4 +130,47 @@ BEGIN
                          s_enable_s <= s_reg_ena;
         END CASE; 
     END PROCESS;
+    
+    
+    -- detect rising edge of enable_i
+    p_enable_i_trans : PROCESS(rst_i,clk_i,s_enable_i_curr,enable_i)
+    BEGIN
+        s_enable_i_next <= s_enable_i_curr;
+        CASE s_enable_i_curr IS
+            WHEN '0' =>
+                IF enable_i = '1' THEN
+                    s_enable_i_next <= '1';
+                END IF;
+            WHEN '1' => 
+                IF enable_i = '0' THEN
+                    s_enable_i_next <= '0';
+                END IF;
+            WHEN OTHERS =>
+                s_enable_i_next <= '0';
+        END CASE;
+    END PROCESS p_enable_i_trans;
+    
+    p_enable_i_store : PROCESS(rst_i,clk_i,s_enable_i_next)
+    BEGIN
+        IF rst_i = '0' THEN
+            s_enable_i_curr <= '0';
+        ELSIF rising_edge(clk_i) THEN
+            s_enable_i_curr <= s_enable_i_next;
+        END IF;
+    END PROCESS p_enable_i_store;
+
+    p_enable_i_out : PROCESS(rst_i,clk_i,s_enable_i_curr,s_enable_i_next)
+    BEGIN
+        IF rst_i = '0' THEN
+            s_enable_i <= '0';
+        ELSIF rising_edge(clk_i) THEN
+            IF (s_enable_i_curr = '0' AND s_enable_i_next = '1') THEN
+                s_enable_i <= '1';
+            ELSE
+                s_enable_i <= '0';
+            END IF;
+        END IF;
+    END PROCESS p_enable_i_out;
+    
+    
 END rtl;
