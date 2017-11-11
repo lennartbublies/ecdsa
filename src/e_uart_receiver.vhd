@@ -105,16 +105,24 @@ ARCHITECTURE e_uart_receiver_arch OF e_uart_receiver IS
     SIGNAL s_mode, s_mode_tmp : std_logic;
     SIGNAL s_mode_start, s_mode_start_tmp : std_logic;
 	
+    SIGNAL s_rx_ff, s_rx : std_logic;
+    
 BEGIN
-
+    -- synchronize rx signal
+    PROCESS BEGIN
+    WAIT UNTIL rising_edge(clk_i);
+        s_rx_ff <= rx_i;
+        s_rx    <= s_rx_ff;
+    END PROCESS;
+    
 	-- UART Receive State Machine
-    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,rx_i,scan_clk,bit_cnt,s_rdy)
+    p_byte_fsm : PROCESS(s_uart_state,s_uart_next,rst_internal,s_rx,scan_clk,bit_cnt,s_rdy)
     BEGIN
         s_uart_next <= s_uart_state;
         rst_internal <= '1';
         CASE s_uart_state IS
             WHEN idle =>
-                IF rx_i = '0' THEN
+                IF s_rx = '0' THEN
                     s_uart_next <= start;
                     rst_internal <= '0';
                 END IF;
@@ -128,20 +136,20 @@ BEGIN
                     s_uart_next <= stop;
                 END IF;
             WHEN stop => 
-                IF rx_i = '0' OR s_rdy = '1' THEN
+                IF s_rx = '0' OR s_rdy = '1' THEN
                     s_uart_next <= idle;
                 END IF;
         END CASE;
     END PROCESS p_byte_fsm;
     
     --- save the rx signal via shifting into s_data:
-    p_shift : PROCESS(clk_i,rst_i,rst_internal,rx_i,s_data,scan_clk,bit_cnt,s_uart_state) --ALL)
+    p_shift : PROCESS(clk_i,rst_i,rst_internal,s_rx,s_data,scan_clk,bit_cnt,s_uart_state) --ALL)
     BEGIN
         IF rst_i = '1' THEN
             s_data <= (others => '0');
         ELSIF rising_edge(clk_i) AND scan_clk = '1' THEN
             IF bit_cnt < 8 AND NOT (s_uart_state = idle) THEN
-                s_data(0) <= rx_i;
+                s_data(0) <= s_rx;
                 FOR i IN 1 TO 7 LOOP
                     s_data(i) <= s_data(i-1);
                 END LOOP;
@@ -149,7 +157,7 @@ BEGIN
         END IF;
     END PROCESS p_shift;
         
-    p_scan_symbol : PROCESS(clk_i,rx_i,scan_clk,rst_i,bit_cnt,rst_internal)
+    p_scan_symbol : PROCESS(clk_i,s_rx,scan_clk,rst_i,bit_cnt,rst_internal)
     BEGIN
         IF rst_i = '1' THEN
             bit_cnt <= 0;
@@ -162,9 +170,9 @@ BEGIN
         END IF;
     END PROCESS p_scan_symbol;
 	
-	--- process to generate the clock signal 'scan_clk' to determine when to read rx_i
+	--- process to generate the clock signal 'scan_clk' to determine when to read s_rx
     -- p_scan_clk : PROCESS(ALL)
-    p_scan_clk : PROCESS(clk_i,rst_i,rx_i,rst_internal,wait_cnt,bit_cnt,scan_cnt) 
+    p_scan_clk : PROCESS(clk_i,rst_i,s_rx,rst_internal,wait_cnt,bit_cnt,scan_cnt) 
     BEGIN
         IF rst_i = '1' THEN
             scan_clk <= '0';

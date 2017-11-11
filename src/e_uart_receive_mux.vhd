@@ -18,18 +18,14 @@ ENTITY e_uart_receive_mux IS
         -- Clock and reset
         clk_i : IN std_logic;
         rst_i : IN std_logic;
-        
         -- UART
         uart_i : IN std_logic;
-        
         -- Set mode
         mode_o	: OUT std_logic;
-        
         -- Output
         r_o : OUT std_logic_vector(M-1 DOWNTO 0); -- M-1
         s_o : OUT std_logic_vector(M-1 DOWNTO 0);
         m_o : OUT std_logic_vector(M-1 DOWNTO 0);
-        
         -- Ready flag
         ready_o : OUT std_logic
     );
@@ -68,9 +64,6 @@ ARCHITECTURE rtl OF e_uart_receive_mux IS
     -- Internal signals
     SIGNAL uart_data: std_logic_vector(7 DOWNTO 0) := (OTHERS=>'0');
     SIGNAL enable_r_register, enable_s_register, enable_m_register: std_logic := '0';
-
-	-- UART signals
-	--SIGNAL s_uart_data: std_logic_vector (M-1 DOWNTO 0) := (OTHERS=>'0');
 	
 BEGIN
     -- Instantiate sipo register entity for r register
@@ -100,14 +93,7 @@ BEGIN
         data_o => m_o
     );
      
-    -- INSTANTIATE UART ENTITY
-    --  -> Read UART from FPGA and write byte to: UART_DATA
-    --  -> Switch between register using flags: ENABLE_S_REGISTER, ENABLE_R_REGISTER, ENABLE_M_REGISTER 
-    --  -> Set READY_O flag to active ECDSA entity (after reading all necessary input data)
-    --  -> Set MODE_O flag
-    --  -> Create hashes
-    --      --> Change M_REGISTER to 32 output
-    --      --> Change 
+    -- Instantiate UART Receiver
 	uart_receiver : e_uart_receiver
 	GENERIC MAP ( 
 		baud_rate => 500000, -- 9600 in production

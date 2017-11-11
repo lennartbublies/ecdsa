@@ -22,5 +22,7 @@ vcom -reportprogress 300 -work work C:/git/fhw/ecdsa/tests/tb_tld.vhd
 vsim -voptargs=+acc work.tb_tld(tb_arch)
 
 add wave sim:/tb_tld/tld_inst/*
+add wave -divider "mux"
 add wave sim:/tb_tld/tld_inst/uart_transmit/*
+add wave -divider "transmitter"
 add wave sim:/tb_tld/tld_inst/uart_transmit/transmit_instance/*
