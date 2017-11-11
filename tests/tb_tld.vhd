@@ -32,10 +32,10 @@ ARCHITECTURE tb_arch OF tb_tld IS
     SIGNAL S_rx     : std_logic;
     SIGNAL S_tx     : std_logic;
     
-    SIGNAL s_r   : std_logic_vector (167 DOWNTO 0);
-    SIGNAL s_s   : std_logic_vector (167 DOWNTO 0);
-    SIGNAL s_m   : std_logic_vector (167 DOWNTO 0);
-    SIGNAL s_mode  : std_logic;
+    SIGNAL s_r      : std_logic_vector (167 DOWNTO 0);
+    SIGNAL s_s      : std_logic_vector (167 DOWNTO 0);
+    SIGNAL s_m      : std_logic_vector (167 DOWNTO 0);
+    SIGNAL s_mode   : std_logic;
     
 
 BEGIN
@@ -129,20 +129,20 @@ BEGIN
         s_rst <= '0';
         WAIT FOR 80 ns;
         
-        -- Test Case 1
-        s_r <= x"7e5621dd5ea343f7b389b854d65f7ecfc6e257ab06";
-        s_s <= x"7e5621dd5ea343f7b389b854d65f7ecfc6e257ab06";
-        s_m <= x"7e5621dd5ea343f7b389b854d65f7ecfc6e257ab06";
+        -- Test Case 1 - Sign
+        s_r <= x"020B448AD8BE882CD980816C7EEA289FD3B2D517DB";
+        s_s <= x"0345C0589DC9024D96376734C1BC98F328E94EF487";
+        s_m <= x"054E78BA70719678AFC09BA25E822B81FCF23B87CA";
         s_mode <= '0';
         p_send(s_mode,s_r,s_s,s_m,s_rx);
         
         -- TODO: check tx for valid result
         WAIT FOR 500 us;
         
-        -- Test Case 2
-        s_r <= x"7e5621dd5ea343f7b389b854d65f7ecfc6e257ab06";
-        s_s <= x"7e5621dd5ea343f7b389b854d65f7ecfc6e257ab06";
-        s_m <= x"7e5621dd5ea343f7b389b854d65f7ecfc6e257ab06";
+        -- Test Case 1 - Verify
+        s_r <= x"020B448AD8BE882CD980816C7EEA289FD3B2D517DB";
+        s_s <= x"0345C0589DC9024D96376734C1BC98F328E94EF487";
+        s_m <= x"054E78BA70719678AFC09BA25E822B81FCF23B87CA";
         s_mode <= '1';
         p_send(s_mode,s_r,s_s,s_m,s_rx);
         

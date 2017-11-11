@@ -133,44 +133,18 @@ BEGIN
     
     
     -- detect rising edge of enable_i
-    p_enable_i_trans : PROCESS(rst_i,clk_i,s_enable_i_curr,enable_i)
-    BEGIN
-        s_enable_i_next <= s_enable_i_curr;
-        CASE s_enable_i_curr IS
-            WHEN '0' =>
-                IF enable_i = '1' THEN
-                    s_enable_i_next <= '1';
-                END IF;
-            WHEN '1' => 
-                IF enable_i = '0' THEN
-                    s_enable_i_next <= '0';
-                END IF;
-            WHEN OTHERS =>
-                s_enable_i_next <= '0';
-        END CASE;
-    END PROCESS p_enable_i_trans;
+    s_enable_i <= s_enable_i_next AND NOT s_enable_i_curr;
     
-    p_enable_i_store : PROCESS(rst_i,clk_i,s_enable_i_next)
+    p_rising_enable : PROCESS(clk_i,rst_i,enable_i,s_enable_i_next)
     BEGIN
-        IF rst_i = '0' THEN
-            s_enable_i_curr <= '0';
+        IF rst_i = '1' THEN
+            s_enable_i_next <= '1';
+            s_enable_i_curr <= '1';
         ELSIF rising_edge(clk_i) THEN
+            s_enable_i_next <= enable_i;
             s_enable_i_curr <= s_enable_i_next;
         END IF;
-    END PROCESS p_enable_i_store;
-
-    p_enable_i_out : PROCESS(rst_i,clk_i,s_enable_i_curr,s_enable_i_next)
-    BEGIN
-        IF rst_i = '0' THEN
-            s_enable_i <= '0';
-        ELSIF rising_edge(clk_i) THEN
-            IF (s_enable_i_curr = '0' AND s_enable_i_next = '1') THEN
-                s_enable_i <= '1';
-            ELSE
-                s_enable_i <= '0';
-            END IF;
-        END IF;
-    END PROCESS p_enable_i_out;
+    END PROCESS p_rising_enable;
     
     
 END rtl;

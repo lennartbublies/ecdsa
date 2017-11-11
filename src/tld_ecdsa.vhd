@@ -4,10 +4,18 @@
 --
 --  Ports:
 --   
---  Autor: Lennart Bublies (inf100434)
+--  Autor: Lennart Bublies (inf100434), Leander Schulz (inf102143)
 --  Date: 02.07.2017
+--  Last Change: 10.11.2017
 ----------------------------------------------------------------------------------------------------
-
+--
+-- Pin Assignment:
+--
+-- clk_i        : PIN_N2  (Clock 50 Mhz)
+-- rst_i        : PIN_N25 (Switch 0)
+-- uart_rx_i    : PIN_C25 (UART Receiver)
+-- uart_wx_i    : PIN_B25 (UART Transmitter)
+--
 ------------------------------------------------------------
 -- GF(2^M) ecdsa top level entity
 ------------------------------------------------------------
