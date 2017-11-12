@@ -7,5 +7,6 @@ ecdsa-tex/*.pdf
 *.gz
 *.tmp
 .idea
-.patch
-
+*.patch
+*.gz
+doku/thesis.pdf
