@@ -10,8 +10,9 @@
 --   A     - A part of ECC curve
 --   U     - Length of UART input/output
 --
---  Autor: Lennart Bublies (inf100434)
+--  Autor: Lennart Bublies (inf100434), Leander Schulz (inf102143)
 --  Date: 02.07.2017
+--  Last Change: 17.11.2017
 ----------------------------------------------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -42,6 +43,7 @@ PACKAGE tld_ecdsa_package IS
 
     -- UART
     CONSTANT U: natural := 8;
+    CONSTANT BAUD_RATE: INTEGER RANGE 1200 TO 500000 := 9600;
     
     -- Other
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');

@@ -22,7 +22,8 @@ ARCHITECTURE tb_arch OF tb_tld IS
             rst_i: IN std_logic;         
             -- Uart read/write
             uart_rx_i : IN std_logic;
-            uart_wx_i : OUT std_logic
+            uart_wx_i : OUT std_logic;
+            rst_led   : OUT std_logic
         );
     END COMPONENT tld_ecdsa;
     
@@ -137,7 +138,7 @@ BEGIN
         p_send(s_mode,s_r,s_s,s_m,s_rx);
         
         -- TODO: check tx for valid result
-        WAIT FOR 500 us;
+        WAIT FOR 3500 us;
         
         -- Test Case 1 - Verify
         s_r <= x"020B448AD8BE882CD980816C7EEA289FD3B2D517DB";

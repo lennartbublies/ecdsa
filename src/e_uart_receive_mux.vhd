@@ -96,7 +96,7 @@ BEGIN
     -- Instantiate UART Receiver
 	uart_receiver : e_uart_receiver
 	GENERIC MAP ( 
-		baud_rate => 500000, -- 9600 in production
+		baud_rate => BAUD_RATE,
 		N => 21,	-- length of message
 		M => M)  -- length of key
 	PORT MAP (

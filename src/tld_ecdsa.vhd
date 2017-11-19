@@ -35,7 +35,8 @@ ENTITY tld_ecdsa IS
         
         -- Uart read/write
         uart_rx_i : IN std_logic;
-        uart_wx_i : OUT std_logic
+        uart_wx_i : OUT std_logic;
+        rst_led   : OUT std_logic
     );
 END tld_ecdsa;
 
@@ -89,15 +90,17 @@ ARCHITECTURE rtl OF tld_ecdsa IS
     END COMPONENT;
     
     -- Internal signals -----------------------------------------
+    SIGNAL s_rst : std_logic;
     
     -- ECDSA Entity
     SIGNAL ecdsa_enable, ecdsa_mode, ecdsa_done, ecdsa_valid: std_logic := '0';
     SIGNAL ecdsa_r_in, ecdsa_s_in, ecdsa_r_out, ecdsa_s_out, ecdsa_hash: std_logic_vector(M-1 DOWNTO 0); 
+    
 BEGIN
     -- Instantiate ecdsa entity
     ecdsa: e_ecdsa PORT MAP(
         clk_i => clk_i, 
-        rst_i => rst_i,
+        rst_i => s_rst,
         enable_i => ecdsa_enable, 
         mode_i => ecdsa_mode, 
         hash_i => ecdsa_hash,
@@ -112,7 +115,7 @@ BEGIN
     -- Instantiate uart entity to receive data
     uart_receive: e_uart_receive_mux PORT MAP(
         clk_i => clk_i, 
-        rst_i => rst_i,
+        rst_i => s_rst,
         uart_i => uart_rx_i,
         mode_o => ecdsa_mode,
         r_o => ecdsa_r_in,
@@ -124,7 +127,7 @@ BEGIN
     -- Instantiate uart entity to send data
     uart_transmit: e_uart_transmit_mux PORT MAP(
         clk_i => clk_i,
-        rst_i => rst_i,
+        rst_i => s_rst,
         mode_i => ecdsa_mode,
         enable_i => ecdsa_done,
         r_i => ecdsa_r_out,
@@ -132,4 +135,7 @@ BEGIN
         v_i => ecdsa_valid,
         uart_o => uart_wx_i
     );
+    
+    s_rst <= NOT rst_i;
+    rst_led <= s_rst;
 END;
