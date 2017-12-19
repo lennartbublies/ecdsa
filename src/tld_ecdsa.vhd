@@ -135,7 +135,7 @@ BEGIN
         v_i => ecdsa_valid,
         uart_o => uart_wx_i
     );
-    
-    s_rst <= NOT rst_i;
+
+    s_rst <= rst_i; --NOT rst_i; --
     rst_led <= s_rst;
 END;
