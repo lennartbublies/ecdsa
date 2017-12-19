@@ -136,17 +136,26 @@ BEGIN
         s_m <= x"054E78BA70719678AFC09BA25E822B81FCF23B87CA";
         s_mode <= '0';
         p_send(s_mode,s_r,s_s,s_m,s_rx);
-        
         -- TODO: check tx for valid result
         WAIT FOR 3500 us;
         
         -- Test Case 1 - Verify
+        s_mode <= '1';
+        p_send(s_mode,s_r,s_s,s_m,s_rx);
+        WAIT FOR 3500 us;
+        
+        -- Test Case 2 - Sign
         s_r <= x"020B448AD8BE882CD980816C7EEA289FD3B2D517DB";
         s_s <= x"0345C0589DC9024D96376734C1BC98F328E94EF487";
         s_m <= x"054E78BA70719678AFC09BA25E822B81FCF23B87CA";
+        s_mode <= '0';
+        p_send(s_mode,s_r,s_s,s_m,s_rx);
+        -- TODO: check tx for valid result
+        WAIT FOR 3500 us;
+        
+        -- Test Case 2 - Verify
         s_mode <= '1';
         p_send(s_mode,s_r,s_s,s_m,s_rx);
-        
     
         WAIT;
     END PROCESS testing;
