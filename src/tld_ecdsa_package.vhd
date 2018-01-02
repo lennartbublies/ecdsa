@@ -43,7 +43,7 @@ PACKAGE tld_ecdsa_package IS
 
     -- UART
     CONSTANT U: natural := 8;
-    CONSTANT BAUD_RATE: INTEGER RANGE 1200 TO 500000 := 500000;
+    CONSTANT BAUD_RATE: INTEGER RANGE 1200 TO 500000 := 9600;
     
     -- Other
     CONSTANT ZERO: std_logic_vector(M-1 DOWNTO 0) := (OTHERS => '0');
