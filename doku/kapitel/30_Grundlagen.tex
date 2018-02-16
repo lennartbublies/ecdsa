@@ -42,11 +42,13 @@ Galoiskörper werden mit $GF(p)$ abgekürzt, wobei $q$ eine Primzahl sein muss u
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Elliptische Kurven}
 
-Eine elliptische Kurve $E$ über ein finites Feld $F_p$ wird mit Hilfe der Weierstraß-Gleichung definiert:
+Eine elliptische Kurve $E$ über einem Körper $K$ ist eine nicht-singuläre\footnote{keine Knoten, keine Spitzen, keine ``Einsiedler'' (isolierte Punkte)} Kurve, definiert als Menge aller Punkte $(x,y)$ mit $x,y \in K$, für die gilt $F(x,y)=0$ zusammen mit einem ``Punkt in der Unendlichkeit'' O (vgl. \cite{grebe}, S.25). \\
+
+Eine elliptische Kurve über ein finites Feld $F_p$ kann mit Hilfe der Weierstraß-Gleichung in Normalform wie folgt definiert werden:
 
 % E:y2+a1xy+a3 y=x3+a2x2+a4x+a6
 \begin{center}
-$E: y^2 + a_1 x y + a_3 y = x^3 + a_2 x^2 + a_4 x + a_6 $
+$E(K): y^2 + a_1 x y + a_3 y = x^3 + a_2 x^2 + a_4 x + a_6 $
 \end{center}
 
 Die Parameter $a_1 \dots a_6$ legen fest, welche Form die elliptische Kurve annimmt und sind Elemente des finiten Feldes $F_p$. Sie werden durch die Domain-Parameter festgelegt. 
@@ -64,12 +66,21 @@ $ y^2 \bmod p = x^3 + a x + b \bmod p $
 \end{center}
 
 
-Damit eine elliptische Formel in der Kryptographie eingesetzt werden kann, muss zusätzlich folgende Bedingung gelten: %4a3+ 27b2 mod p 0
+Damit eine elliptische Formel in der Kryptographie eingesetzt werden kann, muss zusätzlich nachfolgende Bedingung gelten. Sie folgt aus der nicht-singulären Eigenschaft von E, also Ableitungen $\ne$ 0 und bzw. Diskriminante $\ne$ 0 (Herleitung und Beweis siehe \cite{grebe}, S. 28ff):
+%4a3+ 27b2 mod p 0
 \begin{center}
-$ 4 a^3 + 27 b^2 \bmod p \ne 0 $
+$ 4 a^3 + 27 b^2 \bmod p \ne 0, $ mit $ a,b \in K $
 \end{center}
 
-Das neutrale Element der Gruppe wird mit O gekennzeichnet und beschreibt einen Punkt im Unendlichen. \\
+Entsprechend wie bei endlichen Körpern ist die Ordnung auf einer zyklischen Untergruppe $U_P$ von $E(F_P)$ definiert (vgl. \cite{grebe}, S. 35):
+\begin{center}
+$ U_P := \{ k P | k \in \mathbb{Z} \}$
+
+$k_0 P = P + P + \cdots + P = O, $ mit $ k_0 > 0$
+\end{center}
+
+Eine besondere Form der elliptischen Kurven sind Koblitz-Kurven\footnote{engl.: Anomalous Binary Curves} über $F_{2^m}$, deren Kurvengleichung ausschließlich die Koeffizienten ``0'' und ``1'' enthalten. Dadurch sind diese Kurven besonders für den Einsatz in Hardwaresystemen geeignet, da für sie hocheffiziente Algorithmen für Punktarithmetik existieren, wohingegen klassische Kurven $F_P$ eher für Softwaresysteme eignen. In der Praxis wurden bisher keine Sicherheitsunterschiede festgestellt. \\
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
