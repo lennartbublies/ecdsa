@@ -105,6 +105,16 @@ Bezogen auf eine elliptische Kurve $E(GF(2^n))$ bedeutet das, dass die Skalarmul
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Digitale Signaturen}
 
+Eine digitale Signatur nutzt ein asymmetrischen Verschlüsselungsverfahren, um eine schlüsselabhängige Prüfsumme anhand eines Dokuments\footnote{In der Praxis wird aus Performanz-Gründen oft ein Hash der Nachricht bzw. des Dokuments verwendet} in Kombination mit einem Schlüssel zu erzeugen (vgl. \cite{wolf}). ``Der Schlüssel zum Überprüfen einer Signatur ist öffentlich, während der Schlüssel zum Signieren geheim gehalten werden muß.'' Somit kann jeder ein digital ``unterschriebenes'' Dokument auf seine Echtheit überprüfen, also \textit{verifizieren}. \\
+
+\begin{figure}[H]
+	\centering
+   \includegraphics[width=0.80\textwidth]{bilder/digisig}
+	\caption{Erzeugung einer Digitalen Signatur}
+	\label{fig:digisig}
+\end{figure}
+
+Abbildung \ref{fig:digisig} zeigt den Vorgang der Erzeugung einer Signatur. Die im Bild zu sehende ``Signierfunktion'' muss eine asymmetrische Verschlüsselung sein und entspricht dem in dieser Arbeit implementierten ECDSA-Algorithmus. \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{ECDSA-Algorithmus}
