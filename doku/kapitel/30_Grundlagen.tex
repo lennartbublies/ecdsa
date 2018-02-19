@@ -40,9 +40,9 @@ Galoiskörper werden mit $GF(p)$ abgekürzt, wobei $q$ eine Primzahl sein muss u
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Elliptische Kurven}
+\section{Elliptische Kurven} \label{sec:ell}
 
-Eine elliptische Kurve $E$ über einem Körper $K$ ist eine nicht-singuläre\footnote{keine Knoten, keine Spitzen, keine ``Einsiedler'' (isolierte Punkte)} Kurve, definiert als Menge aller Punkte $(x,y)$ mit $x,y \in K$, für die gilt $F(x,y)=0$ zusammen mit einem ``Punkt in der Unendlichkeit'' O (vgl. \cite{grebe}, S.25). \\
+Eine elliptische Kurve $E$ über einem Körper $K$ ist eine nicht-singuläre\footnote{keine Knoten, keine Spitzen, keine ``Einsiedler'' (isolierte Punkte)} Kurve (vgl. Abb. \ref{fig:ellkurve}), definiert als Menge aller Punkte $(x,y)$ mit $x,y \in K$, für die gilt $F(x,y)=0$ zusammen mit einem ``Punkt in der Unendlichkeit'' O (vgl. \cite{grebe}, S.25). \\
 
 Eine elliptische Kurve über ein finites Feld $F_p$ kann mit Hilfe der Weierstraß-Gleichung in Normalform wie folgt definiert werden:
 
@@ -57,7 +57,7 @@ Die Parameter $a_1 \dots a_6$ legen fest, welche Form die elliptische Kurve anni
 	\centering
    \includegraphics[width=0.60\textwidth]{bilder/ellkurve}
 	\caption{Graph einer Elliptischen Kurve}
-	\label{ellkurve}
+	\label{fig:ellkurve}
 \end{figure}
 
 Über eine Reihe von Vereinfachungen lässt sich die Weierstraß-Gleichung auf die folgende Formel reduzieren:  % y2 mod p=x3+ax+b mod p 
@@ -84,7 +84,22 @@ Eine besondere Form der elliptischen Kurven sind Koblitz-Kurven\footnote{engl.: 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Das diskrete Logarithmus-Problem}
+\section{Das Diskrete Logarithmus-Problem}
+
+Das Problem des diskreten Logarithmus in endlichen Körpern besteht darin, dass die Lösung eines solchen Logarithmus viel schwieriger ist als die Umkehrfunktion, also die diskrete Exponentialfunktion. Die Sicherheit von auf elliptischen Kurven basierenden kryptographischen Verfahren beruht auf diesem mathematischen Problem. \\
+
+Definition nach \cite{baum} (S. 6):
+\begin{itemize}
+	\item \textbf{Voraussetzungen:}\\
+	Sei $(G,\cdot)$ eine multiplikative Gruppe, $x \in G$ ein Element der Ordnung $n$ und $y \in \left \langle x \right \rangle$. \\
+	\item \textbf{Problem:}\\
+	Man berechnet $a$ mit $(0 \le a \le n-1)$, sodass $x^a = y$. \\
+	``$a$'' wird diskreter Logarithmus von $y$ zur Basis $x$ genannt. \\
+\end{itemize}
+
+Umgangssprachlich wird eine solche Funktion \textit{Einwegfunktion} genannt. Dabei entspricht der diskrete Logarithmus einer Funktion $f: M \implies N$, wenn für ``fast alle'' Bilder $y \in N$ kein Urbild $x \in M$ mit $f(x) = y$ effizient bestimmbar ist (vgl. \cite{diskrlog}, S. 54). \\
+
+Bezogen auf eine elliptische Kurve $E(GF(2^n))$ bedeutet das, dass die Skalarmultiplikation $Q = k P$ für eine natürliche Zahl $k$ und einen Punkt $P$ nach der Kurvengleichung in Kap. \ref{sec:ell} sehr einfach zu berechnen ist, es aber \textit{schwierig} ist, aus zwei vorgegebenen Punkten $Q, P \in E(GF(2^n))$ wieder die Zahl $k$ zu ermitteln (vgl. \cite{puttmann}, S. 17f). \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
