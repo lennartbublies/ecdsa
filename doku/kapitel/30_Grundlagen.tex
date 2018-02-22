@@ -25,7 +25,7 @@ Ein Beispiel für eine so definierte abelsche Gruppe entspricht der Menge der ga
 
 Eine besondere Form endlicher Gruppen bilden zyklische Gruppen, die ein Element $g$ besitzen, aus dem durch Verknüpfungen $\circ$ alle anderen Elemente der Gruppe erzeugt werden können. Das Element $g$ ist das sog. Generatorelement der zyklischen Gruppe $(G',\circ)$. \\ 
 
-Eine Körper ist eine Erweiterung von abelschen Gruppen und als Tripel $(K,+,\cdot)$ definiert, welche zu einer nicht-leeren Menge $K$ konkret die inneren Verknüpfungen Addition und Multiplikation beschreibt. Folgende Bedingungen werden dabei erfüllt (vgl. \cite{pullmann}):
+Eine Körper ist eine Erweiterung von abelschen Gruppen und als Tripel $(K,+,\cdot)$ definiert, welche zu einer nicht-leeren Menge $K$ konkret die inneren Verknüpfungen Addition und Multiplikation beschreibt. Folgende Bedingungen werden dabei erfüllt (vgl. \cite{puttmann}):
 
 \begin{enumerate}
   \item Die Menge $K$ bildet durch die additive Verknüpfung $+$ eine abelsche Gruppe
@@ -75,16 +75,30 @@ $ 4 a^3 + 27 b^2 \bmod p \ne 0, $ mit $ a,b \in K $
 Entsprechend wie bei endlichen Körpern ist die Ordnung auf einer zyklischen Untergruppe $U_P$ von $E(F_P)$ definiert (vgl. \cite{grebe}, S. 35):
 \begin{center}
 $ U_P := \{ k P | k \in \mathbb{Z} \}$
-
 $k_0 P = P + P + \cdots + P = O, $ mit $ k_0 > 0$
 \end{center}
 
-Eine besondere Form der elliptischen Kurven sind Koblitz-Kurven\footnote{engl.: Anomalous Binary Curves} über $F_{2^m}$, deren Kurvengleichung ausschließlich die Koeffizienten ``0'' und ``1'' enthalten. Dadurch sind diese Kurven besonders für den Einsatz in Hardwaresystemen geeignet, da für sie hocheffiziente Algorithmen für Punktarithmetik existieren, wohingegen klassische Kurven $F_P$ eher für Softwaresysteme eignen. In der Praxis wurden bisher keine Sicherheitsunterschiede festgestellt. \\
+Die als Punktaddition bezeichnete arithmetische Operation verknüpft zwei verschiedene Punkte ($P_1 \ne P_2$) auf der Kurve miteinander. Wenn die beiden Punkte gleich sind (also $P_3 = P_1 + P_2 = 2 P_1$), wird diese Operation Punktverdopplung genannt (vgl. \cite{puttmann}, S. 16f). Beide Operationen lassen sich mittels Sekanten- bzw. Tangentenmethode auf einer elliptischen Kurve darstellen (s. Abb. \ref{fig:padd}). 
 
+\begin{figure}[H]
+	\centering
+   \includegraphics[width=\textwidth]{bilder/p-addition}
+	\caption{Arithmetische Operationen auf einer elliptischen Kurve}
+	\label{fig:padd}
+\end{figure}
+
+Eine besondere Form der elliptischen Kurven sind \texttt{Koblitz}-Kurven\footnote{engl.: Anomalous Binary Curves} über $F_{2^m}$, deren Kurvengleichung ausschließlich die Koeffizienten ``0'' und ``1'' enthalten. In kryptographischen Protokollen werden häufig Koblitz-Kurven der folgenden Formen verwendet (vgl. \cite{guide}, Kap. 3.4): \\
+\begin{center}
+$E_0 : y^2 + x y = x^3 + 1 $ \\
+$E_1 : y^2 + x y = x^3 + x^2 + 1 $
+\end{center}
+
+Der große Vorteil dieser Kurven ist, dass Algorithmen zur Punktmultiplikation prinzipiell ohne Punktverdopplung auskommen können (s. \cite{guide}, S. 114).
+Koblitz-Kurven besonders für den Einsatz in Hardwaresystemen geeignet, da für sie allgemein hocheffiziente Algorithmen für Punktarithmetik existieren, wohingegen klassische Kurven $F_P$ eher für Softwaresysteme eignen. In der Praxis wurden bisher keine Sicherheitsunterschiede festgestellt. \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Das Diskrete Logarithmus-Problem}
+\section{Das Diskrete Logarithmus-Problem} \label{sec:dlp}
 
 Das Problem des diskreten Logarithmus in endlichen Körpern besteht darin, dass die Lösung eines solchen Logarithmus viel schwieriger ist als die Umkehrfunktion, also die diskrete Exponentialfunktion. Die Sicherheit von auf elliptischen Kurven basierenden kryptographischen Verfahren beruht auf diesem mathematischen Problem. \\
 
@@ -99,13 +113,13 @@ Definition nach \cite{baum} (S. 6):
 
 Umgangssprachlich wird eine solche Funktion \textit{Einwegfunktion} genannt. Dabei entspricht der diskrete Logarithmus einer Funktion $f: M \implies N$, wenn für ``fast alle'' Bilder $y \in N$ kein Urbild $x \in M$ mit $f(x) = y$ effizient bestimmbar ist (vgl. \cite{diskrlog}, S. 54). \\
 
-Bezogen auf eine elliptische Kurve $E(GF(2^n))$ bedeutet das, dass die Skalarmultiplikation $Q = k P$ für eine natürliche Zahl $k$ und einen Punkt $P$ nach der Kurvengleichung in Kap. \ref{sec:ell} sehr einfach zu berechnen ist, es aber \textit{schwierig} ist, aus zwei vorgegebenen Punkten $Q, P \in E(GF(2^n))$ wieder die Zahl $k$ zu ermitteln (vgl. \cite{puttmann}, S. 17f). \\
+Bezogen auf eine elliptische Kurve\footnote{engl. elliptic curve discrete logarithm problem (ECDLP)} $E(GF(2^n))$ bedeutet das, dass die Skalarmultiplikation $Q = k P$ für eine natürliche Zahl $k$ und einen Punkt $P$ nach der Kurvengleichung in Kap. \ref{sec:ell} sehr einfach zu berechnen ist ($Q$ ist die $(k-1)$-fache Addition mit $P$), es aber \textit{schwierig} ist, aus zwei vorgegebenen Punkten $Q, P \in E(GF(2^n))$ wieder die Zahl $k$ zu ermitteln (vgl. \cite{puttmann}, S. 17f). \\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Digitale Signaturen}
 
-Eine digitale Signatur nutzt ein asymmetrischen Verschlüsselungsverfahren, um eine schlüsselabhängige Prüfsumme anhand eines Dokuments\footnote{In der Praxis wird aus Performanz-Gründen oft ein Hash der Nachricht bzw. des Dokuments verwendet} in Kombination mit einem Schlüssel zu erzeugen (vgl. \cite{wolf}). ``Der Schlüssel zum Überprüfen einer Signatur ist öffentlich, während der Schlüssel zum Signieren geheim gehalten werden muß.'' Somit kann jeder ein digital ``unterschriebenes'' Dokument auf seine Echtheit überprüfen, also \textit{verifizieren}. \\
+Eine digitale Signatur nutzt ein asymmetrischen Verschlüsselungsverfahren, um eine schlüsselabhängige Prüfsumme anhand eines Dokuments\footnote{In der Praxis wird aus Performanz-Gründen oft ein Hash der Nachricht bzw. des Dokuments verwendet.} in Kombination mit einem Schlüssel zu erzeugen (vgl. \cite{wolf}). ``Der Schlüssel zum Überprüfen einer Signatur ist öffentlich, während der Schlüssel zum Signieren geheim gehalten werden muß.'' Somit kann jeder ein digital ``unterschriebenes'' Dokument auf seine Echtheit überprüfen, also \textit{verifizieren}. \\
 
 \begin{figure}[H]
 	\centering
@@ -117,9 +131,67 @@ Eine digitale Signatur nutzt ein asymmetrischen Verschlüsselungsverfahren, um e
 Abbildung \ref{fig:digisig} zeigt den Vorgang der Erzeugung einer Signatur. Die im Bild zu sehende ``Signierfunktion'' muss eine asymmetrische Verschlüsselung sein und entspricht dem in dieser Arbeit implementierten ECDSA-Algorithmus. \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{ECDSA-Algorithmus}
+\section{Der ECDSA}
+
+%Beim \textit{Elliptic Curve Digital Signature Algorithm} ist die Multiplikation mit einem Punkt auf der elliptischen Kurve die rechnerisch aufwändigste Operation (vgl. \cite{hwimp}), genauer die Skalarmultiplikation $k P$, wobei $k$ eine positive Ganzzahl und $P$ ein Punkt auf der Kurve ist. \\
+
+\subsection{Schlüsselgenerierung \& Domain Parameter}
+
+Beim \textit{Elliptic Curve Digital Signature Algorithm} wird von einer Partei A ein Schlüssel generiert und damit die Signatur zu einer Nachricht erstellt. Eine andere Partei B nutzt den öffentlichen Schlüssel von A und verifiziert damit die Echtheit der Nachricht von A anhand der Signatur. Folgende Definition (vgl. \cite{hwimp}) berechnet die Schlüssel von A: \\
+
+\begin{enumerate}
+%Key generation : (A)
+\item Wähle ein zufälliges $d$ aus $[1, n-1]$.
+\item Berechne $Q = dP$ .
+\item Der Public Key von A entspricht $Q$; der Private Key ist $d$. \\
+\end{enumerate}
+
+Der private Schlüssel $d$ ist hierbei eine positive ganze Zahl. Der Parameter $n$ entspricht der Ordnung des Basis-Punkts $P$. In der Hardware-Implementierung dieser Arbeit wird für den Private Key stets ein konstanter Wert verwendet, da der Fokus auf dem ECDS-Algorithmus liegt und nicht auf dem Finden einer echten Zufallszahl. \\
+
+Die Domain Parameter werden allgemein angegeben als $D = (q,FR, S,a,b, P,n,h)$ und werden definiert als (vgl. \cite{guide}, S. 172):
+\begin{itemize}
+\item $q$: Ordnung der Kurve.
+\item $FR$: \textit{field representation}, Repräsentation der Elemente in $F_q$.
+\item $S$: \textit{Seed}, falls die Kurve zufällig generiert ist.
+\item $a,b \in F_q$: Koeffizienten, die die elliptische Kurve beschreiben.
+\item $P = (x_P,y_P) \in E(F_q)$: Basis-Punkt der elliptischen Kurve.
+\item $n$: Ordnung von $P$.
+\item $h$: \textit{Ko-Faktor} $h = \#E(F_q)/n$.
+\end{itemize}
 
 \subsection{Signatur}
 
+Die Signatur wird nach folgendem Vorgehen erstellt (vgl. \cite{hwimp}):\\
+
+Signature generation : (A)
+\begin{enumerate}
+\item Select a random integer $k$ from $[1, n - 1]$.
+\item Compute $k G = (x_1, y_1)$ and $r = x_1 \pmod{n} $.
+\item If $r = 0$ then go to step 1.
+\item Compute $k^{-1} \pmod{n}$.
+\item Compute $s = k^{-1}(SHA - 1(m) + dr)\pmod{n}$.
+\item If $s = 0$ then go to step 1.
+\item Send $m$ and $(r, s)$, which is A’s signature for the message $m$, to B.
+\end{enumerate}
+
 \subsection{Verifikation}
+
+Die Verifikation wird nach folgendem Vorgehen durchgeführt (vgl. \cite{hwimp}):\\
+
+Signature verification : (B)
+\begin{enumerate}
+\item Verify that $r$ and $s$ are integers in $[1, n - 1]$.
+\item Compute $e = SHA - 1(m)$.
+\item Compute $w = s^{-1}\pmod{n}$.
+\item Compute $u_1 = e * w \pmod{n}$ and $u_2 = r * w \pmod{n}$.
+\item Compute $u_1 P + u_2 Q = (x1, y1)$ and $v = x_1 \pmod{n}$.
+\item If $s = 0$ then go to step 1.
+\item Accept the signature if and only if $v = r$.
+\end{enumerate}
+
+
+
+
+
+
 

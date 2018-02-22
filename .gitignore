@@ -10,3 +10,10 @@ ecdsa-tex/*.pdf
 *.patch
 *.gz
 doku/thesis.pdf
+*.aux
+*.bbl
+*.blg
+*.lof
+*.log
+*.out
+*.toc
