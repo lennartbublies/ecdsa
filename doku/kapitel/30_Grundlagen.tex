@@ -1,6 +1,6 @@
 %!TEX root = ../thesis.tex
 
-\chapter{Grundlagen}
+\chapter{Grundlagen} \label{sec:basics}
 
 In diesem Kapitel werden die mathematischen Grundlagen erläutert und die wesentlichen Konzepte hinter dem behandelten Verschlüsselungs-Algorithmus beschrieben. \\
 
@@ -117,7 +117,7 @@ Bezogen auf eine elliptische Kurve\footnote{engl. elliptic curve discrete logari
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Digitale Signaturen}
+\section{Digitale Signaturen} \label{sec:digsig}
 
 Eine digitale Signatur nutzt ein asymmetrischen Verschlüsselungsverfahren, um eine schlüsselabhängige Prüfsumme anhand eines Dokuments\footnote{In der Praxis wird aus Performanz-Gründen oft ein Hash der Nachricht bzw. des Dokuments verwendet.} in Kombination mit einem Schlüssel zu erzeugen (vgl. \cite{wolf}). ``Der Schlüssel zum Überprüfen einer Signatur ist öffentlich, während der Schlüssel zum Signieren geheim gehalten werden muß.'' Somit kann jeder ein digital ``unterschriebenes'' Dokument auf seine Echtheit überprüfen, also \textit{verifizieren}. \\
 
@@ -191,6 +191,13 @@ Signature verification : (B)
 
 
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{UART-Schnittstelle}
+
+Eine UART-Schnittstelle\footnote{Universal Asynchronous Receiver and Transmitter}
 
 
 
