@@ -195,7 +195,7 @@ Signature verification : (B)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{UART-Schnittstelle}
+\section{UART-Schnittstelle} \label{sec:iuart}
 
 Bei UART-Kommunikation\footnote{Universal Asynchronous Receiver Transmitter} werden Daten direkt über jeweils zwei Pins zwischen zwei UART-Schnittstellen übertragen. Dabei ist der Sende-Pin (Tx-Pin) mit dem Empfangs-Pin (Rx-Pin) des anderen Teilnehmers verbunden (vgl. \cite{uart}). Üblicherweise übernimmt ein UART-Hardwaremodul auch die Transformation paralleler Daten in einen sequentiellen Datenstrom (Senden) und umgekehrt (Empfangen). \\
 
@@ -205,7 +205,6 @@ Bei UART-Kommunikation\footnote{Universal Asynchronous Receiver Transmitter} wer
 	\caption{Signalübertragung über das UART-Protokoll}
 	\label{fig:uart}
 \end{figure}
-
 
 Die Daten werden zu Paketen von meist 8 Bit (entspricht 1 Byte), wobei die Sende-Reihenfolge in der Regel vom \textit{least significant bit} (LSB) zum \textit{most significant bit} versendet wird (vgl. Abb. \ref{fig:uart}). Wenn bei einer UART-Verbindung gerade keine Daten übertragen werden, liegt eine ``high''-Spannung an (logisch ``1''). Die Übertragung beginnt mit einem Start-Bit (logisch ``0'') für einen UART-Taktzyklus, wonach die Datenbits folgen. Je nach Implementierung kann eine Parität\footnote{Binäre Angabe, ob das Datenpaket eine gerade oder ungerade Anzahl ``Einsen'' enthält.} folgen oder weggelassen werden. Ein Stop-Bit beendet die Transmission eines Datenpaketes. \\
 
