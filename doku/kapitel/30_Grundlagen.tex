@@ -197,8 +197,17 @@ Signature verification : (B)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{UART-Schnittstelle}
 
-Eine UART-Schnittstelle\footnote{Universal Asynchronous Receiver and Transmitter}
+Bei UART-Kommunikation\footnote{Universal Asynchronous Receiver Transmitter} werden Daten direkt über jeweils zwei Pins zwischen zwei UART-Schnittstellen übertragen. Dabei ist der Sende-Pin (Tx-Pin) mit dem Empfangs-Pin (Rx-Pin) des anderen Teilnehmers verbunden (vgl. \cite{uart}). Üblicherweise übernimmt ein UART-Hardwaremodul auch die Transformation paralleler Daten in einen sequentiellen Datenstrom (Senden) und umgekehrt (Empfangen). \\
+
+\begin{figure}[H]
+	\centering
+   \includegraphics[width=0.90\textwidth]{bilder/uart}
+	\caption{Signalübertragung über das UART-Protokoll}
+	\label{fig:uart}
+\end{figure}
 
 
+Die Daten werden zu Paketen von meist 8 Bit (entspricht 1 Byte), wobei die Sende-Reihenfolge in der Regel vom \textit{least significant bit} (LSB) zum \textit{most significant bit} versendet wird (vgl. Abb. \ref{fig:uart}). Wenn bei einer UART-Verbindung gerade keine Daten übertragen werden, liegt eine ``high''-Spannung an (logisch ``1''). Die Übertragung beginnt mit einem Start-Bit (logisch ``0'') für einen UART-Taktzyklus, wonach die Datenbits folgen. Je nach Implementierung kann eine Parität\footnote{Binäre Angabe, ob das Datenpaket eine gerade oder ungerade Anzahl ``Einsen'' enthält.} folgen oder weggelassen werden. Ein Stop-Bit beendet die Transmission eines Datenpaketes. \\
 
+Ein \textit{UART-Taktzyklus} beschreibt, wie lange die Spannung eines einzelnen Symbols anliegt. Die entsprechende Einheit wird in \textit{Baud} angegeben und entspricht $1 * s^{-1}$. Bei einer Übertragungsrate von 9600 Baud liegt ein Bit also für $1 / 9600s = 104,167 \mu s$ am Ausgang Tx an. \\
 
