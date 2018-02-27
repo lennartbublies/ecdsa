@@ -12,9 +12,10 @@
 -- Pin Assignment:
 --
 -- clk_i        : PIN_N2  (Clock 50 Mhz)
--- rst_i        : PIN_N25 (Switch 0)
+-- rst_i        : PIN_G26 (Key 0)
 -- uart_rx_i    : PIN_C25 (UART Receiver)
 -- uart_wx_i    : PIN_B25 (UART Transmitter)
+-- rst_led      : PIN_Y18 (LEDG7)
 --
 ------------------------------------------------------------
 -- GF(2^M) ecdsa top level entity
@@ -135,7 +136,7 @@ BEGIN
         v_i => ecdsa_valid,
         uart_o => uart_wx_i
     );
-    
+
     s_rst <= NOT rst_i;
     rst_led <= s_rst;
 END;

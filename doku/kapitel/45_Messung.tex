@@ -1,0 +1,60 @@
+%!TEX root = ../thesis.tex
+
+\chapter{Messung \& Vergleich} \label{sec:messung}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{FPGA-Implementierung}
+
+Der VHDL-Code wird mit dem Synthetisierungs-Werkzeug Quartus II kompiliert und auf den Altera FPGA übertragen. Über eine serielle RS232-Schnittstelle ist Kommunikation mit dem Chip zur Datenübertragung möglich. \\
+
+In einem Python-Skript werden die Daten zur Messung vorbereitet. Es wird ein zufällig generierter 163-Bit Hash als Nachricht zum Signieren verwendet. Gemessen wird die Laufzeit vom Zeitpunkt des Beginns der Übertragung zum Board bis zum vollständigen Erhalt der Antwort. Dabei wird im Anschluss an das \textit{Signieren} einer Nachricht der vom Board erhaltene Key benutzt, um die Nachricht mit diesem zu \textit{verifizieren}. Die Messwerte entsprechen den gemittelten Zeiten aus 1000 Messungen: \\
+
+\begin{itemize}
+	\item Signieren: \textbf{77,0 ms}
+	\item Verifizieren: \textbf{130,1 ms}\\
+\end{itemize}
+
+Aus diesen ``Brutto''-Messwerten wird nun die Übertragungszeit herausgerechnet. Die serielle Übertragung findet mit einer Geschwindigkeit von 9600 Baud statt. Ein Symbol liegt dadurch für die Signaldauer von 1/9600 Sekunden, also etwa 104$\mu$s, auf der Leitung an. Zusätzlich zu den acht Symbolen eines Bytes wird das Start-Bit und das Stopp-Bit des UART-Standards mit berücksichtigt. Es wird keine Parität verwendet. Für die Übertragung eines Bytes werden also ca. 1,04ms benötigt. \\
+
+Zwischen den übertragenen Bytefolgen existiert keine messbare Verzögerung. Der ECDSA-Algorithmus beginnt unmittelbar mit der Berechnung, sobald das letzte Symbol am Board angekommen ist, die Übertragung an den PC erfolgt sofort, sobald das Berechnungsergebnis vorliegt. \\
+
+\begin{itemize}
+	\item \textbf{Signieren:}\\
+\textit{Senden:} 
+1 Byte Modus, 21 Byte Message\\
+$\Rightarrow$ 22 Byte * 10 Symbole * 104$\mu$s = 22,92ms\\
+\textit{Empfangen:} 
+2x21 Byte Punkte der ECC-Funktion\\
+$\Rightarrow$ 42 Byte  * 10 Symbole * 104$\mu$s = 43,75ms
+%\textbf{Nettozeit Signieren} = 123,0ms - 22,92ms - 43,75ms = \textbf{56,3ms}
+\textbf{Nettozeit Signieren} = 77,0ms - 22,92ms - 43,75ms = \textbf{10,3ms}
+	
+	\item \textbf{Verifizieren:}\\
+\textit{Senden:}\\
+1 Byte Modus, 2x21 Byte ECC-Punkte, 21 Byte Message\\
+$\Rightarrow$ 64 Byte * 10 Symbole * 104$\mu$s = 66,67ms\\
+\textit{Empfangen:}\\
+1 Byte für True/False
+$\Rightarrow$ 1 Byte  * 10 Symbole * 104$\mu$s = 1,04ms
+%\textbf{Nettozeit Verifizieren} = 74ms - 66,67ms - 1,04ms = \textbf{6,3ms}\\
+\textbf{Nettozeit Verifizieren} = 130,1ms - 66,67ms - 1,04ms = \textbf{62,4ms}\\
+\end{itemize}
+
+Diesem berechneten Ergebnis aus den Messungen anhand des Python-Skripts wird nun die Messung aus dem Simulator gegenübergestellt: das Signieren eines 163bit Hashes benötigt nur \textbf{23,6ms} im Simulator, das Verifizieren benötigt \textbf{32,8ms}. Beide berechnete Simulationen sind damit mehr als Faktor 2 schneller. Der Grund dafür kann in der Pufferung der verwendeten ``PySerial''-Bibliothek für serielle Schnittstellen in Python sowie an der Puffer-Mechanismen des Betriebssystems liegen. \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{C-Implementierung}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gegenüberstellung \& Bewertung}
+
+
+
+%\begin{figure}[H]
+%	\centering
+%  \includegraphics[width=1.00\textwidth]{bilder/filename}
+%	\caption{caption}
+%	\label{label}
+%\end{figure}

@@ -18,11 +18,11 @@ USE ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
 USE work.tld_ecdsa_package.all;
 
-ENTITY tb_nm_posi_register IS
-END tb_nm_posi_register;
+ENTITY tb_nm_piso_register IS
+END tb_nm_piso_register;
 
-ARCHITECTURE rtl OF tb_nm_posi_register IS 
-    -- Import entity e_posi_register 
+ARCHITECTURE rtl OF tb_nm_piso_register IS 
+    -- Import entity e_piso_register 
     COMPONENT e_nm_piso_register  IS
         PORT(
             clk_i : IN std_logic;
@@ -36,7 +36,7 @@ ARCHITECTURE rtl OF tb_nm_posi_register IS
 
   -- Internal signals
   SIGNAL data: std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
-  SIGNAL posi: std_logic_vector(U-1 DOWNTO 0) := (OTHERS=>'0');
+  SIGNAL piso: std_logic_vector(U-1 DOWNTO 0) := (OTHERS=>'0');
   SIGNAL clk, rst, enable, load: std_logic := '0';
   CONSTANT DELAY : time := 100 ns;
   CONSTANT PERIOD : time := 20 ns;
@@ -44,13 +44,13 @@ ARCHITECTURE rtl OF tb_nm_posi_register IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate piso register entity
-    posi_register: e_nm_piso_register PORT MAP(
+    piso_register: e_nm_piso_register PORT MAP(
         clk_i => clk, 
         rst_i => rst,
         enable_i => enable, 
         load_i => load,         
         data_i => data, 
-        data_o => posi
+        data_o => piso
     );
 
     -- Clock process FOR clk
@@ -66,7 +66,16 @@ BEGIN
     END PROCESS;
 
     -- Start test cases
-    tb : PROCESS
+    tb : PROCESS IS 
+        PROCEDURE p_ena (
+            SIGNAL s_ena : INOUT  std_logic
+        ) IS
+        BEGIN
+            s_ena <= '1';
+            WAIT FOR PERIOD*2;
+            s_ena <= '0'; 
+            WAIT FOR PERIOD*8;
+        END p_ena;  
     BEGIN
         -- Disable computation and reset all entities
         enable <= '0'; 
@@ -81,34 +90,9 @@ BEGIN
         load <= '0';
         WAIT FOR PERIOD*4;
         
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
-        enable <= '1';
-        WAIT FOR PERIOD*2;
-        enable <= '0'; 
-        WAIT FOR PERIOD*8;
+        FOR i IN 0 TO 22 LOOP
+            p_ena(enable);
+        END LOOP;
         
         
         WAIT FOR DELAY;

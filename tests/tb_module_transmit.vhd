@@ -83,7 +83,6 @@ BEGIN
         WAIT FOR 990000 ns;
         
         -- Simulation of verify (mode = 1; verify = True = 1)
-        -- Simulation time ~850us
         s_mode <= '1'; 
         s_verify <= '1';
         
@@ -93,15 +92,36 @@ BEGIN
         WAIT FOR 20 ns;
         s_enable <= '0';
         
-        WAIT FOR 100 us;
+        WAIT FOR 500 ns;
+        ASSERT (s_tx /= '1') REPORT "TX not Zero!" SEVERITY FAILURE;
+        
+        WAIT FOR 2500 ns;
+        ASSERT (s_tx /= '0') REPORT "TX not One!" SEVERITY FAILURE;
+        
+        WAIT FOR 100000 ns;
         
         -- Simulation of verify (mode = 1; verify = False = 0)
-        -- Simulation time ~850us
         s_mode <= '1'; 
         s_verify <= '0';
         
         -- run
         WAIT FOR 100 ns;
+        s_enable <= '1';
+        WAIT FOR 20 ns;
+        s_enable <= '0';
+        
+                
+        WAIT FOR 500 ns;
+        ASSERT (s_tx /= '1') REPORT "TX not Zero!" SEVERITY FAILURE;
+        
+        WAIT FOR 2500 ns;
+        ASSERT (s_tx /= '1') REPORT "TX not Zero!" SEVERITY FAILURE;
+        
+        WAIT FOR 100000 ns;
+        
+        -- Simulate Transmission of example keys
+        -- Simulation time ~ 850us
+        s_mode <= '0';
         s_enable <= '1';
         WAIT FOR 20 ns;
         s_enable <= '0';
