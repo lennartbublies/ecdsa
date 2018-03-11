@@ -1,17 +1,8 @@
 %!TEX root=../thesis.tex
 % \lipsum
 \chapter{Einleitung}
-
-\section{Motivation}
-
-
-
-
-\section{Ziele} 
-
-
-
-
-\section{Inhalt der Arbeit}
-
-
+Mit wachsender Digitalisierung wächst auch die Sorge, was mit den eigenen Daten passiert und ob diese nach der Übertragung über ein Medium nicht durch andere manipuliert worden sind. Um die Sicherheit bzw. Authentizität der Daten zu gewährleisten, werden die Daten mit Hilfe eines Passwortes, dem Key, signiert, sodass ein Empfänger, der ebenfalls den Key kennt, die Daten verifizieren kann. Der sich dahinter verbergende Algorithmus wird Digital Signature Algorithm (DSA) genannt.
+\\ \\
+Um trotz der Signatur eine Nachricht zu manipulieren, kann ein Angreifer über eine Brute-Force-Attacke versuchen, den Schlüssel durch ein Testen jeder erdenklichen Kombination zu erraten. Um diesem Problem entgegen zu wirken, werden lange Schlüssel verwendet, sodass eine solche Attacke nicht in akzeptabler Zeit zu bewerkstelligen ist. Dies hat jedoch zur Folge, dass mit steigender Schlüssellänge auch die Zeit steigt, die für das Erstellen der Signatar bzw. die Verifizierung benötigt wird.
+\\ \\
+Aufgrund dieser Problematik befasst sich diese Arbeit mit der Laufzeitoptimierung, indem eine Hardware-Implementierung umgesetzt wird, die die Laufzeit zum Signieren bzw. Verifizieren verbessert und die Ergebnisse anschließend mit einer C-Implementierung vergleicht.

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 #include "ecctypes.h"
 #include "eccprint.h"
@@ -12,10 +13,10 @@
 #include "sha256.h"
 
 // Enable DEBUG
-static eccint_t DEBUG = 1;
+static eccint_t DEBUG = 0;
 
 // Number of measurments
-static eccint_t MEASUREMENTS = 1;
+static int MEASUREMENTS = 1000;
 
 // K=163
 static eccint_t dA[21] = {
@@ -139,31 +140,45 @@ main(int argc, char** argv)
         debug(privatekey_dA, publickey_QA, privatekey_dB, publickey_QB, curve);
     } else {
         int i, result;
-        FILE *fp;
-        
-        fp=fopen("c_measurements.csv", "w+");
-        fprintf(fp,"ID, R, S, VTIME, V, VTIME");
+        double sign_count = 0;
+        double verify_count = 0;
+        //FILE *fp;
+        //fp=fopen("c_measurements.csv", "w+");
+        //fprintf(fp,"ID, R, S, VTIME, V, VTIME");
 
         for (i=0; i<MEASUREMENTS; i++) {
             eccint_t hash[curve->words];
-            time_t sign_start, sign_stop, verify_start, verify_stop;
-            
+            long sign_start, sign_stop, verify_start, verify_stop;
+            struct timeval sign_timecheck;
+            struct timeval verify_timecheck;
+
             // Generate random hash
             eccint_urand(hash, curve->words);
 
             // Measure time after sign/verify
-            sign_start = time(NULL);
+            gettimeofday(&sign_timecheck, NULL);
+            sign_start = (long)sign_timecheck.tv_sec * 1000 + (long)sign_timecheck.tv_usec / 1000;
             ecc_sign(privatekey_dA, hash, &signature, curve);
-            sign_stop = time(NULL) - sign_start;
+            gettimeofday(&sign_timecheck, NULL);
+            sign_stop = (long)sign_timecheck.tv_sec * 1000 + (long)sign_timecheck.tv_usec / 1000;
 
-            verify_start = time(NULL);
+            gettimeofday(&verify_timecheck, NULL);
+            verify_start = (long)verify_timecheck.tv_sec * 1000 + (long)verify_timecheck.tv_usec / 1000;
             result = ecc_verify(publickey_QA, hash, &signature, curve);
-            verify_stop = time(NULL) - verify_start;
+            gettimeofday(&verify_timecheck, NULL);
+            verify_stop = (long)verify_timecheck.tv_sec * 1000 + (long)verify_timecheck.tv_usec / 1000;
 
-            fprintf(fp,"%d, %d, %d, %.2f, %d, %.2f\n", i, eccint_as_number(signature.r, curve->words), eccint_as_number(signature.s, curve->words),
-                (double)(sign_stop), result, (double)(verify_stop));
+            sign_count += (double)(sign_stop-sign_start);
+            verify_count += (double)(verify_stop-verify_start);
+            /*fprintf(fp,"%d, %d, %d, %.2f, %d, %.2f\n", i, eccint_as_number(signature.r, curve->words), eccint_as_number(signature.s, curve->words),
+                (double)(sign_stop), result, (double)(verify_stop));*/
+            printf("Round %d: sign=%f  verify=%f \n", i, (double)(sign_stop-sign_start), (double)(verify_stop-verify_start));
         }
 
-        fclose(fp);
+        printf("Measured %d sign/verify combinations \n", MEASUREMENTS);
+        printf("Average sign time: %.4f \n", sign_count/MEASUREMENTS);
+        printf("Average verify time: %.4f \n", verify_count/MEASUREMENTS);
+        
+        //fclose(fp);
     }
 }

@@ -4,20 +4,27 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{FPGA-Implementierung}
+Zur Messungen der Laufzeit werden Daten über die UART-Schnittstelle gesendet und die Zeit gemessen, bis das Ergebnis empfangen wurde. Da das Signieren bzw. Verifizieren, wie in Abschnitt \ref{sec:uartimpl} beschrieben, durch separate Kommandos möglich ist, kann so die Laufzeit pro Funktion ermittelt werden. 
+\\ \\
+Die Kommunikation mit der FPGA-Implementierung wird über ein selbstgeschriebenes Python-Skript abgewickelt, welches einen zufälligen 163-Bit Hash erzeugt und via UART versendet. Nach dem Empfangen der erzeugten Signatur wird diese erneut zum FPGA geschickt und verifiziert. Dieser Ablauf wird für 1000 Messungen wiederholt und anschließend der Mittelwert gebildet. Die Ergebnisse sind in Tabelle \ref{vhdl-messung} zu finden.
+\\
+\begin{table}[h]
+	\centering 
+	\begin{tabular}{ | p{3cm} | p{6cm} | }
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} \\
+		\hline
+		Signieren & 77,0 ms \\
+		\hline
+		Verifizieren & 130,1 ms \\
+		\hline
+	\end{tabular}
+	\caption{Messergebnisse der VHDL-Implementierung}
+	\label{vhdl-messung}
+\end{table}
 
-Der VHDL-Code wird mit dem Synthetisierungs-Werkzeug Quartus II kompiliert und auf den Altera FPGA übertragen. Über eine serielle RS232-Schnittstelle ist Kommunikation mit dem Chip zur Datenübertragung möglich. \\
-
-In einem Python-Skript werden die Daten zur Messung vorbereitet. Es wird ein zufällig generierter 163-Bit Hash als Nachricht zum Signieren verwendet. Gemessen wird die Laufzeit vom Zeitpunkt des Beginns der Übertragung zum Board bis zum vollständigen Erhalt der Antwort. Dabei wird im Anschluss an das \textit{Signieren} einer Nachricht der vom Board erhaltene Key benutzt, um die Nachricht mit diesem zu \textit{verifizieren}. Die Messwerte entsprechen den gemittelten Zeiten aus 1000 Messungen: \\
-
-\begin{itemize}
-	\item Signieren: \textbf{77,0 ms}
-	\item Verifizieren: \textbf{130,1 ms}\\
-\end{itemize}
-
-Aus diesen ``Brutto''-Messwerten wird nun die Übertragungszeit herausgerechnet. Die serielle Übertragung findet mit einer Geschwindigkeit von 9600 Baud statt. Ein Symbol liegt dadurch für die Signaldauer von 1/9600 Sekunden, also etwa 104$\mu$s, auf der Leitung an. Zusätzlich zu den acht Symbolen eines Bytes wird das Start-Bit und das Stopp-Bit des UART-Standards mit berücksichtigt. Es wird keine Parität verwendet. Für die Übertragung eines Bytes werden also ca. 1,04ms benötigt. \\
-
-Zwischen den übertragenen Bytefolgen existiert keine messbare Verzögerung. Der ECDSA-Algorithmus beginnt unmittelbar mit der Berechnung, sobald das letzte Symbol am Board angekommen ist, die Übertragung an den PC erfolgt sofort, sobald das Berechnungsergebnis vorliegt. \\
-
+Bei den Messergebnissen ist zu beachten, dass diese die Zeit zur Übertragung der Daten beinhalten, die je nach verwendeter Funktion stark variieren können. Für eine exakte Bestimmung der Zeiten bedarf es noch einer Bereinigung der Messergebnisse. Dazu wird rechnerisch ermittelt, wie viel Zeit für die Übetragung benötigt wird und dieser Wert von den gemessenen Zeiten abgezogen. Die serielle Übertragung findet mit einer Geschwindigkeit von 9600 Baud statt. Ein Symbol liegt dadurch für die Signaldauer von 1/9600 Sekunden, also etwa 104$\mu$s, auf der Leitung an. Zusätzlich zu den 8 Daten-Bits werden pro Übertragung noch das Start-Bit und das Stopp-Bit übermittelt. Somit werden Für die 10 Symbole ca. 1,04 ms benötigt. Da die internen Verzögerungen zwischen der UART-Schnittstelle und der ECDSA-Implementierung zu vernachlässigen ist, wird lediglich die UART-Kommunkation berücksichtigt. Dies führt zu den folgenden Messergebnissen:
+\\
 \begin{itemize}
 	\item \textbf{Signieren:}\\
 \textit{Senden:} 
@@ -25,32 +32,99 @@ Zwischen den übertragenen Bytefolgen existiert keine messbare Verzögerung. Der
 $\Rightarrow$ 22 Byte * 10 Symbole * 104$\mu$s = 22,92ms\\
 \textit{Empfangen:} 
 2x21 Byte Punkte der ECC-Funktion\\
-$\Rightarrow$ 42 Byte  * 10 Symbole * 104$\mu$s = 43,75ms
+$\Rightarrow$ 42 Byte  * 10 Symbole * 104$\mu$s = 43,75ms \\
 %\textbf{Nettozeit Signieren} = 123,0ms - 22,92ms - 43,75ms = \textbf{56,3ms}
 \textbf{Nettozeit Signieren} = 77,0ms - 22,92ms - 43,75ms = \textbf{10,3ms}
 	
 	\item \textbf{Verifizieren:}\\
 \textit{Senden:}\\
 1 Byte Modus, 2x21 Byte ECC-Punkte, 21 Byte Message\\
-$\Rightarrow$ 64 Byte * 10 Symbole * 104$\mu$s = 66,67ms\\
+$\Rightarrow$ 64 Byte * 10 Symbole * 104 $\mu$s = 66,67 ms\\
 \textit{Empfangen:}\\
 1 Byte für True/False
-$\Rightarrow$ 1 Byte  * 10 Symbole * 104$\mu$s = 1,04ms
-%\textbf{Nettozeit Verifizieren} = 74ms - 66,67ms - 1,04ms = \textbf{6,3ms}\\
-\textbf{Nettozeit Verifizieren} = 130,1ms - 66,67ms - 1,04ms = \textbf{62,4ms}\\
+$\Rightarrow$ 1 Byte  * 10 Symbole * 104 $\mu$s = 1,04 ms \\
+%\textbf{Nettozeit Verifizieren} = 74 ms - 66,67 ms - 1,04 ms = \textbf{6,3 ms}\\
+\textbf{Nettozeit Verifizieren} = 130,1 ms - 66,67 ms - 1,04 ms = \textbf{62,4 ms}\\
 \end{itemize}
 
-Diesem berechneten Ergebnis aus den Messungen anhand des Python-Skripts wird nun die Messung aus dem Simulator gegenübergestellt: das Signieren eines 163bit Hashes benötigt nur \textbf{23,6ms} im Simulator, das Verifizieren benötigt \textbf{32,8ms}. Beide berechnete Simulationen sind damit mehr als Faktor 2 schneller. Der Grund dafür kann in der Pufferung der verwendeten ``PySerial''-Bibliothek für serielle Schnittstellen in Python sowie an der Puffer-Mechanismen des Betriebssystems liegen. \\
+Die korrigierten Ergebnisse der Messung werden abschließend dem Simulator-Ergebnis gegenübergestellt: Das Signieren eines 163 Bit Hashes benötigt nur \textbf{23,6 ms} im Simulator, während das Verifizieren \textbf{32,8 ms} benötigt. Beide berechnete Simulationen sind damit mehr als Faktor 2 schneller. Der Grund dafür kann in der Pufferung der verwendeten ``PySerial''-Bibliothek für serielle Schnittstellen in Python sowie an der Puffer-Mechanismen des Betriebssystems liegen. \\
+
+\begin{table}[h]
+	\centering 
+	\begin{tabular}{ | p{3cm} | p{6cm} | }
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} \\
+		\hline
+		Signieren & 10,3 ms \\
+		\hline
+		Verifizieren & 62,4 ms \\
+		\hline
+	\end{tabular}
+	\caption{Korrigierte Messergebnisse der VHDL-Implementierung}
+	\label{vhdl-messung-2}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{C-Implementierung}
+Für die Messung des C-Codes wurde die vorhandene C-Implementierung um Code zum Messen der Funktionen ergänzt und auf einem Rechner mit dem Betriebssystem Linux kompiliert und gestartet. Eine Übersicht der verwendeten Hardware ist in Tabelle \ref{c-impl-hardware} zu finden.
 
+\begin{table}
+	\centering 
+	\begin{tabular}{ | l | l | }
+		\hline
+		Bezeichnung & Beschreibung \\
+		\hline
+		CPU & Intel i5-5200U DualCore (2.20 bis 2.70 GHz, 3MB Cache) \\ 
+		RAM & 8GB DDR3L-1600 \\
+		HDD & 256GB SSD  \\
+		Grafik & Intel® HD 5500 Grafik \\
+		OS & Linux \\
+		\hline
+	\end{tabular}
+	\caption{Konfiguration der verwendeten Hardware}
+	\label{c-impl-hardware}
+\end{table}
 
+Wie bereits bei der VHDL-Implementierung wurden wieder $1000$ Messungen durchgeführt, bei denen im Mittel die Ergebnisse aus Tabelle \ref{c-messung} erzielt wurden.
+
+\begin{table}[h]
+	\centering 
+	\begin{tabular}{ | p{3cm} | p{6cm} | }
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} \\
+		\hline
+		Signieren & 169.1 ms \\
+		\hline
+		Verifizieren & 340.5 ms \\
+		\hline
+	\end{tabular}
+	\caption{Messergebnisse der C-Implementierung}
+	\label{c-messung}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gegenüberstellung \& Bewertung}
 
+Bei den Messergebnissen aus Tabelle \ref{messung-results} ist klar zu erkennen, dass die VHDL-Implementierung je nach Funktion eine Performance-Steigerung zwischen 82 \% - 95 \% aufweist. \\
 
+\begin{table} [h]
+	\centering 
+	\begin{tabular}{ | p{3cm} | p{2cm} | p{2cm} | p{2cm} | }
+		\hline
+		 & \textbf{VHDL} & \textbf{C} & \textbf{Gewinn} \\
+		\hline
+		\textbf{Signieren} & 10,3 ms & 169,1 ms & 94 \% \\
+		\hline
+		\textbf{Verifizieren} &  62,4 ms & 340,5 ms & 82 \% \\
+		\hline
+	\end{tabular}
+	\caption{Gegenüberstelung der Messergebnisse von der C- und VHDL-Implementierung}
+	\label{messung-results}
+\end{table}
+
+Bei den Messungen gilt zu berücksichtigen, dass der Performance-Gewinn bereits bei einer geringen Schlüssellänge von 163 Bit erzielt wurde. Da bei einem Erhöhen der Schlüssellänge die Vorteile der Hardware-Implementierung mehr zum Tragen kommen, ist mit weiteren Leistungssteigerungen zu rechnen. Außerdem wurde, wie in Kapitel \ref{sec:impl} beschrieben, lediglich eine triviale VHDL-Implementierung umgesetzt. Durch ein Austauschen der generischen Implementierung durch eine feste Verdrahtung der Bitlängen oder anderen Optimierungen sollen sich weitere Performance-Verbesserungen erzielen lassen.
+\\ \\
+Abschließend sei noch einmal erwähnt, dass die C-Implementierung eine auf Hardware optimierte Implementierung (Bit-Felder) verwendet. Es ist daher davon auszugehen, dass sich auch die C-Ergebnisse verbessern lassen, indem beispielsweise auf numerische Verfahren zurückgegriffen wird!  
 
 %\begin{figure}[H]
 %	\centering

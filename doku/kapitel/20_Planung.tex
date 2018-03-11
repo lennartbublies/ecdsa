@@ -5,21 +5,16 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Zielsetzung \& Abgrenzung} \label{sec:ziele}
-
-Das Ziel dieser Arbeit ist die Umsetzung eines kryptografisch sicheren Verfahrens zum digitalen Signieren einer Nachricht und der Verifikation dieser Signatur. Dabei soll eine ressourceneffiziente Hardware-Software-Kombination unter Verwendung eines FPGA-Bausteins\footnote{``field-programmable gate array''; integrierter Schaltkreis, in welche eine logische Schaltung geladen werden kann} implementiert werden. \\
-
-Die Kommunikation mit dem FPGA soll über eine serielle Schnittstelle erfolgen. Dabei gibt es die zwei Modi \textit{Signieren} und \textit{Verifizieren}. Beim Signieren wird lediglich die Nachricht gesendet, sodass als Antwort die Signatur empfangen wird. Beim Verifizieren werden Schlüssel und Nachricht gesendet, wobei eine einfache Antwort das Ergebnis des Verifizierens (wahr oder falsch) zurückgeschickt wird. Dabei liegt der Fokus auf der VHDL-Implementierung der mathematischen Schritte des Algorithmus und die Lauffähigkeit des Gesamtsystems. Weniger wichtig sind Voraussetzungen wie die Generierung einer echten Zufallszahl und die effiziente Bildung eines Hash-Werts der Nachricht auf dem Chip. \\
-
-Die Laufzeit der FPGA-Implementierung wird über verschiedene Wege gemessen und mit der Performance einer Implementierung des ECDS-Algorithmus für Universalprozessoren verglichen. \\  
+Das Ziel dieser Arbeit ist die Umsetzung eines kryptografisch sicheren Verfahrens zum digitalen Signieren einer Nachricht und der Verifikation dieser Signatur. Dazu dient der \textit{Elliptic Curve Digital Signature Algorithm (ECDSA)} als Basis, um eine ressourceneffiziente Hardware-Implementierung unter Verwendung eines FPGA-Bausteins\footnote{Field Programmable Gate Array (FPGA): https://de.wikipedia.org/wiki/Field\_Programmable\_Gate\_Array} zu implementieren. Als Entwicklerboard kommt das Altera DE2 Board zum Einsatz 
+\\ \\
+Die Kommunikation mit dem FPGA soll über eine serielle Schnittstelle erfolgen. Dabei gibt es die zwei Modi \textit{Signieren} und \textit{Verifizieren}. Beim Signieren wird lediglich die Nachricht gesendet, sodass als Antwort die Signatur empfangen wird. Beim Verifizieren werden Schlüssel und Nachricht gesendet, wobei eine einfache Antwort als Ergebnis des Verifizierens (wahr oder falsch) zurückgeschickt wird. Dabei liegt der Fokus auf der VHDL-Implementierung der mathematischen Schritte des Algorithmus und die Lauffähigkeit des Gesamtsystems. Auf Teilkomponenten wie die Generierung einer echten Zufallszahl oder die effiziente Bildung eines Hash-Werts der Nachricht auf dem Chip wird verzichtet. Stattdessen werden die Daten bereits als Hash übertragen und eine Konstante als Zufallszahl verwendet. An dieser Stelle sei erwähnt, dass das Verwenden einer Konstante als Zufallszahl kryptografisch unsicher ist und in produktiven Umgebungen zwingend vermieden werden sollte, um Angriffe wie den berühmten Playstation 3 Hack \footnote{Playstation 3 Hack: https://www.edn.com/design/consumer/4368066/The-Sony-PlayStation-3-hack-deciphered-what-consumer-electronics-designers-can-learn-from-the-failure-to-protect-a-billion-dollar-product-ecosystem} zu verhinden.  
+\\ \\
+Zur Überprüfung der Ergebnisse findet abschließend ein Vergleich der FPGA-Implementierung mit einer C-Implementierung statt.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problemanalyse}
-
-Zunächst gilt es, die Aufgabenstellung präzise zu erfassen. Dazu müssen die theoretischen Grundlagen und zugrunde liegenden Konzepte der zu verwendenden Technologien erarbeitet werden. In Kapitel \ref{sec:basics} werden dazu die wesentlichen mathematischen Grundlagen erläutert. \\
-
+Bevor mit der Implementierung des ECDSA-Algorithmus begonnen wird, gilt es zunächst die Aufgabenstellung präzise zu erfassen. Dazu müssen die theoretischen Grundlagen und zugrunde liegenden Konzepte der zu verwendenden Technologien erarbeitet werden. In Kapitel \ref{sec:basics} werden dazu die wesentlichen mathematischen Grundlagen erläutert. 
+\\ \\
 % ell kurve, galois felder -> komplizierter
-Beim \textit{Elliptic Curve Digital Signature Algorithm} kommen im Gegensatz zu klassischen Signaturverfahren, welche ebenso auf asymmetrischer Verschlüsselung basieren, Polynome elliptischer Kurven zum Einsatz. Um mit diesen Funktionen in der Kryptografie einsetzen zu können, müssen Berechnungen in abgeschlossenen Räumen stattfinden. Hierzu wird ein Galois-Körper über der elliptischen Kurve definiert. \\
-
-
-Die zu verwendende Hardware\footnote{FPGA-Baustein auf einem Altera DE2 Development and Education Board} ist bereits aus vorhergehenden Projekten bekannt und wird somit in dieser Arbeit nicht näher beschrieben. 
+Beim ECDSA-Algorithmus kommen im Gegensatz zu klassischen Signaturverfahren, welche ebenso auf asymmetrischer Verschlüsselung basieren, Polynome elliptischer Kurven zum Einsatz. Um diese Funktionen in der Kryptografie einsetzen zu können, müssen Berechnungen in abgeschlossenen Räumen stattfinden. Hierzu wird ein Galois-Körper über der elliptischen Kurve definiert und die dazugehörigen Funktionen analysiert und in VHDL implementiert.

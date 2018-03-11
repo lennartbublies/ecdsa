@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # Portions Copyright (C) Philipp Kewisch, 2016
 
-CFLAGS ?= -Wall -Werror -g
+CFLAGS ?= # -Wall -Werror -g
 CC ?= clang
 VALGRIND ?= valgrind
 VALGRINDFLAGS ?= --track-origins=yes --leak-check=full --show-reachable=yes
