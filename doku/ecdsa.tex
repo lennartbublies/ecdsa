@@ -48,6 +48,8 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{color}
+\usepackage{listings}
 
 % Layout
 \pagestyle{scrheadings}
@@ -83,6 +85,21 @@
 \else
 \fi
 
+\renewcommand\lstlistlistingname{Quellcode}
+\lstdefinelanguage{Python}{
+	keywords={typeof, null, catch, switch, in, int, str, float, self, for, range},
+	keywordstyle=\color{black}\bfseries,
+	ndkeywords={boolean, throw, import},
+	ndkeywords={CASE, IS, WHEN, TO, IF, THEN, ELSIF, and, END},
+	ndkeywordstyle=\color{black}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{\#},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+}
+
 \bibliographystyle{alpha}
 
 \begin{document}
@@ -113,7 +130,7 @@
 
 \listoffigures
 \listoftables
-%\lstlistoflistings
+\lstlistoflistings
 \include{kapitel/80_Literaturverzeichnis}
 
 %\include{stuff/footer}
