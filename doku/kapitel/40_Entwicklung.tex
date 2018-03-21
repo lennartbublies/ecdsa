@@ -184,7 +184,7 @@ END IF;
 
 Die Implementierung des ECDSA-Algorithmus findet über die Entität \texttt{e\_ecdsa} statt. Für die Umschaltung zwischen Signieren und Verfifizieren wird ein Zustandsautomat verwendet, der im wesentlichen im Abhängigkeit des Parameters \texttt{mode\_i} zwischen den Algorithmen wechselt. Damit kann pro Ablauf immer nur ein Algorithmus zur Zeit gestartet werden.
 \\ \\
-Die Implementierungen der Algorithmen folgt dem Ablauf aus Kapitel \ref{ecdsa-algo}. Der Ablauf ist streng sequentiell, wobei versucht wird, einen maximalen Parallelisierungsgrad anzustreben. So werden bei der Verifikation beispielsweise die Variablen $u_1$ und $u_2$ parallel berechnet. Die Algorithmen sind so umgesetzt, dass jede Operation über eine eigene Entität abgebildet wird. So besteht das Signieren aus 3 Entitäten (1x Punkt-Multiplikation, 1x Multiplizierer, 1x Dividierer), während die Verifikation aus 6 Entitäten (1x Punkt-Addition, 2x Punkt-Multiplikation, 2x Multiplizierer, 1xInverter) besteht. Grund für die Verdopplung liegt in erster Linie an der deutlich einfacheren und übersichtlicheren Implementierung. Der Nachteil dagegen ist, dass der Ressourcenverbrauch deutlich höher ist. Da die eingesetzte Hardware aber genügend Ressourcen zur Verfügung stellt, wurde auf eine Optimierung verzichtet. Ein weiterer Vorteil dieser Implementierung ist, dass theoretisch parallel signiert und verifiziert werden kann, was bei einer gemeinsamen Nutzung von Entitäten aufgrund der Umschaltlogik nicht möglich wäre. Für die zeitliche Aktivierung der Entitäten wird wieder auf den Zustandsautomat zurückgegriffen. Dazu werden die in Abschnitt \ref{vhdl-impl-general-entity} erwähnten Aktivierungs- bzw. Status-Flags verwendet. \\
+Die Implementierungen der Algorithmen folgt dem Ablauf aus Kapitel \ref{ecdsa-algo}. Der Ablauf ist streng sequentiell, wobei versucht wird, einen maximalen Parallelisierungsgrad anzustreben. So werden bei der Verifikation beispielsweise die Variablen $u_1$ und $u_2$ parallel berechnet. Die Algorithmen sind so umgesetzt, dass jede Operation über eine eigene Entität abgebildet wird. So besteht das Signieren aus 3 Entitäten (1x Punktmultiplikation, 1x Multiplizierer, 1x Dividierer), während die Verifikation aus 6 Entitäten (1x Punktaddition, 2x Punktmultiplikation, 2x Multiplizierer, 1xInverter) besteht. Grund für die Verdopplung liegt in erster Linie an der deutlich einfacheren und übersichtlicheren Implementierung. Der Nachteil dagegen ist, dass der Ressourcenverbrauch deutlich höher ist. Da die eingesetzte Hardware aber genügend Ressourcen zur Verfügung stellt, wurde auf eine Optimierung verzichtet. Ein weiterer Vorteil dieser Implementierung ist, dass theoretisch parallel signiert und verifiziert werden kann, was bei einer gemeinsamen Nutzung von Entitäten aufgrund der Umschaltlogik nicht möglich wäre. Für die zeitliche Aktivierung der Entitäten wird wieder auf den Zustandsautomat zurückgegriffen. Dazu werden die in Abschnitt \ref{vhdl-impl-general-entity} erwähnten Aktivierungs- bzw. Status-Flags verwendet. \\
 
 \begin{table} [h]
 	\centering 
@@ -219,8 +219,8 @@ Die Implementierungen der Algorithmen folgt dem Ablauf aus Kapitel \ref{ecdsa-al
 	\label{tab:vhdl-impl-ecdsa-param}
 \end{table}
 
-\subsection{Punkt-Addition und -Verdopplung}
-Die Punkt-Addition und Punkt-Verdopplung basieren auf den Formeln aus Abschnitt \ref{sec:ell}. \\
+\subsection{Punktaddition und -dopplung}
+Die Punktaddition und Punktdopplung basieren auf den Formeln aus Abschnitt \ref{sec:ell}. \\
 
 \begin{table} [h]
 	\centering 
@@ -238,15 +238,15 @@ Die Punkt-Addition und Punkt-Verdopplung basieren auf den Formeln aus Abschnitt 
 		\hline
 		y1\_i & y Komponente des Basis-Punktes \\
 		\hline
-		x2\_o & x Komponenten der Punkt-Dopplung \\
+		x2\_o & x Komponenten der Punktdopplung \\
 		\hline
-		y2\_o & y Komponenten der Punkt-Dopplung \\
+		y2\_o & y Komponenten der Punktdopplung \\
 		\hline
 		ready\_o & Status-Flag ob die Berechnung abgeschlossen ist  \\
 		\hline
 		\hline
 	\end{tabular}
-	\caption{Eingabe- und Ausgabeparameter der Punkt-Dopplungs-Entität}
+	\caption{Eingabe- und Ausgabeparameter der Punktdopplungs-Entität}
 	\label{tab:vhdl-impl-eccdouble-param}
 \end{table}
 
@@ -280,12 +280,12 @@ Der zugrundeliegende Ablauf ist identisch mit der Implementierung des ECDSA-Algo
 		\hline
 		\hline
 	\end{tabular}
-	\caption{Eingabe- und Ausgabeparameter der Punkt-Additions-Entität}
+	\caption{Eingabe- und Ausgabeparameter der Punktadditions-Entität}
 	\label{tab:vhdl-impl-eccadd-param}
 \end{table}
 
-\subsection{Punkt-Multiplikation}
-Die Punkt-Multiplikation basiert auf dem Double-And-Add-Algorithmus. Der Pseudocode ist in Listing \ref{lst-pm-algo} zu finden. \\
+\subsection{Punktmultiplikation}
+Die Punktmultiplikation basiert auf dem Double-And-Add-Algorithmus. Der Pseudocode ist in Listing \ref{lst-pm-algo} zu finden. \\
 
 \begin{table} [h]
 	\centering 
@@ -313,7 +313,7 @@ Die Punkt-Multiplikation basiert auf dem Double-And-Add-Algorithmus. Der Pseudoc
 		\hline
 		\hline
 	\end{tabular}
-	\caption{Eingabe- und Ausgabeparameter der Punkt-Multiplikations-Entität}
+	\caption{Eingabe- und Ausgabeparameter der Punktmultiplikations-Entität}
 	\label{tab:vhdl-impl-eccmul-param}
 \end{table}
 
@@ -446,7 +446,7 @@ Die Addition bzw. Subtraktion ist im $GF(2^M)$ trivial, da $-1 = 1$ gilt. Somit 
 \subsection{Test- und Verifizierung}
 Für den Test- und die Verifizierung der Entities werden zwei verschiedene Arten von Testbenches verwendet. Die triviale Variante dient lediglich dem kurzen Funktionstest der Entity. Dazu werden lediglich statische Werte abgefragt, um die Entwicklung der Entities zu unterstützen. Die ``echten'' Testbenches dagegen versuchen anhand dynamisch generierter Testdaten die Kombination verschiedener Entities zu verifizieren.
 \\ \\
-Der Tabelle \ref{tab:vhdl-impl-testbenches} ist zu entnehmen, dass beispielsweise die Punkt-Multiplikation neben der eigentlichen Multiplikation auch die Punkt-Addition und damit auch die dafür notwendigen mathematischen Grundoperatoren verifiziert. Da es die Testbench erfordert, dass verschiedene Entitäten separat entwickelt werden, was im Fehlerfall die Indentifizierung deutlich erschwert, wurden weitere einfachere Testbenches geschrieben um zunächst die Basisfunktionalität der Entitäten zu verifizieren.
+Der Tabelle \ref{tab:vhdl-impl-testbenches} ist zu entnehmen, dass beispielsweise die Punktmultiplikation neben der eigentlichen Multiplikation auch die Punktaddition und damit auch die dafür notwendigen mathematischen Grundoperatoren verifiziert. Da es die Testbench erfordert, dass verschiedene Entitäten separat entwickelt werden, was im Fehlerfall die Indentifizierung deutlich erschwert, wurden weitere einfachere Testbenches geschrieben um zunächst die Basisfunktionalität der Entitäten zu verifizieren.
 \\ \\
 Die Überprüfung der Bedingungen erfolgt unmittelbar nachdem das Status-Flag der zu testenden Entities ein ``High''-Pegel liefert. Neben dem reinen Überprüfen der Bedingungen wird zusätzlich überprüft, ob die Berechnung in einer definierten Anzahl von Taktzyklen abgeschlossen wurde.
 

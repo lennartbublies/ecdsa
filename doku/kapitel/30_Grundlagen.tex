@@ -75,16 +75,37 @@ $ U_P := \{ k P | k \in \mathbb{Z} \}$
 $k_0 P = P + P + \cdots + P = O, $ mit $ k_0 > 0$
 \end{center}
 
-Auf elliptischen Kurven sind eine Reihe von Operationen (ECC-Operationen) definiert. Dazu zählen die Punktaddition, Punktmultiplikation und die Punktdopplung als Spezialfall der Punktaddition.
-Die als Punktaddition bezeichnete arithmetische Operation verknüpft zwei verschiedene Punkte ($P_1 \ne P_2$) auf der Kurve miteinander. Wenn die beiden Punkte gleich sind (also $P_3 = P_1 + P_2 = 2 P_1$), wird diese Operation Punktverdopplung genannt (vgl. \cite{puttmann}, S. 16f). Beide Operationen lassen sich mittels Sekanten- bzw. Tangentenmethode auf einer elliptischen Kurve darstellen (s. Abb. \ref{fig:padd}). 
+\subsection{ECC-Operationen}
+Auf elliptischen Kurven sind eine Reihe von Operationen definiert. Dazu zählen die Punktaddition, Punktmultiplikation und die Punktdopplung als Spezialfall der Punktaddition.
 
 \begin{figure}[H]
 	\centering
-   \includegraphics[width=\textwidth]{bilder/p-addition}
+	\includegraphics[width=\textwidth]{bilder/p-addition}
 	\caption{Arithmetische Operationen auf einer elliptischen Kurve}
 	\label{fig:padd}
 \end{figure}
 
+Die als Punktaddition bezeichnete arithmetische Operation verknüpft zwei verschiedene Punkte ($P \ne Q$) auf der Kurve miteinander. \\
+
+$R = P + Q$ \\
+$s = \frac{p_y-q_y}{p_x-q_x} \mod p$ \\
+$r_x = s^2 - p_x - q_x \mod p$ \\
+$r_y = s(p_x-r_x)-p_y \mod p$ \\
+
+Wenn die beiden Punkte gleich sind (also $R = P_1 + P_2 = 2 P_1$), wird diese Operation Punktverdopplung genannt (vgl. \cite{puttmann}, S. 16f). \\
+
+$R=P+P$ \\
+$s=\frac{3{p_x}^2+a}{2p_y} \mod p$ \\  
+$r_x=s^2-2p_x \mod p$ \\  
+$r_y=s(p_x-r_x)-p_y \mod p$ \\
+
+Beide Operationen lassen sich mittels Sekanten- bzw. Tangentenmethode auf einer elliptischen Kurve darstellen (s. Abb. \ref{fig:padd}). 
+\\ \\
+Die Punkt-Multiplikation führt eine k-fache Punktaddition durch. \\
+
+$R = k A \mod p$
+
+\subsection{Koblitz-Kurven}
 Eine besondere Form der elliptischen Kurven sind \texttt{Koblitz}-Kurven (engl.: Anomalous Binary Curves) über das endliche Feld $F_{2^m}$, deren Kurvengleichung ausschließlich die Koeffizienten ``0'' und ``1'' enthalten. In kryptographischen Protokollen werden häufig Koblitz-Kurven der folgenden Formen verwendet (vgl. \cite{guide}, Kap. 3.4):
 
 \begin{center}
