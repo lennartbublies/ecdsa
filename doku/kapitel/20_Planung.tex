@@ -1,20 +1,17 @@
 %!TEX root=../thesis.tex
 
-\chapter{Projektplanung} \label{sec:planung}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Zielsetzung \& Abgrenzung} \label{sec:ziele}
+\chapter{Zielsetzung \& Abgrenzung} 
+\label{sec:planung}
 Das Ziel dieser Arbeit ist die Umsetzung eines kryptografisch sicheren Verfahrens zum digitalen Signieren einer Nachricht und der Verifikation dieser Signatur. Dazu dient der \textit{Elliptic Curve Digital Signature Algorithm (ECDSA)} als Basis, um eine ressourceneffiziente Hardware-Implementierung unter Verwendung eines FPGA-Bausteins\footnote{Field Programmable Gate Array (FPGA): https://de.wikipedia.org/wiki/Field\_Programmable\_Gate\_Array} zu implementieren. Als Entwicklerboard kommt das Altera DE2 Board zum Einsatz 
 \\ \\
-Die Kommunikation mit dem FPGA soll über eine serielle Schnittstelle erfolgen. Dabei gibt es die zwei Modi \textit{Signieren} und \textit{Verifizieren}. Beim Signieren wird lediglich die Nachricht gesendet, sodass als Antwort die Signatur empfangen wird. Beim Verifizieren werden Schlüssel und Nachricht gesendet, wobei eine einfache Antwort als Ergebnis des Verifizierens (wahr oder falsch) zurückgeschickt wird. Dabei liegt der Fokus auf der VHDL-Implementierung der mathematischen Schritte des Algorithmus und die Lauffähigkeit des Gesamtsystems. Auf Teilkomponenten wie die Generierung einer echten Zufallszahl oder die effiziente Bildung eines Hash-Werts der Nachricht auf dem Chip wird verzichtet. Stattdessen werden die Daten bereits als Hash übertragen und eine Konstante als Zufallszahl verwendet. An dieser Stelle sei erwähnt, dass das Verwenden einer Konstante als Zufallszahl kryptografisch unsicher ist und in produktiven Umgebungen zwingend vermieden werden sollte, um Angriffe wie den berühmten Playstation 3 Hack \footnote{Playstation 3 Hack: https://www.edn.com/design/consumer/4368066/The-Sony-PlayStation-3-hack-deciphered-what-consumer-electronics-designers-can-learn-from-the-failure-to-protect-a-billion-dollar-product-ecosystem} zu verhinden.  
+Die Kommunikation mit dem FPGA soll über eine serielle Schnittstelle erfolgen. Dabei gibt es die zwei Modi Signieren und Verifizieren. Beim Signieren wird die zu signierende Nachricht gesendet und als Antwort eine gültige Signatur empfangen. Beim Verifizieren werden die zu überprüfende Signatur und die Originalnachricht gesendet. Als Antwort wird über einen booleschen Wert signalisiert, ob die Signatur gültig ist oder nicht. Dabei liegt der Fokus auf der VHDL-Implementierung der mathematischen Funktionen und der Lauffähigkeit des Gesamtsystems. Auf Teilkomponenten wie die Generierung einer echten Zufallszahl oder die effiziente Bildung eines Hashes der Nachricht, wie im Algorithmus beschrieben, wird verzichtet. Stattdessen werden die Daten bereits als Hash übertragen und eine Konstante als Zufallszahl verwendet. An dieser Stelle sei erwähnt, dass das Verwenden einer Konstante als Zufallszahl kryptografisch unsicher ist und in produktiven Umgebungen zwingend vermieden werden sollte, um Angriffe wie den berühmten Playstation 3 Hack \footnote{Playstation 3 Hack: https://www.edn.com/design/consumer/4368066/The-Sony-PlayStation-3-hack-deciphered-what-consumer-electronics-designers-can-learn-from-the-failure-to-protect-a-billion-dollar-product-ecosystem} zu verhinden. Die Vereinfachung ist zum einen der fehlenden Hardware zur Generierung einer echten Zufallszahl geschuldet und um zum anderen den Fokus auf die Implementierung der Kernfunktionen zu lenken.  
 \\ \\
-Zur Überprüfung der Ergebnisse findet abschließend ein Vergleich der FPGA-Implementierung mit einer C-Implementierung statt.
+Abgeschlossen wird diese Arbeit mit einer Gegenüberstellung der Ergebnisse der FPGA-Implementierung mit einer C-Implementierung, die im Rahmen eines anderen Projektes \cite{kewish} entstanden ist.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Problemanalyse}
-Bevor mit der Implementierung des ECDSA-Algorithmus begonnen wird, gilt es zunächst die Aufgabenstellung präzise zu erfassen. Dazu müssen die theoretischen Grundlagen und zugrunde liegenden Konzepte der zu verwendenden Technologien erarbeitet werden. In Kapitel \ref{sec:basics} werden dazu die wesentlichen mathematischen Grundlagen erläutert. 
-\\ \\
+%\section{Problemanalyse}
+%Bevor mit der Implementierung des ECDSA-Algorithmus begonnen wird, gilt es %zunächst die Aufgabenstellung präzise zu erfassen. Dazu müssen die %theoretischen Grundlagen und zugrunde liegenden Konzepte der zu verwendenden %Technologien erarbeitet werden. In Kapitel \ref{sec:basics} werden dazu die %wesentlichen mathematischen Grundlagen erläutert. 
+%\\ \\
 % ell kurve, galois felder -> komplizierter
-Beim ECDSA-Algorithmus kommen im Gegensatz zu klassischen Signaturverfahren, welche ebenso auf asymmetrischer Verschlüsselung basieren, Polynome elliptischer Kurven zum Einsatz. Um diese Funktionen in der Kryptografie einsetzen zu können, müssen Berechnungen in abgeschlossenen Räumen stattfinden. Hierzu wird ein Galois-Körper über der elliptischen Kurve definiert und die dazugehörigen Funktionen analysiert und in VHDL implementiert.
+%Beim ECDSA-Algorithmus kommen im Gegensatz zu klassischen Signaturverfahren, welche ebenso auf asymmetrischer Verschlüsselung basieren, Polynome elliptischer Kurven zum Einsatz. Um diese Funktionen in der Kryptografie einsetzen zu können, müssen Berechnungen in abgeschlossenen Räumen stattfinden. Hierzu wird ein Galois-Körper über der elliptischen Kurve definiert und die dazugehörigen Funktionen analysiert und in VHDL implementiert.

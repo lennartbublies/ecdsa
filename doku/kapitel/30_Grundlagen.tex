@@ -12,7 +12,7 @@ $ \circ: X \times X \to X $
 die jedem Paar $(x_1,x_2)$ aus Elementen der Menge X ein Element $x_1 \circ x_2$ zuordnet. Außerdem sind folgende Bedingungen auf der Struktur einer Gruppe definiert: \\
 
 \begin{enumerate}
-  \item Menge $G$ ist abgeschlossen, d.h. für alle $a,b \in G$ gilt, d.h. dass auch jede Verknüpfung $a \circ b$ ein Element von $G$ ist. 
+  \item Menge $G$ ist abgeschlossen, d.h. für alle $a,b \in G$ gilt, dass auch jede Verknüpfung $a \circ b$ ein Element von $G$ ist. 
   \item Assoziativgesetz: $ \forall a,b,c \in G: (a \circ b) \circ c = a \circ (b \circ c) $
   \item Kommutativgesetz: $ \forall a,b \in G: a \circ b = b \circ a $
   \item Neutrales Element: $ \forall a \in G: a \circ e = e \circ a = a$
@@ -21,9 +21,9 @@ die jedem Paar $(x_1,x_2)$ aus Elementen der Menge X ein Element $x_1 \circ x_2$
 
 Ein Beispiel für eine so definierte abelsche Gruppe entspricht der Menge der ganzen Zahlen $\mathbb{Z}$ mit der Addition als Verknüpfung $(\mathbb{Z},+)$. Die Anzahl der Elemente einer Gruppe wird als Ordnung bezeichnet, welche für die ganzen Zahlen unendlich ist. In der Kryptographie kommen jedoch stets Gruppen mit einer endlichen Anzahl von Elementen zum Einsatz, bei denen also die Ordnung der Gruppe beschränkt ist. 
 \\ \\
-Eine besondere Form endlicher Gruppen bilden zyklische Gruppen, die ein Element $g$ besitzen, aus dem durch Verknüpfungen $\circ$ alle anderen Elemente der Gruppe erzeugt werden können. Das Element $g$ ist das sog. Generatorelement der zyklischen Gruppe $(G',\circ)$.
+Eine besondere Form endlicher Gruppen bilden zyklische Gruppen, die ein Element $g$ besitzen, aus dem alle anderen Elemente der Gruppe durch Verknüpfungen $\circ$ erzeugt werden können. Das Element $g$ ist das sog. Generatorelement der zyklischen Gruppe $(G',\circ)$.
 \\ \\
-Eine Körper ist eine Erweiterung von abelschen Gruppen und als Tripel $(K,+,\cdot)$ definiert, welche zu einer nicht-leeren Menge $K$ konkret die inneren Verknüpfungen Addition und Multiplikation beschreibt. Folgende Bedingungen werden dabei erfüllt (vgl. \cite{puttmann}): \\
+Ein Körper ist eine Erweiterung von abelschen Gruppen und als Tripel $(K,+,\cdot)$ definiert, welche zu einer nicht-leeren Menge $K$ die inneren Verknüpfungen Addition und Multiplikation beschreibt. Folgende Bedingungen werden dabei erfüllt (vgl. \cite{puttmann}): \\
 
 \begin{enumerate}
   \item Die Menge $K$ bildet durch die additive Verknüpfung $+$ eine abelsche Gruppe
@@ -34,7 +34,7 @@ mit 0 als neutralem Element
 
 Unter einem Endlichen Körper oder Galoiskörper versteht man einen Körper mit endlich vielen Elementen, der oft auch als Restklassenkörper bezeichnet wird. Ein Beispiel dafür sind Primkörper mit Primzahl $p$ und den Verknüpfungen \textit{Addition modulo p} und \textit{Multiplikation modulo p}: $\mathbb{Z}_p = \{0,1,2,3,\cdots,p-1\}$. 
 \\ \\
-Galoiskörper werden mit $GF(p)$ abgekürzt, wobei $q$ eine Primzahl sein muss und für die Anzahl der Elemente im Feld steht. $GF(p)$ repräsentiert damit einen Körper der Restklasse ganzer Zahlen modulo $p$. Durch die mathematischen Eigenschaften dieser Struktur um Restklassen und inverse Elemente eignen sie sich besonders für den Einsatz in der Kryptographie.
+Galoiskörper werden mit $GF(p)$ abgekürzt, wobei $p$ eine Primzahl sein muss und für die Anzahl der Elemente im Feld steht. $GF(p)$ repräsentiert damit einen Körper der Restklasse ganzer Zahlen modulo $p$. Durch die mathematischen Eigenschaften dieser Struktur eignen sie sich besonders für den Einsatz in der Kryptographie.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Elliptische Kurven} 
@@ -63,7 +63,7 @@ Die Parameter $a_1 \dots a_6$ legen fest, welche Form die elliptische Kurve anni
 $ y^2 \bmod p = x^3 + a x + b \bmod p $
 \end{center}
 
-Damit eine elliptische Formel in der Kryptographie eingesetzt werden kann, muss zusätzlich nachfolgende Bedingung gelten. Sie folgt aus der nicht-singulären Eigenschaft von E, also Ableitungen $\ne$ 0 und bzw. Diskriminante $\ne$ 0 (Herleitung und Beweis siehe \cite{grebe}, S. 28ff):
+Damit eine elliptische Formel in der Kryptographie eingesetzt werden kann, muss zusätzlich die nachfolgende Bedingung gelten. Sie folgt aus der nicht-singulären Eigenschaft von E, also Diskriminante $\ne$ 0 (Herleitung und Beweis siehe \cite{grebe}, S. 28ff):
 %4a3+ 27b2 mod p 0
 \begin{center}
 $ 4 a^3 + 27 b^2 \bmod p \ne 0, $ mit $ a,b \in K $
@@ -106,7 +106,7 @@ Die Punkt-Multiplikation führt eine k-fache Punktaddition durch. \\
 $R = k A \mod p$
 
 \subsection{Koblitz-Kurven}
-Eine besondere Form der elliptischen Kurven sind \texttt{Koblitz}-Kurven (engl.: Anomalous Binary Curves) über das endliche Feld $F_{2^m}$, deren Kurvengleichung ausschließlich die Koeffizienten ``0'' und ``1'' enthalten. In kryptographischen Protokollen werden häufig Koblitz-Kurven der folgenden Formen verwendet (vgl. \cite{guide}, Kap. 3.4):
+Eine besondere Form der elliptischen Kurven sind \texttt{Koblitz}-Kurven (engl. Anomalous Binary Curves) über das endliche Feld $F_{2^m}$, deren Kurvengleichung ausschließlich die Koeffizienten ``0'' und ``1'' enthalten. In kryptographischen Protokollen werden häufig Koblitz-Kurven der folgenden Formen verwendet (vgl. \cite{guide}, Kap. 3.4):
 
 \begin{center}
 $E_0 : y^2 + x y = x^3 + 1 $ \\
@@ -160,14 +160,14 @@ Beim \textit{Elliptic Curve Digital Signature Algorithm} (ECDSA) wird von einer 
 %Key generation : (A)
 \item Wähle ein zufälliges $d$ aus $[1, n-1]$.
 \item Berechne $Q = dP$ .
-\item Der Public Key von A entspricht $Q$; der Private Key ist $d$. \\
+\item Der öffentliche Schlüssel von A entspricht $Q$; der private Schlüssel ist $d$. \\
 \end{enumerate}
 
 Der private Schlüssel $d$ ist hierbei eine positive ganze Zahl. Der Parameter $n$ entspricht der Ordnung des Basis-Punkts $P$. Die Domain Parameter werden allgemein angegeben als $D = (q,FR, S,a,b, P,n,h)$ und werden definiert als (vgl. \cite{guide}, S. 172): \\
 
 \begin{itemize}
 \item $q$: Ordnung der Kurve.
-\item $FR$: \textit{field representation}, Repräsentation der Elemente in $F_q$.
+\item $FR$: Repräsentation der Elemente in $F_q$.
 \item $S$: \textit{Seed}, falls die Kurve zufällig generiert ist.
 \item $a,b \in F_q$: Koeffizienten, die die elliptische Kurve beschreiben.
 \item $P = (x_P,y_P) \in E(F_q)$: Basis-Punkt der elliptischen Kurve.
@@ -176,33 +176,29 @@ Der private Schlüssel $d$ ist hierbei eine positive ganze Zahl. Der Parameter $
 \end{itemize}
 
 \subsection{Signatur}
+Erstellen der Signatur (vgl. \cite{hwimp}) : (A)
 
-Die Signatur wird nach folgendem Vorgehen erstellt (vgl. \cite{hwimp}):
-\\ \\
-Signature generation : (A)
 \begin{enumerate}
-\item Select a random integer $k$ from $[1, n - 1]$.
-\item Compute $k G = (x_1, y_1)$ and $r = x_1 \pmod{n} $.
-\item If $r = 0$ then go to step 1.
-\item Compute $k^{-1} \pmod{n}$.
-\item Compute $s = k^{-1}(SHA - 1(m) + dr)\pmod{n}$.
-\item If $s = 0$ then go to step 1.
-\item Send $m$ and $(r, s)$, which is A’s signature for the message $m$, to B.
+\item Zufallszahl $k$ im Bereich $[1, n - 1]$ bestimmen.
+\item Berechne $k G = (x_1, y_1)$ mit $r = x_1 \pmod{n} $.
+\item Wenn $r = 0$ dann zurück zu 1.
+\item Berechne $k^{-1} \pmod{n}$.
+\item Berechne $s = k^{-1}(SHA-1(m) + dr)\pmod{n}$.
+\item Wenn $s = 0$ dann zurück zu 1.
+\item Sende $m$ und $(r, s)$ zu B
 \end{enumerate}
 
 \subsection{Verifikation}
+Verifizierung der Signatur (vgl. \cite{hwimp}) : (B)
 
-Die Verifikation wird nach folgendem Vorgehen durchgeführt (vgl. \cite{hwimp}):
-\\ \\
-Signature verification : (B)
 \begin{enumerate}
-\item Verify that $r$ and $s$ are integers in $[1, n - 1]$.
-\item Compute $e = SHA - 1(m)$.
-\item Compute $w = s^{-1}\pmod{n}$.
-\item Compute $u_1 = e * w \pmod{n}$ and $u_2 = r * w \pmod{n}$.
-\item Compute $u_1 P + u_2 Q = (x1, y1)$ and $v = x_1 \pmod{n}$.
-\item If $s = 0$ then go to step 1.
-\item Accept the signature if and only if $v = r$.
+\item Überprüfe das $r$ und $s$ Zahlen in $[1, n - 1]$ sind.
+\item Berechne $e = SHA - 1(m)$.
+\item Berechne $w = s^{-1}\pmod{n}$.
+\item Berechne $u_1 = e * w \pmod{n}$ und $u_2 = r * w \pmod{n}$.
+\item Berechne $u_1 P + u_2 Q = (x1, y1)$ und $v = x_1 \pmod{n}$.
+\item Wenn $s = 0$ dann zurück zu 1.
+\item Akzeptiere die Signatur $v = r$ gilt.
 \end{enumerate}
 
 
@@ -213,7 +209,7 @@ Signature verification : (B)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{UART-Schnittstelle} \label{sec:iuart}
 
-Bei der UART-Kommunikation (engl. Universal Asynchronous Receiver Transmitter (UART)) werden Daten über zwei Pins ausgetauscht. Dabei dient ein Pin dem Empfangen (RX-Pin) und der andere dem Senden (TX-Pin). Zur Übertragung der Daten zwischen zwei UART-Schnittstellen werden die Pins über Kreuz verbunden (vgl. \cite{uart}). Üblicherweise übernimmt ein UART-Hardwaremodul auch die Transformation paralleler Daten in einen sequentiellen Datenstrom und umgekehrt.
+Bei der UART-Kommunikation (engl. Universal Asynchronous Receiver Transmitter, UART) werden Daten über zwei Pins ausgetauscht. Dabei dient ein Pin dem Empfangen (RX-Pin) und der andere dem Senden (TX-Pin). Zur Übertragung der Daten zwischen zwei UART-Schnittstellen werden die Pins über Kreuz verbunden (vgl. \cite{uart}). Üblicherweise übernimmt ein UART-Hardwaremodul auch die Transformation paralleler Daten in einen sequentiellen Datenstrom und umgekehrt.
 
 \begin{figure}[H]
 	\centering
@@ -222,5 +218,5 @@ Bei der UART-Kommunikation (engl. Universal Asynchronous Receiver Transmitter (U
 	\label{fig:uart}
 \end{figure}
 
-Die Daten werden zu Paketen von meist 8 Bit übertragen, wobei die Sende-Reihenfolge in der Regel vom \textit{least significant bit} (LSB) zum \textit{most significant bit} versendet wird (vgl. Abb. \ref{fig:uart}). Wenn bei einer UART-Verbindung keine Daten übertragen werden, liegt ein ``High''-Pegel an (logisch ``1''). Die Übertragung beginnt mit einem Start-Bit (logisch ``0'') für einen UART-Taktzyklus, wonach die Daten-Bits folgen. Je nach Implementierung kann eine Parität folgen, die kennzeichnet, ob das Datenpaket eine gerade oder ungerade Anzahl ``1'' enthält. Ein Stop-Bit beendet die Transmission eines Datenpaketes. Ein \textit{UART-Taktzyklus} beschreibt, wie lange die Spannung eines einzelnen Symbols anliegt. Die entsprechende Einheit wird in \textit{Baud} angegeben und entspricht $1 * s^{-1}$. Bei einer Übertragungsrate von 9600 Baud liegt ein Bit also für $1 / 9600s = 104,167 \mu s$ am Ausgang Tx an.
+Die Daten werden zu Paketen von meist 8 Bit übertragen, wobei die Sende-Reihenfolge in der Regel vom geringwertigstem Bit (engl. Least Significant Bit, LSB) zum höchstwertigstem Bit (engl. Most Significant Bit, MSB) versendet wird (vgl. Abb. \ref{fig:uart}). Wenn bei einer UART-Verbindung keine Daten übertragen werden, liegt ein ``High''-Pegel an (logisch ``1''). Die Übertragung beginnt mit einem Start-Bit (logisch ``0'') für einen UART-Taktzyklus, wonach die Daten-Bits folgen. Je nach Implementierung kann eine Parität ergänzt werden, die kennzeichnet, ob das Datenpaket eine gerade oder ungerade Anzahl ``1'' enthält. Ein Stop-Bit beendet die Transmission eines Datenpaketes. Ein \textit{UART-Taktzyklus} beschreibt, wie lange die Spannung eines einzelnen Symbols anliegt. Die entsprechende Einheit wird in \textit{Baud} angegeben und entspricht $1 * s^{-1}$. Bei einer Übertragungsrate von 9600 Baud liegt ein Bit also für $1 / 9600s = 104,167 \mu s$ am Ausgang Tx an.
 
