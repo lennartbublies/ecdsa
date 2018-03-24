@@ -452,17 +452,25 @@ Die Überprüfung der Bedingungen erfolgt unmittelbar nachdem das Status-Flag de
 
 \begin{table} [h]
 	\centering 
-	\begin{tabular}{ | p{5cm} | p{10cm} | }
+	\begin{tabular}{ | p{5cm} | p{2cm} | p{8cm} | }
 		\hline
-		\textbf{Beschreibung} & \textbf{Bedingung}\\
+		\textbf{Beschreibung} & \textbf{Typ} & \textbf{Bedingung}\\
 		\hline
-		tb\_ecdsa & \parbox[t]{5cm}{$(r,s)=sign(m)$\\$verify((r,s),m)=True$}  \\
+		tb\_ecdsa &  dynamisch & \parbox[t]{5cm}{$(r,s)=sign(m)$\\$verify((r,s),m)=True$}  \\
 		\hline
-		tb\_gf2m\_eea\_inversion & $x * x^-1 = 1$ \\
+		tb\_gf2m\_multiplier & statisch & $ $ \\
 		\hline
-		tb\_gf2m\_divider & \parbox[t]{5cm}{$c=a/b$\\$c*b=a$} \\
+		tb\_gf2m\_squarer & statisch & $ $ \\
 		\hline
-		tb\_gf2m\_point\_multiplication & \parbox[t]{10cm}{$k.P = (k-1).P + P$\\$k.P = (n-1).P = -P = (xP, xP+yP)$} \\
+		tb\_gf2m\_eea\_inversion & dynamisch & $x * x^-1 = 1$ \\
+		\hline
+		tb\_gf2m\_divider & dynamisch & \parbox[t]{5cm}{$c=a/b$\\$c*b=a$} \\
+		\hline
+		tb\_gf2m\_point\_addition & statisch & $ $ \\
+		\hline
+		tb\_gf2m\_point\_doubling & statisch & $ $ \\
+		\hline
+		tb\_gf2m\_point\_multiplication & dynamisch & \parbox[t]{10cm}{$k.P = (k-1).P + P$\\$k.P = (n-1).P = -P = (xP, xP+yP)$} \\
 		\hline
 	\end{tabular}
 	\caption{Beschreibung der Testbenches}

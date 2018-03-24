@@ -27,19 +27,19 @@ USE IEEE.numeric_std.ALL;
 
 PACKAGE tld_ecdsa_package IS
     -- 163 Bit sect163k1
-    CONSTANT M: natural := 163;
-    CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
+    --CONSTANT M: natural := 163;
+    --CONSTANT logM: integer := 9;--logM IS the number of bits of m plus an additional sign bit
     --CONSTANT N: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
-    CONSTANT N: std_logic_vector(M DOWNTO 0):= x"4000000000000000000020108A2E0CC0D99F8A5EF";
-    CONSTANT P: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
-    CONSTANT A: std_logic_vector(M-1 downto 0) := (0 => '1', OTHERS=>'0');
+    --CONSTANT N: std_logic_vector(M DOWNTO 0):= x"4000000000000000000020108A2E0CC0D99F8A5EF";
+    --CONSTANT P: std_logic_vector(M DOWNTO 0):= x"800000000000000000000000000000000000000C9";
+    --CONSTANT A: std_logic_vector(M-1 downto 0) := (0 => '1', OTHERS=>'0');
 
     -- 9 Bit testcurve
-    --CONSTANT M: natural := 9;
-    --CONSTANT logM: integer := 5;
-    --CONSTANT N: std_logic_vector(M downto 0):= "1000000011";
-    --CONSTANT P: std_logic_vector(M-1 downto 0):= "000000011";
-    --CONSTANT A: std_logic_vector(M-1 downto 0) := (0 => '1', OTHERS=>'0');
+    CONSTANT M: natural := 9;
+    CONSTANT logM: integer := 5;
+    CONSTANT N: std_logic_vector(M downto 0):= "1000000011";
+    CONSTANT P: std_logic_vector(M downto 0):= "1000000011";
+    CONSTANT A: std_logic_vector(M-1 downto 0) := (0 => '1', OTHERS=>'0');
 
     -- UART
     CONSTANT U: natural := 8;

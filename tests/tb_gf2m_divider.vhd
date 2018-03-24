@@ -19,17 +19,23 @@ ENTITY tb_gf2m_divider IS
 END tb_gf2m_divider;
 
 ARCHITECTURE behavior OF tb_gf2m_divider IS 
-    -- Import entity e_gf2m_classic_multiplier
-    COMPONENT e_gf2m_classic_multiplier
-        PORT(
-            a_i : IN std_logic_vector(M-1 DOWNTO 0);
-            b_i : IN std_logic_vector(M-1 DOWNTO 0);
-            c_o : OUT std_logic_vector(M-1 DOWNTO 0)
+    -- Import entity e_classic_gf2m_multiplier
+    COMPONENT e_gf2m_classic_multiplier IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
+        PORT (
+            a_i: IN std_logic_vector(M-1 DOWNTO 0); 
+            b_i: IN std_logic_vector(M-1 DOWNTO 0);
+            c_o: OUT std_logic_vector(M-1 DOWNTO 0)
         );
     END COMPONENT;
     
     -- Import entity e_gf2m_divider
     COMPONENT e_gf2m_divider IS
+        GENERIC (
+            MODULO : std_logic_vector(M DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic;  
             rst_i: IN std_logic;  
@@ -39,7 +45,7 @@ ARCHITECTURE behavior OF tb_gf2m_divider IS
             z_o: OUT std_logic_vector(M-1 DOWNTO 0);
             ready_o: OUT std_logic
         );
-    END COMPONENT;
+    end COMPONENT;
   
   -- Internal signals
   SIGNAL x, y, z, z_by_y :  std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');
@@ -52,7 +58,9 @@ ARCHITECTURE behavior OF tb_gf2m_divider IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate divider entity to compute z=x/y
-    uut1:  e_gf2m_divider PORT MAP(
+    uut1:  e_gf2m_divider GENERIC MAP (
+            MODULO => P
+    ) PORT MAP( 
         clk_i => clk, 
         rst_i => reset, 
         enable_i => start,
@@ -63,7 +71,9 @@ BEGIN
     );
     
     -- Instantiate multiplier entity to compute z*y=x
-    uut2: e_gf2m_classic_multiplier PORT MAP( 
+    uut2: e_gf2m_classic_multiplier GENERIC MAP (
+            MODULO => P(M-1 DOWNTO 0)
+    ) PORT MAP(  
         a_i => z, 
         b_i => y, 
         c_o => z_by_y
@@ -150,7 +160,6 @@ BEGIN
                 write(TX_LOC,string'("( z=")); write(TX_LOC, z);
                 write(TX_LOC,string'(") using: ( A =")); write(TX_LOC, x);
                 write(TX_LOC, string'(", B =")); write(TX_LOC, y);
-                write(TX_LOC, string'(", F = 1")); write(TX_LOC, F);
                 write(TX_LOC, string'(" )"));
                 TX_STR(TX_LOC.all'range) := TX_LOC.all;
                 Deallocate(TX_LOC);

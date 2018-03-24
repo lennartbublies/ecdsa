@@ -22,19 +22,25 @@ END tb_eea_inversion;
 ARCHITECTURE rtl OF tb_eea_inversion IS 
     -- Import entity e_gf2m_eea_inversion
     COMPONENT e_gf2m_eea_inversion IS
-        PORT (
-            clk_i: IN std_logic;
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
+        PORT(
+            clk_i: IN std_logic; 
             rst_i: IN std_logic; 
             enable_i: IN std_logic; 
             a_i: IN std_logic_vector (M-1 DOWNTO 0);
             z_o: OUT std_logic_vector (M-1 DOWNTO 0);
             ready_o: OUT std_logic
         );
-    END COMPONENT;
+    end COMPONENT;
 
     -- Import entity e_classic_gf2m_multiplier
     COMPONENT e_gf2m_classic_multiplier IS
-        PORT(
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
+        PORT (
             a_i: IN std_logic_vector(M-1 DOWNTO 0); 
             b_i: IN std_logic_vector(M-1 DOWNTO 0);
             c_o: OUT std_logic_vector(M-1 DOWNTO 0)
@@ -53,7 +59,9 @@ ARCHITECTURE rtl OF tb_eea_inversion IS
     CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate eea inversion entity
-    uut1: e_gf2m_eea_inversion PORT MAP(
+    uut1: e_gf2m_eea_inversion GENERIC MAP (
+            MODULO => P(M-1 DOWNTO 0)
+    ) PORT MAP (
             clk_i => clk, 
             rst_i => rst, 
             enable_i => enable,
@@ -63,7 +71,9 @@ BEGIN
         );
                           
     -- Instantiate classic multiplication entity                      
-    uut2: e_gf2m_classic_multiplier PORT MAP(
+    uut2: e_gf2m_classic_multiplier GENERIC MAP (
+            MODULO => P(M-1 DOWNTO 0)
+    ) PORT MAP (
             a_i => x, 
             b_i => z, 
             c_o => z_by_x 
@@ -147,7 +157,6 @@ BEGIN
                 write(TX_LOC,string'("/= ONE=")); 
                 write(TX_LOC,string'("( z=")); write(TX_LOC, z);
                 write(TX_LOC,string'(") using: ( A =")); write(TX_LOC, x);
-                write(TX_LOC, string'(", F = 1")); write(TX_LOC, F);
                 write(TX_LOC, string'(" )"));
                 TX_STR(TX_LOC.all'range) := TX_LOC.all;
                 Deallocate(TX_LOC);

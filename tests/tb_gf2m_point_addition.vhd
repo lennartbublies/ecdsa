@@ -21,7 +21,10 @@ END tb_gf2m_point_addition;
 ARCHITECTURE rtl OF tb_gf2m_point_addition IS 
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
-        PORT (
+        GENERIC (
+            MODULO : std_logic_vector(M DOWNTO 0)
+        );
+        PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
             enable_i: IN std_logic;
@@ -47,7 +50,9 @@ ARCHITECTURE rtl OF tb_gf2m_point_addition IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate point addition entity
-    uut3: e_gf2m_point_addition port map( 
+    uut3: e_gf2m_point_addition GENERIC MAP (
+            MODULO => P
+    ) PORT MAP ( 
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable,
@@ -74,6 +79,9 @@ BEGIN
 
     -- Start test cases
     tb : PROCESS
+        -- Internal signals
+        VARIABLE TX_LOC : LINE;
+        VARIABLE TX_STR : String(1 TO 4096);
     BEGIN
         -- Disable computation and reset all entities
         enable <= '0'; 
@@ -82,43 +90,136 @@ BEGIN
         rst <= '0';
         WAIT FOR PERIOD;
         
-        -- Set point P for the computation
+        -- Test #1: 
+        -- Set point P and Q for computation
         xP <= "000000010"; 
         yP <= "000001111";
         xQ <= "000001100";
         yQ <= "000001100";
-
-        --xP <= "111111111"; 
-        --yP <= "111111111";
-        --xQ <= "000001100";
-        --yQ <= "000001100";
-
-        --xP <= "000000010"; 
-        --yP <= "000001111";
-        --xQ <= "111111111";
-        --yQ <= "111111111";
-
-        --xP <= "111100101"; 
-        --yP <= "000010111";
-        --xQ <= "011101110";
-        --yQ <= "010101111";
-        
-        --xP <= "10101010"; 
-        --yP <= "10101010";
-        --xQ <= "00000000";
-        --yQ <= "00000000";
-        
-        --yP <= "00001101"; 
-        --xP <= "00101010"; 
-        --yQ <= "00000000";
-        --xQ <= "00000000";   
-       
-        -- Start computation
+      
         enable <= '1'; 
         WAIT FOR PERIOD;
         enable <= '0';
         WAIT UNTIL (done = '1');
         
+        IF ( xR /= "101101001" or (yR /= "101001111") ) THEN 
+            write(TX_LOC,string'("TEST #1 ERROR!!! (101101001, 101001111) != (000000010, 000001111)+(000001100, 000001100)"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF; 
+
+        WAIT FOR 2*PERIOD;
+            
+        -- Test #2: 
+        -- Set point P and Q for computation
+        xP <= "111111111"; 
+        yP <= "111111111";
+        xQ <= "000001100";
+        yQ <= "000001100";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "000001100" or (yR /= "000001100") ) THEN 
+            write(TX_LOC,string'("TEST #2 ERROR!!! (000001100, 000001100) != (111111111, 111111111)+(000001100, 000001100)"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;  
+
+        WAIT FOR 2*PERIOD;
+            
+        -- Test #3: 
+        -- Set point P and Q for computation
+        xP <= "000000010"; 
+        yP <= "000001111";
+        xQ <= "111111111";
+        yQ <= "111111111";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "000000010" or (yR /= "000001111") ) THEN 
+            write(TX_LOC,string'("TEST #3 ERROR!!! (000000010, 000001111) != (000000010, 000001111)+(111111111, 111111111)"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;    
+
+        WAIT FOR 2*PERIOD;
+            
+        -- Test #4: 
+        -- Set point P and Q for computation
+        xP <= "111100101"; 
+        yP <= "000010111";
+        xQ <= "011101110";
+        yQ <= "010101111";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "000010000" or (yR /= "100011101") ) THEN 
+            write(TX_LOC,string'("TEST #4 ERROR!!! (000010000, 100011101) != (111100101, 000010111)+(011101110, 010101111)"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;
+
+        WAIT FOR 2*PERIOD;
+            
+        -- Test #5: 
+        -- Set point P and Q for computation
+        xP <= "010101010"; 
+        yP <= "010101010";
+        xQ <= "000000000";
+        yQ <= "000000000";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "010101011" or (yR /= "000000000") ) THEN 
+            write(TX_LOC,string'("TEST #5 ERROR!!! (010101011, 000000000) != (010101010, 010101010)+(000000000, 000000000)"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF; 
+
+        WAIT FOR 2*PERIOD;
+            
+        -- Test #6: 
+        -- Set point P and Q for computation
+        xP <= "000001101"; 
+        yP <= "000101010";
+        xQ <= "000000000";
+        yQ <= "000000000";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "110110010" or (yR /= "001111110") ) THEN 
+            write(TX_LOC,string'("TEST #6 ERROR!!! (110110010, 001111110) != (000001101, 000101010)+(000000000, 000000000)"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;          
+       
         WAIT FOR DELAY;
 
         -- Report results

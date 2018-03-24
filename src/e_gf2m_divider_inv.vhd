@@ -45,6 +45,9 @@ END e_gf2m_divider_inv;
 ARCHITECTURE rtl of e_gf2m_divider_inv IS
     -- Import entity e_gf2m_interleaved_multiplier
     COMPONENT e_gf2m_interleaved_multiplier IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -58,6 +61,9 @@ ARCHITECTURE rtl of e_gf2m_divider_inv IS
 
     -- Import entity e_gf2m_eea_inversion
     COMPONENT e_gf2m_eea_inversion IS
+        GENERIC (
+            MODULO : std_logic_vector(M-1 DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -76,7 +82,9 @@ ARCHITECTURE rtl of e_gf2m_divider_inv IS
     SIGNAL current_state: states;
 BEGIN
     -- Instantiate inversion entity to compute h^-1
-    inversion: e_gf2m_eea_inversion PORT MAP (
+    inversion: e_gf2m_eea_inversion GENERIC MAP (
+            MODULO => P(M-1 DOWNTO 0)
+    ) PORT MAP( 
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_inversion,
@@ -86,7 +94,9 @@ BEGIN
     );
 
     -- Instantiate multiplier entity to g * h^-1
-    multiplier: e_gf2m_interleaved_multiplier PORT MAP( 
+    multiplier: e_gf2m_interleaved_multiplier GENERIC MAP (
+            MODULO => P(M-1 DOWNTO 0)
+    ) PORT MAP(  
         clk_i => clk_i, 
         rst_i => rst_i, 
         enable_i => enable_multiplication, 

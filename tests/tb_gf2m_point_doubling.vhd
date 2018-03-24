@@ -14,14 +14,17 @@ USE ieee.std_logic_textio.ALL;
 use ieee.math_real.all; -- FOR UNIFORM, TRUNC
 USE std.textio.ALL;
 
-use work.e_gf2m_point_doubling_package.all;
+use work.tld_ecdsa_package.all;
 
 ENTITY tb_gf2m_point_doubling IS
 END tb_gf2m_point_doubling;
 
 ARCHITECTURE rtl OF tb_gf2m_point_doubling IS 
-    -- Import entity e_gf2m_point_doubling 
+    -- Import entity e_k163_point_doubling 
     COMPONENT e_gf2m_point_doubling  IS
+        GENERIC (
+            MODULO : std_logic_vector(M DOWNTO 0)
+        );
         PORT(
 			clk_i: IN std_logic; 
 			rst_i: IN std_logic; 
@@ -46,7 +49,9 @@ ARCHITECTURE rtl OF tb_gf2m_point_doubling IS
   CONSTANT NUMBER_TESTS: natural := 20;
 BEGIN
     -- Instantiate point doubling entity
-    doubling: e_gf2m_point_doubling PORT MAP(
+    doubling: e_gf2m_point_doubling GENERIC MAP (
+        MODULO => P
+    ) PORT MAP(
             clk_i => clk, 
             rst_i => rst,
             enable_i => enable,  
@@ -70,7 +75,10 @@ BEGIN
     END PROCESS;
 
     -- Start test cases
-    tb : PROCESS
+    tb : PROCESS        
+        -- Internal signals
+        VARIABLE TX_LOC : LINE;
+        VARIABLE TX_STR : String(1 TO 4096);
     BEGIN
         -- Disable computation and reset all entities
         enable <= '0'; 
@@ -79,31 +87,62 @@ BEGIN
         rst <= '0';
         WAIT FOR PERIOD;
 
-        --xP <= "000000010"; 
-        --yP <= "000001111";
-        -- Expected results
-        --xR <= "010010101";
-        --yR <= "100011000";
-
-        --xP <= "111111111"; 
-        --yP <= "111111111";
-        -- Expected results
-        --xR <= "111111111";
-        --yR <= "111111111";
-        
-        xP <= "011101110"; 
-        yP <= "010101111";
-        -- Expected results
-        --xR <= "111111111";
-        --yR <= "111111111";
-
-        -- Start computation
+        -- Test #1:
+        xP <= "000000010"; 
+        yP <= "000001111";
+      
         enable <= '1'; 
         WAIT FOR PERIOD;
         enable <= '0';
         WAIT UNTIL (done = '1');
         
-        WAIT FOR DELAY;
+        IF ( xR /= "010010101" or (yR /= "100011000") ) THEN 
+            write(TX_LOC,string'("TEST #1 ERROR!!! (010010101, 100011000) != (000000010, 000001111)^2"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;
+
+        WAIT FOR 2*PERIOD;
+        
+        -- Test #2:
+        xP <= "111111111"; 
+        yP <= "111111111";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "111111111" or (yR /= "111111111") ) THEN 
+            write(TX_LOC,string'("TEST #2 ERROR!!! (111111111, 111111111) != (111111111, 111111111)^2"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;
+
+        WAIT FOR 2*PERIOD;
+          
+        -- Test #3:
+        xP <= "011101110"; 
+        yP <= "010101111";
+      
+        enable <= '1'; 
+        WAIT FOR PERIOD;
+        enable <= '0';
+        WAIT UNTIL (done = '1');
+        
+        IF ( xR /= "011001101" or (yR /= "100010001") ) THEN 
+            write(TX_LOC,string'("TEST #3 ERROR!!! (011001101, 100010001) != (011101110, 010101111)^2"));
+            write(TX_LOC, string'(" )"));
+            TX_STR(TX_LOC.all'range) := TX_LOC.all;
+            Deallocate(TX_LOC);
+            ASSERT (FALSE) REPORT TX_STR SEVERITY ERROR;
+        END IF;
+
+        WAIT FOR 2*PERIOD;
 
         -- Report results
         ASSERT (FALSE) REPORT
