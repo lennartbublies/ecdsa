@@ -444,11 +444,11 @@ Zum Bestimmen des Inversen wird der erweiterte euklidische Algorithmus eingesetz
 Die Addition bzw. Subtraktion ist im $GF(2^M)$ trivial, da $-1 = 1$ gilt. Somit muss lediglich eine XOR-Verknüpfung der Operanden durchgeführt werden .  Aufgrund der Einfachheit wurde auf eine separate Entität verzichtet.
 
 \subsection{Test- und Verifizierung}
-Für den Test- und die Verifizierung der Entities werden zwei verschiedene Arten von Testbenches verwendet. Die triviale Variante dient lediglich dem kurzen Funktionstest der Entity. Dazu werden lediglich statische Werte abgefragt, um die Entwicklung der Entities zu unterstützen. Die ``echten'' Testbenches dagegen versuchen anhand dynamisch generierter Testdaten die Kombination verschiedener Entities zu verifizieren.
+Für den Test- und die Verifizierung der Entities werden zwei verschiedene Arten von Testbenches verwendet. Die triviale Variante dient lediglich dem kurzen Funktionstest der Entity. Dazu werden lediglich einige statische Werte und Randbedingungen abgefragt, um die Entwicklung der Entities zu unterstützen. Die ``echten'' Testbenches dagegen versuchen anhand dynamisch generierter Testdaten die Kombination verschiedener Entities zu verifizieren.
 \\ \\
-Der Tabelle \ref{tab:vhdl-impl-testbenches} ist zu entnehmen, dass beispielsweise die Punktmultiplikation neben der eigentlichen Multiplikation auch die Punktaddition und damit auch die dafür notwendigen mathematischen Grundoperatoren verifiziert. Da es die Testbench erfordert, dass verschiedene Entitäten separat entwickelt werden, was im Fehlerfall die Indentifizierung deutlich erschwert, wurden weitere einfachere Testbenches geschrieben um zunächst die Basisfunktionalität der Entitäten zu verifizieren.
+Der Tabelle \ref{tab:vhdl-impl-testbenches} ist zu entnehmen, dass beispielsweise die Punktmultiplikation neben der eigentlichen Multiplikation auch die Punktaddition und damit auch die dafür notwendigen mathematischen Grundoperatoren verifiziert. Da es die Testbench erfordert, dass verschiedene Entitäten separat entwickelt werden, was im Fehlerfall die Identifizierung deutlich erschwert, wurden weitere einfachere Testbenches geschrieben, um zunächst die Basisfunktionalität der Entitäten zu verifizieren.
 \\ \\
-Die Überprüfung der Bedingungen erfolgt unmittelbar nachdem das Status-Flag der zu testenden Entities ein ``High''-Pegel liefert. Neben dem reinen Überprüfen der Bedingungen wird zusätzlich überprüft, ob die Berechnung in einer definierten Anzahl von Taktzyklen abgeschlossen wurde.
+Neben dem reinen Überprüfen der Bedingungen wird teilweise zusätzlich überprüft, ob die Berechnung in einer definierten Anzahl von Taktzyklen abgeschlossen wurde.
 
 \begin{table} [h]
 	\centering 
