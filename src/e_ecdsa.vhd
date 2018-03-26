@@ -333,7 +333,7 @@ BEGIN
         ready_o => done_verify_u2qb
     );
 
-    -- Instantiate point addition entity
+    -- Instantiate point addition entity to compute (xP, yP) = t1+t2
     verify_adder_u1gu2qb: e_gf2m_point_addition GENERIC MAP (
             MODULO => P
     ) PORT MAP ( 

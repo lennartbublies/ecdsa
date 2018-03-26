@@ -10,7 +10,7 @@ Die Architektur der VHDL-Implementierung verwendet einen modularen Ansatz. Die z
 \begin{figure}[H]
 	\centering
   	\includegraphics[width=0.7\textwidth]{bilder/vhdl_overview.png}
-	\caption{Modulübersicht der FPGA-Hardware. Hauptbestandteil ist der Controller, der den Zustandsautomat, die ECC-, sowie die arithmetischen Operationen beinhaltet. Die Datenübertragung findet über die UART-Schnittstelle statt. Module zum Hashen bzw. zur Zufallszahlengenerierung sind optional und lediglich zur Vollständigkeit erwähnt}
+	\caption{Modulübersicht der FPGA-Hardware}
 	\label{fig:vhdl-impl-arch}
 \end{figure}
  
@@ -37,7 +37,7 @@ Die Umschaltung zwischen den verschiedenen Algorithmen findet über einen Zustan
 	\label{tab:vhdl-impl-uart-data}
 \end{table}
  
-Wie bereits in Kapitel \ref{sec:ziele} erwähnt, wurde auf eine sicherheitsorientierte Implementierung des Algorithmus verzichtet, sodass anstatt eines ``echten'' Zufallszahlengenerators  (engl. True Random Number Generator, TRNG), lediglich eine festgelegte Konstante zum Einsatz kommt. Hauptgrund für diese Entscheidung begründet sich mit der fehlenden Hardware zum Generieren einer sicheren Zufallszahl. Als eine weitere Vereinfachung wurde auf eine Einheit zum Generieren eines Hashes verzichtet, um den Fokus auf die Implementierung der ECC-Operationen zu lenken, ohne die Messergebnisse durch die HASH-Generierung zu verfälschen. Aus Gründen der Vollständigkeit sind beide Komponenten dennoch in Abbildung \ref{fig:vhdl-impl-arch} zu finden. 
+Wie bereits in Kapitel \ref{sec:planung} erwähnt, wurde auf eine sicherheitsorientierte Implementierung des Algorithmus verzichtet, sodass anstatt eines ``echten'' Zufallszahlengenerators  (engl. True Random Number Generator, TRNG), lediglich eine festgelegte Konstante zum Einsatz kommt. Hauptgrund für diese Entscheidung begründet sich mit der fehlenden Hardware zum Generieren einer sicheren Zufallszahl. Als eine weitere Vereinfachung wurde auf eine Einheit zum Generieren eines Hashes verzichtet, um den Fokus auf die Implementierung der ECC-Operationen zu lenken, ohne die Messergebnisse durch die HASH-Generierung zu verfälschen. Aus Gründen der Vollständigkeit sind beide Komponenten dennoch in Abbildung \ref{fig:vhdl-impl-arch} zu finden. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -45,6 +45,10 @@ Wie bereits in Kapitel \ref{sec:ziele} erwähnt, wurde auf eine sicherheitsorien
 \label{vhdl-impl-parameter}
 
 Die gesamte VHDL-Implementierung setzt ausschließlich auf VHDL-typische \texttt{Generics}. Diese werden über das globale Paket \texttt{tld\_ecdsa\_package} verwaltet. Neben den Parametern enthält das Paket globale Hilfsfunktionen, die zum Beispiel eine Matrix-Reduktion durchführen. Tabelle \ref{tab:vhdl-impl-param} zeigt eine Übersicht der wichtigsten Parameter.
+\\ \\
+Wie der Tabelle \ref{tab:vhdl-impl-param} zu entnehmen ist, sind in der Datei auch der private, der öffentliche Schlüssel und die k-Konstante  zu finden. Die Schlüssel wurden direkt als Konstanten hinterlegt, um die Kommunikation über die UART-Schnittstelle zu vereinfachen. Für den Einsatz der Software in einer produktiven Umgebung sollte  der öffentliche Schlüssel austauschbar sein, sodass auch Signaturen von Anderen verifiziert werden können. Das gleiche gilt für den privaten Schlüssel, um in der Lage zu sein, nachträglich die Schlüssel aus sicherheitsgründen auszutauschen oder allgemein Signaturen mit verschiedenen Schlüsseln zu erstellen.
+\\ \\
+Durch den Einsatz der generischen Implementierung ist es möglich, Parameter nachträglich zu ändern, um beispielsweise eine andere Schlüssellänge oder Kurvenparameter zu verwenden. Ein Nachteil dagegen ist, dass durch die generische Implementierung weniger Spielraum für Performanz-Optimierungen besteht. Da mit wachsender Leistungsfähigkeit heutiger Systeme aber auch die Anforderung an kryptografische steigt, wurde die nachträgliche Anpassbarkeit der Parameter als wichtiger angesehen. \\
 
 \begin{table} [h]
 	\centering 
@@ -56,7 +60,21 @@ Die gesamte VHDL-Implementierung setzt ausschließlich auf VHDL-typische \texttt
 		\hline
 		N & Modolo-Parameter der Kurve (Bestandteil des ECDSA-Algorithmus) \\
 		\hline
+		A & A-Parameter der Kurve (Bestandteil des ECDSA-Algorithmus) \\
+		\hline
 		P & Anzahl der Elemente im GF($2^M$) \\
+		\hline
+		xG & x-Komponenten des Generator-Punktes \\
+		\hline
+		yG & y-Komponenten des Generator-Punktes \\
+		\hline
+		dA & Privater Schlüssel für die Signierung \\
+		\hline
+		xQ & x-Komponenten des öffentlichen Schlüssel für die Verifizierung \\
+		\hline
+		yQ & y-Komponenten des öffentlichen Schlüssel für die Verifizierung \\
+		\hline
+		k & (statische) Zufallszahl \\
 		\hline
 		BAUD\_RATE & Eingestellte Baud-Rate der UART-Schnittstelle \\
 		\hline
@@ -65,25 +83,14 @@ Die gesamte VHDL-Implementierung setzt ausschließlich auf VHDL-typische \texttt
 	\label{tab:vhdl-impl-param}
 \end{table}
 
-Durch den Einsatz der generischen Implementierung ist es möglich, Parameter nachträglich zu ändern, um beispielsweise eine andere Schlüssellänge oder Kurvenparameter zu verwenden. Ein Nachteil dagegen ist, dass durch die generische Implementierung weniger Spielraum für Performanz-Optimierungen besteht. Da mit wachsender Leistungsfähigkeit heutiger Systeme aber auch die Anforderung an kryptografische steigt, wurde die nachträgliche Anpassbarkeit der Parameter als wichtiger angesehen.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Top-Level-Entität}
 \label{vhdl-impl-tld}
 
-Wie bereits erwähnt kommuniziert die Top-Level-Entität über eine serielle RS232-Schnittstelle mit einem Computer, um Daten auszutauschen. Dazu werden lediglich zwei Pins zur UART-Kommunikation, sowie ein globales 50Mhz-Takt- und Resetsignal benötigt. Abbildung \ref{fig:pins} zeigt die genaue Zuordnung der Pins auf dem FPGA. 
+Wie bereits erwähnt kommuniziert die Top-Level-Entität über eine serielle RS232-Schnittstelle mit einem Computer, um Daten auszutauschen. Dazu werden lediglich zwei Pins zur UART-Kommunikation, sowie ein globales 50Mhz-Takt- und ein Resetsignal benötigt. Tabelle \ref{tab:vhdl-impl-tld-ecdsa-param} beschreibt die Parameter der Entität \\
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{bilder/pins}
-	\caption{Pin-Zuordnung des FPGA}
-	\label{fig:pins}
-\end{figure}
-
-Nach vollständigem Erhalt der Daten, die sich je nach Algorithmus unterscheiden (vgl. Tabelle \ref{tab:vhdl-impl-uart-data}), werden diese dem zentralen Modul \texttt{e\_ecdsa} bereitgestellt. Über binäre Eingänge wird festgelegt, welcher Modus (Signieren vs. Verifizieren, Pin \texttt{mode\_i}) verwendet und wann die Berechnung gestartet werden soll (Pin \texttt{enable\_i}).
- 
 \begin{figure}[thb]
 	\centering
 	\includegraphics[width=\textwidth]{bilder/tle}
@@ -91,8 +98,8 @@ Nach vollständigem Erhalt der Daten, die sich je nach Algorithmus unterscheiden
 	\label{fig:vhdl-impl-tle}
 \end{figure}
 
-Sobald die ECDSA-Entität die Berechnung abgeschlossen hat, wird ein binäres Flag gesetzt, sodass die Daten über das Modul \texttt{e\_uart\_transmit\_mux} zurückschickt werden können.  
-
+Nach vollständigem Erhalt der Daten, die sich je nach Algorithmus unterscheiden (vgl. Tabelle \ref{tab:vhdl-impl-uart-data}), werden diese dem zentralen Modul \texttt{e\_ecdsa} bereitgestellt. Über binäre Eingänge wird festgelegt, welcher Modus (Signieren vs. Verifizieren, Pin \texttt{mode\_i}) verwendet und wann die Berechnung gestartet werden soll (Pin \texttt{enable\_i}). Sobald die ECDSA-Entität die Berechnung abgeschlossen hat, wird ein binäres Flag gesetzt, sodass die Daten über das Modul \texttt{e\_uart\_transmit\_mux} zurückschickt werden können. \\
+ 
 \begin{table} [h]
 	\centering 
 	\begin{tabular}{ | p{3cm} | p{12cm} | }
@@ -112,7 +119,7 @@ Sobald die ECDSA-Entität die Berechnung abgeschlossen hat, wird ein binäres Fl
 	\end{tabular}
 	\caption{Eingabe- und Ausgabeparameter der Haupt-Entität}
 	\label{tab:vhdl-impl-tld-ecdsa-param}
-\end{table}
+\end{table} 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -122,7 +129,7 @@ Sobald die ECDSA-Entität die Berechnung abgeschlossen hat, wird ein binäres Fl
 \subsection{Allgemeiner Aufbau der VHDL-Entitäten}
 \label{vhdl-impl-general-entity}
 
-Jede Entität, sei es eine mathematische oder eine zusammengesetzte Komponente wie die ECC-Operation, verwendet den selben Aufbau. So besitzen die Entitäten neben einem globalen Takt- und Resetsignal ein Aktivierungs- und ein Status-Flag, sowie eine beliebige Anzahl anwendungsabhängiger Eingabe- bzw. Ausgabeparameter. Eine Übersicht der Parameter ist in Tabelle \ref{tab:vhdl-impl-ecdsa-general} zu finden. \\
+Jede Entität, sei es eine mathematische oder eine zusammengesetzte Komponente wie die ECC-Operationen, verwendet den selben Aufbau. So besitzen die Entitäten neben einem globalen Takt- und Resetsignal ein Aktivierungs- und ein Status-Flag, sowie eine beliebige Anzahl anwendungsabhängiger Eingabe- bzw. Ausgabeparameter. Eine Übersicht der Parameter ist in Tabelle \ref{tab:vhdl-impl-ecdsa-general} zu finden. \\
 
 \begin{table} [h]
 	\centering 
@@ -136,11 +143,11 @@ Jede Entität, sei es eine mathematische oder eine zusammengesetzte Komponente w
 		\hline
 		enable\_i & Flag zum Aktivieren der Berechnung \\
 		\hline
-		x\_i & Eingabeparameter 1-n \\
+		x\_n\_i & Eingabeparameter 1-n \\
 		\hline
-		z\_o & Ausgabeparameter 1-m \\
+		z\_m\_o & Ausgabeparameter 1-m \\
 		\hline
-		p\_i & Zusatzparameter 1-p \\
+		p\_q\_i & Zusatzparameter 1-q \\
 		\hline
 		ready\_o & Flag welches anzeigt, ob die Berechnung abgeschlossen ist \\
 		\hline
@@ -184,7 +191,18 @@ END IF;
 
 Die Implementierung des ECDSA-Algorithmus findet über die Entität \texttt{e\_ecdsa} statt. Für die Umschaltung zwischen Signieren und Verfifizieren wird ein Zustandsautomat verwendet, der im wesentlichen im Abhängigkeit des Parameters \texttt{mode\_i} zwischen den Algorithmen wechselt. Damit kann pro Ablauf immer nur ein Algorithmus zur Zeit gestartet werden.
 \\ \\
-Die Implementierungen der Algorithmen folgt dem Ablauf aus Kapitel \ref{ecdsa-algo}. Der Ablauf ist streng sequentiell, wobei versucht wird, einen maximalen Parallelisierungsgrad anzustreben. So werden bei der Verifikation beispielsweise die Variablen $u_1$ und $u_2$ parallel berechnet. Die Algorithmen sind so umgesetzt, dass jede Operation über eine eigene Entität abgebildet wird. So besteht das Signieren aus 3 Entitäten (1x Punktmultiplikation, 1x Multiplizierer, 1x Dividierer), während die Verifikation aus 6 Entitäten (1x Punktaddition, 2x Punktmultiplikation, 2x Multiplizierer, 1xInverter) besteht. Grund für die Verdopplung liegt in erster Linie an der deutlich einfacheren und übersichtlicheren Implementierung. Der Nachteil dagegen ist, dass der Ressourcenverbrauch deutlich höher ist. Da die eingesetzte Hardware aber genügend Ressourcen zur Verfügung stellt, wurde auf eine Optimierung verzichtet. Ein weiterer Vorteil dieser Implementierung ist, dass theoretisch parallel signiert und verifiziert werden kann, was bei einer gemeinsamen Nutzung von Entitäten aufgrund der Umschaltlogik nicht möglich wäre. Für die zeitliche Aktivierung der Entitäten wird wieder auf den Zustandsautomat zurückgegriffen. Dazu werden die in Abschnitt \ref{vhdl-impl-general-entity} erwähnten Aktivierungs- bzw. Status-Flags verwendet. \\
+Die Implementierung der Algorithmen folgt dem Ablauf aus Kapitel \ref{ecdsa-algo}. Der Ablauf ist streng sequentiell, wobei versucht wird, einen maximalen Parallelisierungsgrad anzustreben. So werden beispielsweise bei der Verifikation die Variablen $u_1$ und $u_2$ parallel berechnet. Abbildung \ref{fig:vhdl-impl-ecdsa} verdeutlicht den Ablauf.
+
+\begin{figure}[thb]
+	\centering
+	\includegraphics[width=0.6\textwidth]{bilder/vhdl_ecdsa.png}
+	\caption{Vereinfachter Ablauf des ECDSA-Algorithmus}
+	\label{fig:vhdl-impl-ecdsa}
+\end{figure}
+
+Die Algorithmen sind so umgesetzt, dass jede Operation über eine eigene Entität abgebildet wird. So besteht das Signieren aus 3 Entitäten (1x Punktmultiplikation, 1x Multiplizierer, 1x Dividierer), während die Verifikation aus 6 Entitäten (1x Punktaddition, 2x Punktmultiplikation, 2x Multiplizierer, 1xInverter) besteht. Grund für die Verdopplung liegt in erster Linie an der deutlich einfacheren und übersichtlicheren Implementierung. Der Nachteil dagegen ist, dass der Ressourcenverbrauch deutlich höher ist. Da die eingesetzte Hardware aber genügend Ressourcen zur Verfügung stellt, wurde auf eine Optimierung verzichtet. Ein weiterer Vorteil dieser Implementierung ist, dass theoretisch parallel signiert und verifiziert werden kann, was bei einer gemeinsamen Nutzung von Entitäten aufgrund der Umschaltlogik nicht möglich wäre. Für die zeitliche Aktivierung der Entitäten wird wieder auf den Zustandsautomat zurückgegriffen, der die in Abschnitt \ref{vhdl-impl-general-entity} erwähnten Aktivierungs- bzw. Status-Flags verwendet.
+\\ \\
+Abschließend sei erwähnt, dass der implementierte Algorithmus kleinere Teilkomponenten der Originalfassung nicht berücksichtigt. So wird auf die Überprüfung von Zwischenergebnissen verzichtet. Grund hierfür liegt im wesentlichen an der Tatsache, dass eine ungünstige Wahl der Zufallszahl zu Fehlern führen kann. Da diese Implementierung eine günstige Konstante verwendet, wurde auf ein Abfragen verzichtet. Durch die gewählte Struktur lassen sich  solche Abfragen aber mit wenig Aufwand einbauen, da lediglich der Zustandsautomat angepasst werden muss. Das gleiche gilt für ein nachträgliches Hinzufügen der Zufallszahlgenerierung. \\
 
 \begin{table} [h]
 	\centering 
@@ -250,7 +268,16 @@ Die Punktaddition und Punktdopplung basieren auf den Formeln aus Abschnitt \ref{
 	\label{tab:vhdl-impl-eccdouble-param}
 \end{table}
 
-Der zugrundeliegende Ablauf ist identisch mit der Implementierung des ECDSA-Algorithmus, wobei sich lediglich die Formeln unterscheiden. So wird für jede mathematische Operation eine separate VHDL Entität verwendet, die sequentiell über die Aktivierungs- bzw. Status-Flags abgearbeitet werden. Die Umschaltung findet wieder über einen Zustandsautomat statt. \\
+Der zugrundeliegende Ablauf ist identisch mit der Implementierung des ECDSA-Algorithmus, wobei sich lediglich die Formeln unterscheiden. So wird für jede mathematische Operation eine separate VHDL Entität verwendet, die sequentiell über die Aktivierungs- bzw. Status-Flags abgearbeitet werden. Die Umschaltung findet wieder über einen Zustandsautomat statt.
+
+\begin{figure}[thb]
+	\centering
+	\includegraphics[width=0.7\textwidth]{bilder/vhdl_pa_pd.png}
+	\caption{Vereinfachter Ablauf des Punktaddition und -dopplung}
+	\label{fig:vhdl-impl-pa-pd}
+\end{figure}
+
+Abbildung \ref{fig:vhdl-impl-pa-pd} zeigt den vereinfachten Ablauf der Berechnung. Wie bereits beim ECDSA-Algorithmus wird auch hier ein maximaler Parallelisierungsgrad angestrebt. \\
 
 \begin{table} [h]
 	\centering 
@@ -285,7 +312,20 @@ Der zugrundeliegende Ablauf ist identisch mit der Implementierung des ECDSA-Algo
 \end{table}
 
 \subsection{Punktmultiplikation}
-Die Punktmultiplikation basiert auf dem Double-And-Add-Algorithmus. Der Pseudocode ist in Listing \ref{lst-pm-algo} zu finden. \\
+Die Punktmultiplikation basiert auf dem Double-And-Add-Algorithmus, der die Zeit für die Berechnung deutlich verkürzt. Der Pseudocode ist in Listing \ref{lst-pm-algo} zu finden.  \\
+
+\begin{lstlisting}[language=Python,frame=single,label=lst-pm-algo,caption=Pseudocode des Double-And-Add Algorithmus]
+N = P; Q = 0
+
+for i from 0 to m do
+  if di = 1 then
+    Q = point_add(Q, N)
+  N = point_double(N)
+
+return Q
+\end{lstlisting}
+
+Würde anstatt des Double-And-Add-Algorithmus der triviale Algorithmus verwendet werden, so würden für $m = 100 P$ $100$ Punktadditionen benötigt werden, um das Ergebnis zu erhalten. Durch den Einsatz des Double-And-Add-Algorithmus lässt sich die Gleichung umschreiben als $m = 2(2[P + 2(2[2(P + 2P)])])$. Dadurch werden lediglich 6 Punktdopplungen und nur noch 2 Punktadditionen benötigt. \\
 
 \begin{table} [h]
 	\centering 
@@ -317,17 +357,10 @@ Die Punktmultiplikation basiert auf dem Double-And-Add-Algorithmus. Der Pseudoco
 	\label{tab:vhdl-impl-eccmul-param}
 \end{table}
 
-\begin{lstlisting}[language=Python,frame=single,label=lst-pm-algo,caption=Pseudocode des Double-And-Add Algorithmus]
-N = P
-Q = 0
-
-for i from 0 to m do
-  if di = 1 then
-    Q = point_add(Q, N)
-  N = point_double(N)
-
-return Q
-\end{lstlisting}
+\subsection{Polynomreduktion}
+Berechnungen wie die Multiplikation führen zu einem Polynom mit einen Grad von $2m-2$, sodass eine Reduktion auf eine Breite von $m$ durchgeführt werden muss.
+\\ \\
+Für die Reduktion wird eine allgemeine Variante eingesetzt, die eine Nachschlagetabelle anhand des Modulo-Wertes erstellt. Anhand dieser Tabelle wird anschließend ein Eingangspolynom durch Bitverschiebungen, Bitprüfungen und Additionen reduziert.
 
 \subsection{Multiplizierer und Dividierer}
 Die Multiplizierer-Entität basiert auf einer klassischen Polynom-Multiplikation, die eine Reihe von Bitverschiebungen, XOR-Verknüpfungen und Polynomreduktionen verwendet. \\
@@ -358,7 +391,7 @@ Die Multiplizierer-Entität basiert auf einer klassischen Polynom-Multiplikation
 	\label{tab:vhdl-impl-mult-param}
 \end{table}
 
-Für den Dividierer wurden zwei verschiedenen Implementierungen verwendet. Die erste Variante basiert auf einer klassischen Polynomdivision, während die zweite Implementierung eine Multiplikation mit dem Inversen durchführt. \\
+Für den Dividierer wurden zwei verschiedenen Implementierungen verwendet, um Laufzeitunterschiede zu messen. Die erste Variante basiert auf einer klassischen Polynomdivision, während die zweite Implementierung eine Multiplikation mit dem Inversen durchführt. \\
 
 \begin{table} [h]
 	\centering 
@@ -444,7 +477,7 @@ Zum Bestimmen des Inversen wird der erweiterte euklidische Algorithmus eingesetz
 Die Addition bzw. Subtraktion ist im $GF(2^M)$ trivial, da $-1 = 1$ gilt. Somit muss lediglich eine XOR-Verknüpfung der Operanden durchgeführt werden .  Aufgrund der Einfachheit wurde auf eine separate Entität verzichtet.
 
 \subsection{Test- und Verifizierung}
-Für den Test- und die Verifizierung der Entities werden zwei verschiedene Arten von Testbenches verwendet. Die triviale Variante dient lediglich dem kurzen Funktionstest der Entity. Dazu werden lediglich einige statische Werte und Randbedingungen abgefragt, um die Entwicklung der Entities zu unterstützen. Die ``echten'' Testbenches dagegen versuchen anhand dynamisch generierter Testdaten die Kombination verschiedener Entities zu verifizieren.
+Für den Test- und die Verifizierung der Entities werden zwei verschiedene Arten von Testbenches verwendet. Die triviale Variante dient lediglich dem kurzen Funktionstest der Entität. Dazu werden lediglich einige statische Werte und Randbedingungen abgefragt, um die Entwicklung der Entitäten zu unterstützen. Die ``echten'' Testbenches dagegen versuchen anhand dynamisch generierter Testdaten die Kombination verschiedener Entitäten zu verifizieren.
 \\ \\
 Der Tabelle \ref{tab:vhdl-impl-testbenches} ist zu entnehmen, dass beispielsweise die Punktmultiplikation neben der eigentlichen Multiplikation auch die Punktaddition und damit auch die dafür notwendigen mathematischen Grundoperatoren verifiziert. Da es die Testbench erfordert, dass verschiedene Entitäten separat entwickelt werden, was im Fehlerfall die Identifizierung deutlich erschwert, wurden weitere einfachere Testbenches geschrieben, um zunächst die Basisfunktionalität der Entitäten zu verifizieren.
 \\ \\
@@ -458,17 +491,17 @@ Neben dem reinen Überprüfen der Bedingungen wird teilweise zusätzlich überpr
 		\hline
 		tb\_ecdsa &  dynamisch & \parbox[t]{5cm}{$(r,s)=sign(m)$\\$verify((r,s),m)=True$}  \\
 		\hline
-		tb\_gf2m\_multiplier & statisch & $ $ \\
+		tb\_gf2m\_multiplier & statisch & $a * b = CONST$ \\
 		\hline
-		tb\_gf2m\_squarer & statisch & $ $ \\
+		tb\_gf2m\_squarer & statisch & $ a * a = CONST$ \\
 		\hline
 		tb\_gf2m\_eea\_inversion & dynamisch & $x * x^-1 = 1$ \\
 		\hline
 		tb\_gf2m\_divider & dynamisch & \parbox[t]{5cm}{$c=a/b$\\$c*b=a$} \\
 		\hline
-		tb\_gf2m\_point\_addition & statisch & $ $ \\
+		tb\_gf2m\_point\_addition & statisch & $P+Q = CONST $ \\
 		\hline
-		tb\_gf2m\_point\_doubling & statisch & $ $ \\
+		tb\_gf2m\_point\_doubling & statisch & $P+P = CONST$ \\
 		\hline
 		tb\_gf2m\_point\_multiplication & dynamisch & \parbox[t]{10cm}{$k.P = (k-1).P + P$\\$k.P = (n-1).P = -P = (xP, xP+yP)$} \\
 		\hline
@@ -514,7 +547,7 @@ Im Modus Signieren sendet das Modul den in den Registern gespeicherten Punkt $(r
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Synthetisierungsergebnisse}
+\section{Synthetisierungsergebnisse und Pin-Belegung}
 
 Der verwendete FPGA ist ein Baustein der Altera Cyclone II Familie (EP2C35F672C6). Für die Synthetisierung wird das in der Entwicklungsumgebung Quartus II vom selben Hersteller enthaltene Werkzeug verwendet. \\
 
@@ -537,3 +570,11 @@ Der verwendete FPGA ist ein Baustein der Altera Cyclone II Familie (EP2C35F672C6
 	\label{tab:vhdl-impl-de2}
 \end{table}
 
+Abbildung \ref{fig:pins} zeigt die Belegung der verwendeten Pins des Altera DE2 Boardes.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{bilder/pins}
+	\caption{Pin-Zuordnung des FPGA}
+	\label{fig:pins}
+\end{figure}

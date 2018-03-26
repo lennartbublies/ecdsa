@@ -4,25 +4,25 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {4.1}{\ignorespaces Eingabe- und Ausgabedaten der VHDL-Implementierung\relax }}{13}{table.caption.7}
-\contentsline {table}{\numberline {4.2}{\ignorespaces Parameter der VHDL-Implementierung\relax }}{13}{table.caption.8}
-\contentsline {table}{\numberline {4.3}{\ignorespaces Eingabe- und Ausgabeparameter der Haupt-Entit\IeC {\"a}t\relax }}{15}{table.caption.11}
-\contentsline {table}{\numberline {4.4}{\ignorespaces Allgemeine Eingabe- und Ausgabeparameter der Entit\IeC {\"a}ten\relax }}{15}{table.caption.12}
-\contentsline {table}{\numberline {4.5}{\ignorespaces Eingabe- und Ausgabeparameter der ECDSA-Entit\IeC {\"a}t\relax }}{17}{table.caption.13}
-\contentsline {table}{\numberline {4.6}{\ignorespaces Eingabe- und Ausgabeparameter der Punktdopplungs-Entit\IeC {\"a}t\relax }}{17}{table.caption.14}
-\contentsline {table}{\numberline {4.7}{\ignorespaces Eingabe- und Ausgabeparameter der Punktadditions-Entit\IeC {\"a}t\relax }}{18}{table.caption.15}
-\contentsline {table}{\numberline {4.8}{\ignorespaces Eingabe- und Ausgabeparameter der Punktmultiplikations-Entit\IeC {\"a}t\relax }}{18}{table.caption.16}
-\contentsline {table}{\numberline {4.9}{\ignorespaces Eingabe- und Ausgabeparameter der Multiplizierer-Entit\IeC {\"a}t\relax }}{19}{table.caption.17}
-\contentsline {table}{\numberline {4.10}{\ignorespaces Eingabe- und Ausgabeparameter der Dividierer-Entit\IeC {\"a}t\relax }}{19}{table.caption.18}
-\contentsline {table}{\numberline {4.11}{\ignorespaces Eingabe- und Ausgabeparameter der Quadrierer-Entit\IeC {\"a}t\relax }}{20}{table.caption.19}
-\contentsline {table}{\numberline {4.12}{\ignorespaces Eingabe- und Ausgabeparameter der Inverter-Entit\IeC {\"a}t\relax }}{20}{table.caption.20}
-\contentsline {table}{\numberline {4.13}{\ignorespaces Beschreibung der Testbenches\relax }}{21}{table.caption.21}
-\contentsline {table}{\numberline {4.14}{\ignorespaces Ergebnisse der Synthetisierung\relax }}{24}{table.caption.25}
+\contentsline {table}{\numberline {4.2}{\ignorespaces Parameter der VHDL-Implementierung\relax }}{14}{table.caption.8}
+\contentsline {table}{\numberline {4.3}{\ignorespaces Eingabe- und Ausgabeparameter der Haupt-Entit\IeC {\"a}t\relax }}{15}{table.caption.10}
+\contentsline {table}{\numberline {4.4}{\ignorespaces Allgemeine Eingabe- und Ausgabeparameter der Entit\IeC {\"a}ten\relax }}{15}{table.caption.11}
+\contentsline {table}{\numberline {4.5}{\ignorespaces Eingabe- und Ausgabeparameter der ECDSA-Entit\IeC {\"a}t\relax }}{18}{table.caption.13}
+\contentsline {table}{\numberline {4.6}{\ignorespaces Eingabe- und Ausgabeparameter der Punktdopplungs-Entit\IeC {\"a}t\relax }}{18}{table.caption.14}
+\contentsline {table}{\numberline {4.7}{\ignorespaces Eingabe- und Ausgabeparameter der Punktadditions-Entit\IeC {\"a}t\relax }}{19}{table.caption.16}
+\contentsline {table}{\numberline {4.8}{\ignorespaces Eingabe- und Ausgabeparameter der Punktmultiplikations-Entit\IeC {\"a}t\relax }}{20}{table.caption.17}
+\contentsline {table}{\numberline {4.9}{\ignorespaces Eingabe- und Ausgabeparameter der Multiplizierer-Entit\IeC {\"a}t\relax }}{21}{table.caption.18}
+\contentsline {table}{\numberline {4.10}{\ignorespaces Eingabe- und Ausgabeparameter der Dividierer-Entit\IeC {\"a}t\relax }}{21}{table.caption.19}
+\contentsline {table}{\numberline {4.11}{\ignorespaces Eingabe- und Ausgabeparameter der Quadrierer-Entit\IeC {\"a}t\relax }}{22}{table.caption.20}
+\contentsline {table}{\numberline {4.12}{\ignorespaces Eingabe- und Ausgabeparameter der Inverter-Entit\IeC {\"a}t\relax }}{22}{table.caption.21}
+\contentsline {table}{\numberline {4.13}{\ignorespaces Beschreibung der Testbenches\relax }}{23}{table.caption.22}
+\contentsline {table}{\numberline {4.14}{\ignorespaces Ergebnisse der Synthetisierung\relax }}{25}{table.caption.26}
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Messergebnisse der VHDL-Implementierung\relax }}{25}{table.caption.26}
-\contentsline {table}{\numberline {5.2}{\ignorespaces Korrigierte Messergebnisse der VHDL-Implementierung\relax }}{26}{table.caption.27}
-\contentsline {table}{\numberline {5.3}{\ignorespaces Messergebnisse der C-Implementierung\relax }}{26}{table.caption.28}
-\contentsline {table}{\numberline {5.4}{\ignorespaces Konfiguration der verwendeten Hardware\relax }}{27}{table.caption.29}
-\contentsline {table}{\numberline {5.5}{\ignorespaces Gegen\IeC {\"u}berstelung der Messergebnisse von der C- und VHDL-Implementierung\relax }}{27}{table.caption.30}
+\contentsline {table}{\numberline {5.1}{\ignorespaces Messergebnisse der VHDL-Implementierung\relax }}{27}{table.caption.28}
+\contentsline {table}{\numberline {5.2}{\ignorespaces Korrigierte Messergebnisse der VHDL-Implementierung\relax }}{28}{table.caption.29}
+\contentsline {table}{\numberline {5.3}{\ignorespaces Messergebnisse der C-Implementierung\relax }}{28}{table.caption.30}
+\contentsline {table}{\numberline {5.4}{\ignorespaces Konfiguration der verwendeten Hardware\relax }}{29}{table.caption.31}
+\contentsline {table}{\numberline {5.5}{\ignorespaces Gegen\IeC {\"u}berstelung der Messergebnisse von der C- und VHDL-Implementierung\relax }}{29}{table.caption.32}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

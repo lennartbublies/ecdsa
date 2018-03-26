@@ -95,9 +95,9 @@ $r_y = s(p_x-r_x)-p_y \mod p$ \\
 Wenn die beiden Punkte gleich sind (also $R = P_1 + P_2 = 2 P_1$), wird diese Operation Punktverdopplung genannt (vgl. \cite{puttmann}, S. 16f). \\
 
 $R=P+P$ \\
-$s=\frac{3{p_x}^2+a}{2p_y} \mod p$ \\  
-$r_x=s^2-2p_x \mod p$ \\  
-$r_y=s(p_x-r_x)-p_y \mod p$ \\
+$s=p_x + \frac{p_x}{p_y} \mod p$ \\  
+$r_x=s^2 + s + a \mod p$ \\  
+$r_y={p_x}^2 + s{r_x} + r_x \mod p$ \\
 
 Beide Operationen lassen sich mittels Sekanten- bzw. Tangentenmethode auf einer elliptischen Kurve darstellen (s. Abb. \ref{fig:padd}). 
 \\ \\
