@@ -155,12 +155,21 @@ BEGIN
     PROCESS(clk_i, rst_i, a_i, first_step)
     BEGIN
         -- Reset entity on reset
-        IF rst_i = '1' or first_step = '1' THEN 
-            r <= ('0' & a_i); s <= ('1' & MODULO);
-            u <= (0 => '1', OTHERS => '0'); v <= (OTHERS => '0');
+        IF rst_i = '1' THEN 
+            r <= (OTHERS => '0'); 
+            s <= (OTHERS => '0');
+            u <= (OTHERS => '0'); 
+            v <= (OTHERS => '0');
             d <= (OTHERS => '0');
         ELSIF clk_i'event and clk_i = '1' THEN
-            IF capture = '1' THEN
+            IF first_step = '1' THEN
+                r <= ('0' & a_i); 
+                s <= ('1' & MODULO);
+                u <= (0 => '1', OTHERS => '0'); 
+                v <= (OTHERS => '0');
+                d <= (OTHERS => '0');            
+            ELSIF capture = '1' THEN
+            --IF capture = '1' THEN
                 r <= new_r; s <= new_s;
                 u <= new_u; v <= new_v;
                 d <= new_d; 

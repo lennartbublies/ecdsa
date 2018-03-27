@@ -7,7 +7,7 @@
 --   enable_i - Enable computation
 --   xp_i     - X part of input point
 --   yp_i     - Y part of input point
---   k        - Multiplier k
+--   k_i      - Multiplier k
 --   xq_io    - X part of output point
 --   yq_io    - Y part of output point
 --   ready_o  - Ready flag
@@ -40,7 +40,7 @@ ENTITY e_gf2m_point_multiplication IS
         
         xp_i: IN std_logic_vector(M-1 DOWNTO 0); 
         yp_i: IN std_logic_vector(M-1 DOWNTO 0); 
-        k: IN std_logic_vector(M-1 DOWNTO 0);
+        k_i: IN std_logic_vector(M-1 DOWNTO 0);
         
         xq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
         yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
@@ -174,7 +174,7 @@ BEGIN
     BEGIN
         IF clk_i' event and clk_i = '1' THEN 
             IF load = '1' THEN 
-                a <= ('0'&k); 
+                a <= ('0'&k_i); 
                 b <= zero;
             ELSIF ce_ab = '1' THEN 
                 a <= next_a; 

@@ -51,6 +51,14 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_location_assignment PIN_N2 -to clk_i
+set_location_assignment PIN_G26 -to rst_i
+set_location_assignment PIN_C25 -to uart_rx_i
+set_location_assignment PIN_B25 -to uart_wx_i
+set_location_assignment PIN_Y18 -to rst_led
+set_global_assignment -name VHDL_FILE ../src/e_gf2m_divider_inv.vhd
+set_global_assignment -name VHDL_FILE ../src/e_ecdsa_key_generation.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_receiver.vhd
 set_global_assignment -name VHDL_FILE ../src/e_nm_piso_register.vhd
 set_global_assignment -name VHDL_FILE ../src/e_gf2m_point_multiplication.vhd
@@ -58,7 +66,6 @@ set_global_assignment -name VHDL_FILE ../src/e_gf2m_point_doubling.vhd
 set_global_assignment -name VHDL_FILE ../src/e_gf2m_point_addition.vhd
 set_global_assignment -name VHDL_FILE ../src/e_gf2m_doubleadd_point_multiplication.vhd
 set_global_assignment -name VHDL_FILE ../src/tld_ecdsa_package.vhd
-set_global_assignment -name VHDL_FILE ../src/e_gf2m_mod.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_transmit.vhd
 set_global_assignment -name VHDL_FILE ../src/e_baud_clock.vhd
 set_global_assignment -name VHDL_FILE ../src/e_uart_transmit_mux.vhd
@@ -74,10 +81,4 @@ set_global_assignment -name VHDL_FILE ../src/e_sha256_types.vhd
 set_global_assignment -name VHDL_FILE ../src/e_sha256_functions.vhd
 set_global_assignment -name VHDL_FILE ../src/e_sha256_constants.vhd
 set_global_assignment -name VHDL_FILE ../src/e_sha256.vhd
-set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
-set_location_assignment PIN_N2 -to clk_i
-set_location_assignment PIN_G26 -to rst_i
-set_location_assignment PIN_C25 -to uart_rx_i
-set_location_assignment PIN_B25 -to uart_wx_i
-set_location_assignment PIN_Y18 -to rst_led
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

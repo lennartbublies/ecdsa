@@ -124,26 +124,26 @@ BEGIN
             
             -- Start test 1:
             -- Count runtime
-            enable <= '1'; 
-            initial_time := now;
-            WAIT FOR PERIOD;
-            enable <= '0';
-            WAIT UNTIL (done = '1');
-            final_time := now;
-            cycles := (final_time - initial_time)/PERIOD;
-            total_cycles := total_cycles+cycles;
+            --enable <= '1'; 
+            --initial_time := now;
+            --WAIT FOR PERIOD;
+            --enable <= '0';
+            --WAIT UNTIL (done = '1');
+            --final_time := now;
+            --cycles := (final_time - initial_time)/PERIOD;
+            --total_cycles := total_cycles+cycles;
             --ASSERT (FALSE) REPORT "Number of Cycles: " & integer'image(cycles) & "  TotalCycles: " 
             --  & integer'image(total_cycles) SEVERITY WARNING;
-            IF cycles > max_cycles THEN  
-                max_cycles:= cycles; 
-            END IF;
-            IF cycles < min_cycles THEN  
-                min_cycles:= cycles; 
-            END IF;
+            --IF cycles > max_cycles THEN  
+            --    max_cycles:= cycles; 
+            --END IF;
+            --IF cycles < min_cycles THEN  
+            --    min_cycles:= cycles; 
+            --END IF;
 
             -- Start test 2:
             -- Sign and verify
-            WAIT FOR 2*PERIOD;
+            --WAIT FOR 2*PERIOD;
             enable <= '1';
             mode <= '0';
             WAIT FOR PERIOD;

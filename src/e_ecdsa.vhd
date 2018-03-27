@@ -66,6 +66,7 @@ ARCHITECTURE rtl OF e_ecdsa IS
     -- Components -----------------------------------------
 
     -- Import entity e_gf2m_doubleadd_point_multiplication
+    --COMPONENT e_gf2m_point_multiplication IS
     COMPONENT e_gf2m_doubleadd_point_multiplication IS
         GENERIC (
             MODULO : std_logic_vector(M DOWNTO 0)
@@ -151,18 +152,14 @@ ARCHITECTURE rtl OF e_ecdsa IS
     
     -- Internal signals -----------------------------------------
 
-    -- Elliptic curve parameter of sect163k1 and generated private and public key
-    --  See http://www.secg.org/SEC2-Ver-1.0.pdf for more information
-    SIGNAL xG : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- X of generator point G = (x, y)
-    SIGNAL yG : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Y of generator point G = (x, y)
-    SIGNAL dA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Private key dA = k
-    SIGNAL xQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qA = dA.G = (xQA, yQA)
-    SIGNAL yQA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qA = dA.G = (xQA, yQA)
+    --SIGNAL xG : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- X of generator point G = (x, y)
+    --SIGNAL yG : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Y of generator point G = (x, y)
+    --SIGNAL dA : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- Private key dA = k
  
     -- Parameter to sign a message, ONLY FOR TESTING!
-    SIGNAL k : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- k for point generator, should be cryptograic secure randum number!
-    SIGNAL xQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qB = dB.G = (xQB, yQB)
-    SIGNAL yQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qB = dB.G = (xQB, yQB)
+    --SIGNAL k : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');   -- k for point generator, should be cryptograic secure randum number!
+    --SIGNAL xQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- X component of public key qB = dB.G = (xQB, yQB)
+    --SIGNAL yQB : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0'); -- Y component of public key qB = dB.G = (xQB, yQB)
 
     -- MODE SIGN
     SIGNAL xR : std_logic_vector(M-1 DOWNTO 0) := (OTHERS=>'0');  -- X component of point R
@@ -190,31 +187,10 @@ ARCHITECTURE rtl OF e_ecdsa IS
     subtype states IS natural RANGE 0 TO 19;
     SIGNAL current_state: states;
 BEGIN
-    -- Set parameter of sect163k1
-    xG  <= "010" & x"FE13C0537BBC11ACAA07D793DE4E6D5E5C94EEE8";
-    yG  <= "010" & x"89070FB05D38FF58321F2E800536D538CCDAA3D9";
-    dA  <= "101" & x"4E78BA70719678AFC09BA25E822B81FCF23B87CA";
-    xQA <= "110" & x"80B2E0F985A6533D584FED618B7A061E79B9B917";
-    yQA <= "011" & x"9D123A952BA8E94F234884E9DBA5CEC4E38C94BA"; 
-    xQB <= "110" & x"80B2E0F985A6533D584FED618B7A061E79B9B917";
-    yQB <= "011" & x"9D123A952BA8E94F234884E9DBA5CEC4E38C94BA"; 
-    --xQB <= "110" & x"D4845314B7851DA63B9569E812A6602A22493216";
-    --yQB <= "000" & x"0D5B712A2981DD2FB1AFA15FE4079C79A3724BB0";
-    k   <= "000" & x"CD06203260EEE9549351BD29733E7D1E2ED49D88";
-
-    --xG  <= "011101110";
-    --yG  <= "010101111";
-    --P   <= "000000000";
-    --dA  <= "000111110";
-    --xQA <= "011000101";
-    --yQA <= "111011010";
-    --xQB <= "011000101";
-    --yQB <= "111011010";
-    --k   <= "001101001";
-    
     -- SIGN -----------------------------------------------------------------
     
     -- Instantiate multiplier to compute R = k.G = (xR, yR)
+    --sign_pmul_r: e_gf2m_point_multiplication GENERIC MAP (
     sign_pmul_r: e_gf2m_doubleadd_point_multiplication GENERIC MAP (
             MODULO => P
     ) PORT MAP (
@@ -304,6 +280,7 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp6 = u1.G
+    --verify_pmul_u1gu2q: e_gf2m_point_multiplication GENERIC MAP (
     verify_pmul_u1gu2q: e_gf2m_doubleadd_point_multiplication GENERIC MAP (
             MODULO => P
     ) PORT MAP (
@@ -319,6 +296,7 @@ BEGIN
     );
     
     -- Instantiate multiplier to compute tmp7 = u2.QB
+    --verify_pmul_u1gu2qb: e_gf2m_point_multiplication GENERIC MAP (
     verify_pmul_u1gu2qb: e_gf2m_doubleadd_point_multiplication GENERIC MAP (
             MODULO => P
     ) PORT MAP (

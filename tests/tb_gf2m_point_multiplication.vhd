@@ -26,13 +26,16 @@ END tb_gf2m_point_multupliation;
 ARCHITECTURE rtl OF tb_gf2m_point_multupliation IS 
     -- Import entity e_gf2m_point_multiplication
     COMPONENT e_gf2m_point_multiplication IS
+        GENERIC (
+            MODULO : std_logic_vector(M DOWNTO 0)
+        );
         PORT (
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
             enable_i: IN std_logic;
             xp_i: IN std_logic_vector(M-1 DOWNTO 0); 
             yp_i: IN std_logic_vector(M-1 DOWNTO 0); 
-            k: IN std_logic_vector(M-1 DOWNTO 0);
+            k_i: IN std_logic_vector(M-1 DOWNTO 0);
             xq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
             yq_io: INOUT std_logic_vector(M-1 DOWNTO 0);
             ready_o: OUT std_logic
@@ -41,6 +44,9 @@ ARCHITECTURE rtl OF tb_gf2m_point_multupliation IS
 
     -- Import entity e_gf2m_point_addition
     COMPONENT e_gf2m_point_addition IS
+        GENERIC (
+            MODULO : std_logic_vector(M DOWNTO 0)
+        );
         PORT(
             clk_i: IN std_logic; 
             rst_i: IN std_logic; 
@@ -69,33 +75,39 @@ ARCHITECTURE rtl OF tb_gf2m_point_multupliation IS
   --CONSTANT P_order : std_logic_vector(M-1 DOWNTO 0) := "000000110";
 BEGIN
     -- Instantiate first point multiplier entity
-    uut1: e_gf2m_point_multiplication PORT MAP(
+    uut1: e_gf2m_point_multiplication GENERIC MAP (
+            MODULO => P
+    ) PORT MAP ( 
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable, 
         xp_i => xP, 
         yp_i => yP, 
-        k => k,
+        k_i => k,
         xq_io => xQ1, 
         yq_io => yQ1, 
         ready_o => done 
     );
 
     -- Instantiate seccond point multiplier entity
-    uut2: e_gf2m_point_multiplication PORT MAP(
+    uut2: e_gf2m_point_multiplication GENERIC MAP (
+            MODULO => P
+    ) PORT MAP ( 
         clk_i => clk, 
         rst_i => rst, 
         enable_i => enable, 
         xp_i => xP, 
         yp_i => yP, 
-        k => k_minus_1,
+        k_i => k_minus_1,
         xq_io => xQ2, 
         yq_io => yQ2, 
         ready_o => done_2 
     );
 
     -- Instantiate point addition entity
-    uut3: e_gf2m_point_addition port map( 
+    uut3: e_gf2m_point_addition GENERIC MAP (
+            MODULO => P
+    ) PORT MAP (  
         clk_i => clk, 
         rst_i => rst, 
         enable_i => start_add,

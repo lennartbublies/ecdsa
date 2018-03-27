@@ -187,6 +187,7 @@ BEGIN
     x_output: FOR i IN 0 TO M-1 GENERATE
         x3_tmp(i) <= lambda_square(i) xor lambda(i) xor div_in2(i) xor a(i);
     END GENERATE;
+
     --  Calculate ry = s * (px - rx) - rx - py
     y_output: FOR i IN 0 TO M-1 GENERATE
         y3_tmp(i) <= mult_out(i) xor x3_tmp(i) xor y1_i(i);
