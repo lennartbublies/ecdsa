@@ -542,18 +542,31 @@ Der \textbf{UART-Transmitter} beinhaltet zwei Schieberegister, die einen paralle
 	\label{fig:uarttx}
 \end{figure}
 
-Im Modus Signieren sendet das Modul den in den Registern gespeicherten Punkt $(r, s)$. Beim Verifizieren wird entweder ein Byte Nullen (Signatur passt \textit{nicht} zum Dokument) oder ein Byte Einsen (Signatur gehört zum Dokument) versendet. Der Transmitter instantiiert intern einen Timer, der das Senden am Ausgang Tx in der vor der Synthetisierung eingestellten Baud-Rate taktet. \\
+Im Modus Signieren sendet das Modul den in den Registern gespeicherten Punkt $(r, s)$. Beim Verifizieren wird entweder ein Byte Nullen (Signatur passt \textit{nicht} zum Dokument) oder ein Byte Einsen (Signatur gehört zum Dokument) versendet. Der Transmitter instantiiert intern einen Timer, der das Senden am Ausgang Tx in der vor der Synthese eingestellten Baud-Rate taktet. \\
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Synthese und Pin-Belegung}
 
-Der verwendete FPGA ist ein Baustein der Altera Cyclone II Familie (EP2C35F672C6). Für die Synthetisierung wird das in der Entwicklungsumgebung Quartus II vom selben Hersteller enthaltene Werkzeug verwendet. \\
+Der verwendete FPGA ist ein Baustein der Altera Cyclone II Familie (EP2C35F672C6). Für die Synthese wird das in der Entwicklungsumgebung Quartus II vom selben Hersteller enthaltene Werkzeug verwendet. \\
+
+Bei der Synthese des entwickelten VHDL-Quellcodes wird vom Synthesewerkzeug zunächst die Netzliste erzeugt. In weiteren Schritten werden Optimierungen auf verschiedenen Ebenen vorgenommen und es findet ein sog. Technology Mapping statt, welche als Basis für die Platzierung und Verdrahtung dienen. Der resultierende Konfigurationskontext kann auf den FPGA übertragen werden. Bei der ECDSA-Entwicklung sind keine Timing-Probleme aufgetreten, die Funktionen und Ergebnisse des Algorithmus beeinflusst haben.
+\\ \\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{bilder/pins}
+	\caption{Pin-Zuordnung des FPGA}
+	\label{fig:pins}
+\end{figure}
+
+Abbildung \ref{fig:pins} zeigt die Belegung der verwendeten Pins des Altera DE2 Boards. Um die Testphasen zwischen den einzelnen Synthese-Vorgängen zur Entwicklungszeit abzusichern, wird die Eingabe des auf einen Taster gelegten Reset-Signaleingangs direkt wieder über eine LED-Leuchte nach außen angezeigt. 
+\\ \\
 
 \begin{table} [h]
 	\centering 
-	\begin{tabular}{ | p{6cm} | p{3cm} | }
+	\begin{tabular}{ | p{5cm} | p{5cm} | }
 		\hline
 		\textbf{Beschreibung} & \textbf{Wert}\\
 		\hline
@@ -566,15 +579,11 @@ Der verwendete FPGA ist ein Baustein der Altera Cyclone II Familie (EP2C35F672C6
 		Anzahl Pins & 5 / 475 ( 1 \% ) \\
 		\hline
 	\end{tabular}
-	\caption{Ergebnisse der Synthetisierung}
+	\caption{Ergebnisse der Synthese}
 	\label{tab:vhdl-impl-de2}
 \end{table}
 
-Abbildung \ref{fig:pins} zeigt die Belegung der verwendeten Pins des Altera DE2 Boardes.
+Das Report des Synthesewerkzeugs nennt eine Auslastung der Logikelemente um 72\% und eine Gesamtressourcennutzung um 21\%. 
+\\ \\
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{bilder/pins}
-	\caption{Pin-Zuordnung des FPGA}
-	\label{fig:pins}
-\end{figure}
+

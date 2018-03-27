@@ -40,7 +40,7 @@ Galoiskörper werden mit $GF(p)$ abgekürzt, wobei $p$ eine Primzahl sein muss u
 \section{Elliptische Kurven} 
 \label{sec:ell}
 
-Eine elliptische Kurve $E$ über einem Körper $K$ ist eine nicht-singuläre\footnote{Nicht-singulär: keine Knoten, keine Spitzen, keine ``Einsiedler'' (isolierte Punkte)} Kurve (vgl. Abb. \ref{fig:ellkurve}), definiert als Menge aller Punkte $(x,y)$ mit $x,y \in K$, für die gilt $F(x,y)=0$ zusammen mit einem ``Punkt in der Unendlichkeit'' O (vgl. \cite{grebe}, S.25).
+Eine elliptische Kurve $E$ über einem Körper $K$ ist eine nicht-singuläre\footnote{Nicht-singulär: keine Knoten, keine Spitzen, keine ``Einsiedler'' (isolierte Punkte)} Kurve (vgl. Abb. \ref{fig:ellkurve}\footnote{Quelle: \url{https://upload.wikimedia.org/wikipedia/de/3/30/Ell\_kurve.png}}), definiert als Menge aller Punkte $(x,y)$ mit $x,y \in K$, für die gilt $F(x,y)=0$ zusammen mit einem ``Punkt in der Unendlichkeit'' O (vgl. \cite{grebe}, S.25).
 \\ \\
 Eine elliptische Kurve über ein endliches Feld $F_p$ kann mit Hilfe der Weierstraß-Gleichung in Normalform wie folgt definiert werden:
 
@@ -99,7 +99,7 @@ $s=p_x + \frac{p_x}{p_y} \mod p$ \\
 $r_x=s^2 + s + a \mod p$ \\  
 $r_y={p_x}^2 + s{r_x} + r_x \mod p$ \\
 
-Beide Operationen lassen sich mittels Sekanten- bzw. Tangentenmethode auf einer elliptischen Kurve darstellen (s. Abb. \ref{fig:padd}). 
+Beide Operationen lassen sich mittels Sekanten- bzw. Tangentenmethode auf einer elliptischen Kurve darstellen (s. Abb. \ref{fig:padd}\footnote{Quelle: s. \cite{puttmann}, S. 17}). 
 \\ \\
 Die Punkt-Multiplikation führt eine k-fache Punktaddition durch. \\
 
@@ -145,7 +145,7 @@ Eine digitale Signatur nutzt ein asymmetrisches Verschlüsselungsverfahren, um e
 	\label{fig:digisig}
 \end{figure}
 
-Abbildung \ref{fig:digisig} zeigt den Vorgang der Erzeugung einer Signatur. Die im Bild zu sehende ``Signierfunktion'' muss eine asymmetrische Verschlüsselung sein und entspricht dem in dieser Arbeit implementierten ECDSA-Algorithmus.
+Abbildung \ref{fig:digisig}\footnote{Quelle: \url{https://www.informatik.tu-darmstadt.de/BS/Lehre/Sem98\_99/T11/index.html}} zeigt den Vorgang der Erzeugung einer Signatur. Die im Bild zu sehende ``Signierfunktion'' muss eine asymmetrische Verschlüsselung sein und entspricht dem in dieser Arbeit implementierten ECDSA-Algorithmus.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Der ECDSA Algorithmus}
