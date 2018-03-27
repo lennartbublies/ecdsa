@@ -17,3 +17,5 @@ doku/thesis.pdf
 *.log
 *.out
 *.toc
+*.ilg
+*.ind

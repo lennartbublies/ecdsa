@@ -1,4 +1,4 @@
-%!TEX root = ../thesis.tex
+%!TEX root = ../ecdsa.tex
 
 \chapter{Messung \& Vergleich} \label{sec:messung}
 
@@ -7,7 +7,7 @@
 Zur Messungen der Laufzeit werden Daten über die UART-Schnittstelle gesendet und die Zeit gemessen, bis das Ergebnis empfangen wurde. Da das Signieren bzw. Verifizieren, wie in Abschnitt \ref{sec:uartimpl} beschrieben, durch separate Kommandos möglich ist, kann so die Laufzeit pro Funktion ermittelt werden. 
 \\ \\
 Die Kommunikation mit der FPGA-Implementierung wird über ein selbstgeschriebenes Python-Skript abgewickelt, welches einen zufälligen 163-Bit Hash erzeugt und via UART versendet. Nach dem Empfangen der erzeugten Signatur wird diese erneut zum FPGA geschickt und verifiziert. Dieser Ablauf wird für 1000 Messungen wiederholt und anschließend der Mittelwert gebildet. Die Ergebnisse sind in Tabelle \ref{vhdl-messung} zu finden.
-\\
+\\ \\
 \begin{table}[h]
 	\centering 
 	\begin{tabular}{ | p{3cm} | p{6cm} | }
@@ -49,20 +49,22 @@ $\Rightarrow$ 1 Byte  * 10 Symbole * 104 $\mu$s = 1,04 ms \\
 \textbf{Nettozeit Verifizieren} = 130,1 ms - 66,67 ms - 1,04 ms = \textbf{62,4 ms}\\
 \end{itemize}
 
-%Die korrigierten Ergebnisse der Messung werden abschließend dem Simulator-Ergebnis gegenübergestellt: Das Signieren eines 163 Bit Hashes benötigt nur \textbf{23,6 ms} im Simulator, während das Verifizieren \textbf{32,8 ms} benötigt. Beide berechnete Simulationen sind damit mehr als Faktor 2 schneller. Der Grund dafür kann in der Pufferung der verwendeten ``PySerial''-Bibliothek für serielle Schnittstellen in Python sowie an der Puffer-Mechanismen des Betriebssystems liegen. \\
+Die oben angegebenen errechneten Werte weichen höchstwahrscheinlich stark von den \textit{tatsächlichen} Laufzeiten des Algorithmus auf dem Board ab. Grund hierfür sind die verschiedenen Puffer-Mechanismen der verwendeten ``PySerial''-Bibliothek für serielle Schnittstellen in Python sowie an der Pufferung des Betriebssystems. 
+\\ \\
+Um exakte Laufzeiten der beiden Modi zu ermitteln, wird das Signal \texttt{ready\_o} (vgl. Kap. \ref{vhdl-impl-general}), welches die Aktivität des Kernmoduls beschreibt, über einen Pin nach außen geführt und mit einem Oszilloskop gemessen. Diese Messwerte liegen deutlich näher aneinander und liegen zudem um Faktor 4 bis 24 unter den berechneten Nettoergebnissen der Python-Messung. \\
 
 \begin{table}[h]
 	\centering 
-	\begin{tabular}{ | p{3cm} | p{6cm} | }
+	\begin{tabular}{ | p{3cm} | p{3cm} | p{3cm} | }
 		\hline
-		\textbf{Funktion} & \textbf{Zeit} \\
+		\textbf{Funktion} & \textbf{Python} & \textbf{Oszilloskop} \\
 		\hline
-		Signieren & 10,3 ms \\
+		Signieren & $\sim$ 10,3 ms & 2,366 ms\\
 		\hline
-		Verifizieren & 62,4 ms \\
+		Verifizieren & $\sim$ 62,4 ms & 2,436 ms\\
 		\hline
 	\end{tabular}
-	\caption{Korrigierte Messergebnisse der VHDL-Implementierung}
+	\caption{Messergebnisse der VHDL-Implementierung}
 	\label{vhdl-messung-2}
 \end{table}
 
@@ -109,7 +111,7 @@ Wie bereits bei der VHDL-Implementierung wurden wieder $1000$ Messungen durchgef
 \section{Gegenüberstellung \& Bewertung}
 \label{sec:messung-results}
 
-Bei den Messergebnissen aus Tabelle \ref{messung-results} ist klar zu erkennen, dass die VHDL-Implementierung je nach Funktion eine Performanz-Steigerung zwischen 82 \% - 95 \% aufweist. \\
+Bei den Messergebnissen aus Tabelle \ref{messung-results} ist klar zu erkennen, dass die VHDL-Implementierung je nach Funktion eine Performanz-Steigerung zwischen 98,6 \% - 99,3 \% aufweist. \\
 
 \begin{table} [h]
 	\centering 
@@ -117,9 +119,9 @@ Bei den Messergebnissen aus Tabelle \ref{messung-results} ist klar zu erkennen, 
 		\hline
 		 & \textbf{VHDL} & \textbf{C} & \textbf{Gewinn} \\
 		\hline
-		\textbf{Signieren} & 10,3 ms & 169,1 ms & 94 \% \\
+		\textbf{Signieren} & 2,366 & 169,1 ms & 98,6 \% \\
 		\hline
-		\textbf{Verifizieren} &  62,4 ms & 340,5 ms & 82 \% \\
+		\textbf{Verifizieren} &  2,436 ms & 340,5 ms & 99,3 \% \\
 		\hline
 	\end{tabular}
 	\caption{Gegenüberstelung der Messergebnisse von der C- und VHDL-Implementierung}
@@ -128,7 +130,7 @@ Bei den Messergebnissen aus Tabelle \ref{messung-results} ist klar zu erkennen, 
 
 Bei den Messungen gilt zu berücksichtigen, dass der Performanz-Gewinn bereits bei einer geringen Schlüssellänge von 163 Bit erzielt wurde. Da bei einem Erhöhen der Schlüssellänge die Vorteile der Hardware-Implementierung mehr zum Tragen kommen, ist mit weiteren Leistungssteigerungen zu rechnen. Außerdem wurde, wie in Kapitel \ref{sec:impl} beschrieben, lediglich eine triviale VHDL-Implementierung umgesetzt. Durch ein Austauschen der generischen Implementierung durch eine statische optimierte Verdrahtung sollten sich weitere Performanz-Verbesserungen erzielen lassen. Weitere Optimierungen können eine Anpassung der Algorithmen (z.B. Montgomery Multiplizierer) sein.
 \\ \\
-Abschließend sei erwähnt, dass die C-Implementierung \cite{kewish} eine auf Hardware optimierte Implementierung (Bit-Felder) verwendet. Es ist daher davon auszugehen, dass sich auch die C-Ergebnisse verbessern lassen, indem beispielsweise auf numerische Verfahren zurückgegriffen wird!  
+Abschließend sei erwähnt, dass die C-Implementierung \cite{kewish} eine auf Hardware optimierte Implementierung (Bit-Felder) verwendet. Es ist daher davon auszugehen, dass sich auch die C-Ergebnisse verbessern lassen, indem beispielsweise auf numerische Verfahren zurückgegriffen wird. \\
 
 %\begin{figure}[H]
 %	\centering
