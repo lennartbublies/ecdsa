@@ -1,2 +1,0 @@
-# ecdsa
-ECDSA VHDL Implementation
