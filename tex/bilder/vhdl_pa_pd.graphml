@@ -20,7 +20,7 @@
           <y:Geometry height="54.0" width="137.48000000000002" x="137.0" y="197.5631999999996"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="104.998046875" x="16.24097656250001" y="17.6494140625">l = (yP-yP)/(xP-xQ)<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="109.662109375" x="13.908945312500009" y="17.6494140625">s = (yP-yQ)/(xP-xQ)<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -36,7 +36,7 @@
           <y:Geometry height="54.0" width="44.48000000000002" x="137.0" y="268.1263999999992"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="38.646484375" x="2.916757812500009" y="17.6494140625">s = l^2<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="42.654296875" x="0.9128515625000091" y="17.6494140625">q = s^2<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -52,7 +52,7 @@
           <y:Geometry height="54.0" width="86.48000000000002" x="188.0" y="268.1263999999992"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="83.001953125" x="1.739023437500009" y="17.6494140625">r = l * (xP - xR)<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="86.3359375" x="0.0720312500000091" y="17.6494140625">r = s * (xP - xR)<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -68,8 +68,8 @@
           <y:Geometry height="54.0" width="137.48000000000002" x="137.0" y="338.6895999999988"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="99.671875" x="18.90406250000001" y="10.298828125">xR = s - l - (px-qx)
-yR = r - xR - yP<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="89.681640625" x="23.89917968750001" y="10.298828125">xR = q - xP - xQ
+yR = r - yP<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -80,7 +80,6 @@ yR = r - xR - yP<y:LabelModel>
       </data>
     </node>
     <node id="n4">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="18.701171875" width="26.6875" x="160.76697720000004" y="172.8620281249996"/>
@@ -108,7 +107,6 @@ yR = r - xR - yP<y:LabelModel>
       </data>
     </node>
     <node id="n6">
-      <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="18.701171875" width="26.6875" x="331.5339544000001" y="172.8620281249996"/>
@@ -125,7 +123,7 @@ yR = r - xR - yP<y:LabelModel>
           <y:Geometry height="54.0" width="147.96000000000004" x="304.48" y="197.5631999999996"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="86.03125" x="30.964375000000018" y="17.6494140625">l = xP + yP / xP<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="89.365234375" x="29.297382812500018" y="17.6494140625">s = xP + xP / yP<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -141,7 +139,7 @@ yR = r - xR - yP<y:LabelModel>
           <y:Geometry height="54.0" width="62.0" x="304.48" y="268.1263999999992"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="38.646484375" x="11.6767578125" y="17.6494140625">s = l^2<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="42.654296875" x="9.6728515625" y="17.6494140625">q = s^2<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -173,7 +171,7 @@ yR = r - xR - yP<y:LabelModel>
           <y:Geometry height="54.0" width="86.48000000000002" x="304.48" y="338.6895999999988"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="84.35546875" x="1.062265625000009" y="10.298828125">xR = s + l + A
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="84.35546875" x="1.062265625000009" y="10.298828125">xR = q + s + A
 yR = x + r + xR<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -190,7 +188,7 @@ yR = x + r + xR<y:LabelModel>
           <y:Geometry height="54.0" width="44.48000000000002" x="407.96000000000004" y="338.6895999999988"/>
           <y:Fill color="#EEEEEE" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="43.673828125" x="0.4030859375000091" y="17.6494140625">r = l*xR<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="47.0078125" x="-1.263906249999991" y="17.6494140625">r = s*xR<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -217,7 +215,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </node>
     <edge id="e0" source="n0" target="n1">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="-42.5" sy="1.436800000000403" tx="0.0" ty="0.0"/>
@@ -228,7 +225,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e1" source="n0" target="n2">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="25.5" sy="1.436800000000403" tx="0.0" ty="0.0"/>
@@ -239,7 +235,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e2" source="n1" target="n3">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-46.5" ty="-0.6895999999987907"/>
@@ -250,7 +245,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e3" source="n2" target="n3">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="25.5" ty="0.31040000000120926"/>
@@ -261,7 +255,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e4" source="n3" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -272,7 +265,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e5" source="n7" target="n8">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="-40.616892638929315" sy="7.436800000000403" tx="0.0" ty="0.0"/>
@@ -283,7 +275,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e6" source="n10" target="n12">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="7.6626495069377825" sy="0.31040000000120926" tx="-30.8573504930622" ty="-7.976248519886951"/>
@@ -294,7 +285,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e7" source="n7" target="n9">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="50.531999999999925" sy="-3.50879999999961" tx="15.291999999999916" ty="-1.5727999999992335"/>
@@ -305,7 +295,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e8" source="n8" target="n10">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-12.240000000000009" ty="0.31040000000120926"/>
@@ -316,7 +305,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e9" source="n9" target="n11">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="14.732764179104493" sy="0.8736000000008062" tx="0.0" ty="0.0"/>
@@ -327,7 +315,6 @@ yR = x + r + xR<y:LabelModel>
       </data>
     </edge>
     <edge id="e10" source="n11" target="n10">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
