@@ -1,62 +1,6 @@
+ECDSA-Implementierung in VHDL
++ Vergleich der Laufzeit mit einer C-Implementierung
+
 Autoren:
-    Studenten der technischen Informatik 
-    - Achmed Sous
-    - Lennart Bublies
-
-Datum:
-    01.01.2012     
-
-    
-Verzeichnisstruktur
--------------------
-/bin/   - Mit Make erstellte Binaerdateien (dlls) werden hier abgelegt.
-          Enthält ausserdem vorkompilierte Binärdateien zur schnellen Verwendung.
-/docs/  - Projektdokumentation.
-/lib/   - Enthält alle zu Installation und eigenem Kompilieren benötigten 
-          Zusatzprogramme sowie die zum Betrieb erforderlichen Python-Module.
-/run/   - Enthält Batch-Dateien, die den Aufruf der Make-Kommandos vereinfachen. 
-          Make muss installiert sein.
-/src/   - Enthält die Quelltextdateien des Programms.
-/tests/ - Testprogramme 
-
-Schnelleinstieg
----------------
-1. Führen Sie die Anweisungen in der Datei INSTALL aus.
-2. Starten Sie einen Server auf dem Kamerarechner. Die von ihm benötigte 
-   ictlServer.dll wurde in Schritt 1 erstellt und im Verzeichnis bin/ abgelegt.
-3. Befolgen Sie die Anleitungen in src/client/tutorial.py um mit Python Bilder
-   vom Server anzufordern.
-
-
-Einzelbildübertragung im Robotiklabor
---------------------------------------------
-Dieses Projekt befasst sich mit der Übertragung von Einzelbildern
-über ein Netzwerk. Zusätzlich können über bestimmte Parameter
-Einstellungen von verbundenen Medien verändert werden.
-Die einzelnen Komponenten sind dabei modular und universell, durch Bibliothken,
-einsetzbar.
-
-Sinn und Zweck dieses Projektes besteht darin, die Ansteuerung der Kameras
-im Robotiklabor der FH-Wedel, schnell und einfach zu gewährleisten.
-Zukünftige Projekte sollen dabei diese Bibliotheken einbinden und zum
-Sammeln von Bildinformationen verwenden. Durch diesen Einsatz soll
-Arbeitsaufwand eingespart werden.
-
-Das Grundprinzip bassiert dabei auf einem eigenen, optimierten
-Protokoll, welches dem Übertragen von Bildern und dem Konfigurieren der Medien 
-dient.
-Mögliche Medien sind dabei Kameras oder Dateisysteme. Ein möglicher Client,
-wie eine Applikation zur Steuerung des Billiardroboters, kann diese
-Bibliotheken einbinden und sich über eine definierte Schnittstelle 
-mit einem Server verbinden. Ein Server besteht dabei aus einer Spezialanwendung,
-die sich um die Verarbeitung eines Gerätes, wie zum Beispiel einer Kamera,
-kümmert. Eine Beispielapplikation wurde ebenfalls im Rahmen dieses
-Projektes erstellt.
-
-Für die Verbindung eines Clienten mit einem Server kann IPv4 oder IPv6
-verwendet werden. Prinzipiell können sich darüberhinaus beliebig viele Clienten
-mit dem Server verbinden, jedoch wird in diesem Fall die Verarbeitung blockiert,
-damit diese sich nicht gegenseitig stören können.
-
-Eine ausführliche Dokumentation der Schnittstellen befindet sich in dem
-Ordner trunk/docs/code.  
+    - Leander Schulz
+    - Lennart Bublies  
