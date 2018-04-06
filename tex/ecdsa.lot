@@ -5,7 +5,7 @@
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {4.1}{\ignorespaces Eingabe- und Ausgabedaten der VHDL-Implementierung\relax }}{13}{table.caption.7}
 \contentsline {table}{\numberline {4.2}{\ignorespaces Parameter der VHDL-Implementierung\relax }}{14}{table.caption.8}
-\contentsline {table}{\numberline {4.3}{\ignorespaces Eingabe- und Ausgabeparameter der Haupt-Entit\IeC {\"a}t\relax }}{15}{table.caption.10}
+\contentsline {table}{\numberline {4.3}{\ignorespaces Eingabe- und Ausgabeparameter der Top-Level-Entit\IeC {\"a}t\relax }}{15}{table.caption.10}
 \contentsline {table}{\numberline {4.4}{\ignorespaces Allgemeine Eingabe- und Ausgabeparameter der Entit\IeC {\"a}ten\relax }}{15}{table.caption.11}
 \contentsline {table}{\numberline {4.5}{\ignorespaces Eingabe- und Ausgabeparameter der ECDSA-Entit\IeC {\"a}t\relax }}{18}{table.caption.13}
 \contentsline {table}{\numberline {4.6}{\ignorespaces Eingabe- und Ausgabeparameter der Punktdopplungs-Entit\IeC {\"a}t\relax }}{18}{table.caption.14}

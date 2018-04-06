@@ -94,7 +94,7 @@ Wie bereits erwähnt kommuniziert die Top-Level-Entität über eine serielle RS2
 \begin{figure}[thb]
 	\centering
 	\includegraphics[width=\textwidth]{bilder/tle}
-	\caption{Top-Level-Entity der VHDL-Implementierung}
+	\caption{Top-Level-Entität der VHDL-Implementierung}
 	\label{fig:vhdl-impl-tle}
 \end{figure}
 
@@ -117,7 +117,7 @@ Nach vollständigem Erhalt der Daten, die sich je nach Algorithmus unterscheiden
 		rst\_led & LED zur Kennzeichnung ob das Reset-Signal aktiv ist \\
 		\hline
 	\end{tabular}
-	\caption{Eingabe- und Ausgabeparameter der Haupt-Entität}
+	\caption{Eingabe- und Ausgabeparameter der Top-Level-Entität}
 	\label{tab:vhdl-impl-tld-ecdsa-param}
 \end{table} 
 
@@ -196,7 +196,7 @@ Die Implementierung der Algorithmen folgt dem Ablauf aus Kapitel \ref{ecdsa-algo
 \begin{figure}[thb]
 	\centering
 	\includegraphics[width=0.6\textwidth]{bilder/vhdl_ecdsa.png}
-	\caption{Vereinfachter Ablauf des ECDSA-Algorithmus}
+	\caption{Vereinfachter Ablauf des Algorithmus}
 	\label{fig:vhdl-impl-ecdsa}
 \end{figure}
 
@@ -273,7 +273,7 @@ Der zugrundeliegende Ablauf ist identisch mit der Implementierung des ECDSA-Algo
 \begin{figure}[thb]
 	\centering
 	\includegraphics[width=0.7\textwidth]{bilder/vhdl_pa_pd.png}
-	\caption{Vereinfachter Ablauf des Punktaddition und -dopplung}
+	\caption{Vereinfachter Ablauf der Punktaddition und -dopplung}
 	\label{fig:vhdl-impl-pa-pd}
 \end{figure}
 
